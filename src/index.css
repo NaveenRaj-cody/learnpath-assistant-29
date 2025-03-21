@@ -1,69 +1,68 @@
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
   :root {
-    --background: 210 40% 98%;
-    --foreground: 222 47% 11%;
+    --background: 0 0% 100%;
+    --foreground: 0 0% 13%;
 
     --card: 0 0% 100%;
-    --card-foreground: 222 47% 11%;
+    --card-foreground: 0 0% 13%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 222 47% 11%;
+    --popover-foreground: 0 0% 13%;
 
-    --primary: 221 83% 53%;
-    --primary-foreground: 210 40% 98%;
+    --primary: 209 84% 51%;
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 210 40% 96%;
-    --secondary-foreground: 222 47% 11%;
+    --secondary: 120 42% 45%;
+    --secondary-foreground: 0 0% 100%;
 
-    --muted: 210 40% 96%;
-    --muted-foreground: 215 16% 47%;
+    --muted: 0 0% 96%;
+    --muted-foreground: 0 0% 46%;
 
-    --accent: 210 40% 96%;
-    --accent-foreground: 222 47% 11%;
+    --accent: 268 42% 55%;
+    --accent-foreground: 0 0% 100%;
 
     --destructive: 0 84% 60%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 214 32% 91%;
-    --input: 214 32% 91%;
-    --ring: 221 83% 53%;
+    --border: 0 0% 90%;
+    --input: 0 0% 90%;
+    --ring: 209 84% 51%;
 
     --radius: 0.75rem;
   }
 
   .dark {
-    --background: 222 47% 11%;
-    --foreground: 210 40% 98%;
+    --background: 0 0% 7%;
+    --foreground: 0 0% 100%;
 
-    --card: 222 47% 11%;
-    --card-foreground: 210 40% 98%;
+    --card: 0 0% 10%;
+    --card-foreground: 0 0% 100%;
 
-    --popover: 222 47% 11%;
-    --popover-foreground: 210 40% 98%;
+    --popover: 0 0% 10%;
+    --popover-foreground: 0 0% 100%;
 
-    --primary: 217 91% 60%;
-    --primary-foreground: 210 40% 98%;
+    --primary: 209 84% 51%;
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 217 19% 27%;
-    --secondary-foreground: 210 40% 98%;
+    --secondary: 120 42% 45%;
+    --secondary-foreground: 0 0% 100%;
 
-    --muted: 217 19% 27%;
-    --muted-foreground: 215 20% 65%;
+    --muted: 0 0% 15%;
+    --muted-foreground: 0 0% 70%;
 
-    --accent: 217 19% 27%;
-    --accent-foreground: 210 40% 98%;
+    --accent: 268 42% 55%;
+    --accent-foreground: 0 0% 100%;
 
     --destructive: 0 62% 30%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 217 19% 27%;
-    --input: 217 19% 27%;
-    --ring: 224 76% 48%;
+    --border: 0 0% 20%;
+    --input: 0 0% 20%;
+    --ring: 209 84% 51%;
   }
 }
 
@@ -130,25 +129,25 @@
 
 @layer components {
   .glass-panel {
-    @apply backdrop-blur-md bg-white/60 dark:bg-black/50 border border-white/20 dark:border-white/10 shadow-lg relative z-10;
+    @apply backdrop-blur-md bg-white/80 dark:bg-black/40 border border-white/30 dark:border-white/10 shadow-md relative z-10;
   }
   
   .glass-input {
-    @apply bg-white/60 dark:bg-black/50 border border-white/30 dark:border-white/10 backdrop-blur-md focus:bg-white/80 dark:focus:bg-black/60 transition-all duration-300;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+    @apply bg-white/80 dark:bg-black/40 border border-white/40 dark:border-white/10 backdrop-blur-sm focus:bg-white/90 dark:focus:bg-black/50 transition-all duration-300;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03);
   }
 
   .chat-bubble-user {
-    @apply bg-primary text-primary-foreground rounded-2xl rounded-br-sm px-4 py-3 shadow-md animate-slide-up;
+    @apply bg-primary text-primary-foreground rounded-2xl rounded-br-sm px-4 py-3 shadow-sm animate-slide-up;
   }
 
   .chat-bubble-bot {
-    @apply bg-secondary text-secondary-foreground rounded-2xl rounded-bl-sm px-4 py-3 shadow-md animate-slide-up;
+    @apply bg-secondary text-secondary-foreground rounded-2xl rounded-bl-sm px-4 py-3 shadow-sm animate-slide-up;
   }
   
   .card-hover {
-    @apply transition-all duration-300 hover:shadow-lg hover:-translate-y-1;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+    @apply transition-all duration-300 hover:shadow-md hover:-translate-y-1;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03);
   }
   
   .subtle-underline {
@@ -167,17 +166,38 @@
 
   /* Card consistent styling */
   .styled-card {
-    @apply border border-border bg-card/90 shadow-sm hover:shadow-md transition-shadow rounded-lg overflow-hidden relative z-10 backdrop-blur-sm;
+    @apply border border-border bg-card shadow-sm hover:shadow-md transition-shadow rounded-lg overflow-hidden relative z-10 backdrop-blur-sm;
   }
   
   /* Content wrapper with backdrop blur for better text legibility */
   .content-wrapper {
-    @apply relative z-10 bg-background/80 dark:bg-background/70 backdrop-blur-sm;
+    @apply relative z-10 bg-background/90 dark:bg-background/90 backdrop-blur-sm;
   }
   
   /* Main content container */
   .main-container {
     @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8;
+  }
+  
+  /* New color palette specific classes */
+  .bg-primary-soft {
+    @apply bg-primary/10;
+  }
+  
+  .bg-secondary-soft {
+    @apply bg-secondary/10;
+  }
+  
+  .bg-accent-soft {
+    @apply bg-accent/10;
+  }
+  
+  .text-primary-emphasis {
+    @apply text-primary font-medium;
+  }
+  
+  .text-secondary-emphasis {
+    @apply text-secondary font-medium;
   }
 }
 
@@ -277,8 +297,7 @@ main, section, .main-content {
 
 /* Improved background for cards in light/dark mode */
 .feature-card {
-  @apply bg-gradient-to-br from-white/90 to-white/70 dark:from-gray-800/90 dark:to-gray-900/90 backdrop-blur-sm;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+  @apply bg-gradient-to-br from-white/95 to-white/85 dark:from-gray-800/90 dark:to-gray-900/80 backdrop-blur-sm shadow-sm;
 }
 
 /* Smooth animations */
@@ -289,4 +308,19 @@ main, section, .main-content {
 /* Improved button hover effects */
 .hover-lift {
   @apply transition-transform duration-200 hover:-translate-y-1;
+}
+
+/* New cleaner state badges */
+.state-badge {
+  @apply inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium bg-primary/15 text-primary;
+}
+
+/* Clean filter pills */
+.filter-pill {
+  @apply inline-flex items-center rounded-full px-3 py-1 text-sm font-medium bg-muted hover:bg-primary/10 hover:text-primary transition-colors cursor-pointer;
+}
+
+/* Active filter pill */
+.filter-pill-active {
+  @apply bg-primary/15 text-primary;
 }
