@@ -15,7 +15,7 @@ import CareersPage from "./pages/CareersPage";
 import CareerDetailsPage from "./pages/CareerDetailsPage";
 import CollegeDetailsPage from "./pages/CollegeDetailsPage";
 import LoginPage from "./pages/LoginPage";
-import ThreeDBackground from "./components/ThreeDBackground";
+import GradientBackground from "./components/GradientBackground";
 import { AuthProvider } from "./contexts/AuthContext";
 
 const queryClient = new QueryClient();
@@ -25,7 +25,7 @@ const App = () => (
     <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
       <AuthProvider>
         <TooltipProvider>
-          <ThreeDBackground />
+          <GradientBackground />
           <Toaster />
           <Sonner />
           <BrowserRouter>
