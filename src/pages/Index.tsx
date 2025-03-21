@@ -17,6 +17,7 @@ const HeroSection = () => {
   const [isCoursesModalOpen, setIsCoursesModalOpen] = useState(false);
   const [modalType, setModalType] = useState<'courses' | 'colleges'>('courses');
   
+  // Calculate the actual counts from the data
   const coursesCount = coursesData.length;
   const collegesCount = coursesData.reduce((total, course) => total + course.topColleges.length, 0);
   
@@ -168,7 +169,6 @@ const FeaturesSection = () => {
               icon={<BookOpen className="h-6 w-6 text-white" />}
               title="Course Discovery"
               description="Explore hundreds of courses across different fields and levels."
-              variant="primary"
             />
           </AnimatedTransition>
           
@@ -308,15 +308,15 @@ const FeatureCard: React.FC<FeatureCardProps> = ({
 }) => {
   const getBgColor = () => {
     switch (variant) {
-      case 'primary': return 'bg-blue-600 dark:bg-blue-700';
-      case 'secondary': return 'bg-indigo-600 dark:bg-indigo-700';
-      case 'tertiary': return 'bg-violet-600 dark:bg-violet-700';
-      default: return 'bg-blue-600 dark:bg-blue-700';
+      case 'primary': return 'bg-blue-600';
+      case 'secondary': return 'bg-indigo-600';
+      case 'tertiary': return 'bg-violet-600';
+      default: return 'bg-blue-600';
     }
   };
   
   return (
-    <div className="feature-card rounded-xl overflow-hidden h-full transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
+    <div className="glass-panel rounded-xl overflow-hidden h-full transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
       <div className={`p-6 ${getBgColor()}`}>
         <div className="p-2 bg-white/20 backdrop-blur-sm rounded-lg w-fit mb-4">
           {icon}
