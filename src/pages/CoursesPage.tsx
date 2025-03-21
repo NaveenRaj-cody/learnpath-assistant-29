@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from '@/components/Header';
@@ -8,8 +9,8 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Search, Filter, BookOpen } from 'lucide-react';
 import { coursesData, Course } from '@/data/coursesData';
-import { CourseLevel, SubjectArea } from '@/contexts/ChatContext';
 import AnimatedTransition from '@/components/AnimatedTransition';
+import { CourseLevel, SubjectArea } from '@/types/filters';
 
 const CoursesPage = () => {
   const navigate = useNavigate();
@@ -18,8 +19,25 @@ const CoursesPage = () => {
   const [fieldFilter, setFieldFilter] = useState<SubjectArea>('all');
   const [durationFilter, setDurationFilter] = useState('all');
   
-  // Extract unique durations
-  const uniqueDurations = [...new Set(coursesData.map(course => course.duration))];
+  // Extract unique durations based on current filters
+  const getFilteredDurations = () => {
+    const filteredCoursesByLevelAndField = coursesData.filter(course => {
+      const matchesLevel = levelFilter === 'all' || course.level === levelFilter;
+      const matchesField = fieldFilter === 'all' || course.field === fieldFilter;
+      return matchesLevel && matchesField;
+    });
+    
+    return [...new Set(filteredCoursesByLevelAndField.map(course => course.duration))];
+  };
+  
+  const uniqueDurations = getFilteredDurations();
+  
+  // Reset duration filter if no matching durations exist
+  React.useEffect(() => {
+    if (durationFilter !== 'all' && !uniqueDurations.includes(durationFilter)) {
+      setDurationFilter('all');
+    }
+  }, [levelFilter, fieldFilter, uniqueDurations, durationFilter]);
   
   // Filter courses based on user selections
   const filteredCourses = coursesData.filter(course => {
@@ -37,6 +55,29 @@ const CoursesPage = () => {
   const handleViewCourseDetails = (courseId: string) => {
     navigate(`/courses/${courseId}`);
   };
+
+  const levelOptions = [
+    { value: 'all', label: 'All Levels' },
+    { value: 'diploma', label: 'Diploma' },
+    { value: 'undergraduate', label: 'Undergraduate (UG)' },
+    { value: 'postgraduate', label: 'Postgraduate (PG)' },
+    { value: 'doctoral', label: 'Doctoral' },
+    { value: 'certificate', label: 'Certificate' }
+  ];
+
+  const fieldOptions = [
+    { value: 'all', label: 'All Fields' },
+    { value: 'engineering', label: 'Engineering' },
+    { value: 'medicine', label: 'Medicine' },
+    { value: 'business', label: 'Business/Management' },
+    { value: 'law', label: 'Law' },
+    { value: 'arts', label: 'Arts and Humanities' },
+    { value: 'science', label: 'Science' },
+    { value: 'commerce', label: 'Commerce' },
+    { value: 'design', label: 'Design' },
+    { value: 'education', label: 'Education' },
+    { value: 'vocational', label: 'Vocational/Skill-Based Training' }
+  ];
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
@@ -81,11 +122,9 @@ const CoursesPage = () => {
                         <SelectValue placeholder="Select level" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="all">All Levels</SelectItem>
-                        <SelectItem value="undergraduate">Undergraduate</SelectItem>
-                        <SelectItem value="postgraduate">Postgraduate</SelectItem>
-                        <SelectItem value="diploma">Diploma</SelectItem>
-                        <SelectItem value="certificate">Certificate</SelectItem>
+                        {levelOptions.map(option => (
+                          <SelectItem key={option.value} value={option.value}>{option.label}</SelectItem>
+                        ))}
                       </SelectContent>
                     </Select>
                   </div>
@@ -100,12 +139,9 @@ const CoursesPage = () => {
                         <SelectValue placeholder="Select field" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="all">All Fields</SelectItem>
-                        <SelectItem value="engineering">Engineering</SelectItem>
-                        <SelectItem value="medicine">Medicine</SelectItem>
-                        <SelectItem value="business">Business</SelectItem>
-                        <SelectItem value="arts">Arts & Design</SelectItem>
-                        <SelectItem value="science">Science</SelectItem>
+                        {fieldOptions.map(option => (
+                          <SelectItem key={option.value} value={option.value}>{option.label}</SelectItem>
+                        ))}
                       </SelectContent>
                     </Select>
                   </div>
@@ -115,6 +151,7 @@ const CoursesPage = () => {
                     <Select
                       value={durationFilter}
                       onValueChange={setDurationFilter}
+                      disabled={uniqueDurations.length === 0}
                     >
                       <SelectTrigger className="border-primary/20">
                         <SelectValue placeholder="Select duration" />

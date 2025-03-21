@@ -9,8 +9,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import { BriefcaseIcon, BookOpen, Building, Search, GraduationCap } from 'lucide-react';
 import { coursesData } from '@/data/coursesData';
-import { useChat, CourseLevel, SubjectArea } from '@/contexts/ChatContext';
+import { useChat } from '@/contexts/ChatContext';
 import AnimatedTransition from './AnimatedTransition';
+import { CourseLevel, SubjectArea } from '@/types/filters';
 
 interface CourseExplorerProps {
   onAskAboutCourse?: (courseName: string) => void;
@@ -40,6 +41,29 @@ const CourseExplorer: React.FC<CourseExplorerProps> = ({ onAskAboutCourse }) => 
     setCourseFilter({ level, subject: field });
   };
 
+  const levelOptions = [
+    { value: 'all', label: 'All Levels' },
+    { value: 'diploma', label: 'Diploma' },
+    { value: 'undergraduate', label: 'Undergraduate (UG)' },
+    { value: 'postgraduate', label: 'Postgraduate (PG)' },
+    { value: 'doctoral', label: 'Doctoral' },
+    { value: 'certificate', label: 'Certificate' }
+  ];
+
+  const fieldOptions = [
+    { value: 'all', label: 'All Fields' },
+    { value: 'engineering', label: 'Engineering' },
+    { value: 'medicine', label: 'Medicine' },
+    { value: 'business', label: 'Business/Management' },
+    { value: 'law', label: 'Law' },
+    { value: 'arts', label: 'Arts and Humanities' },
+    { value: 'science', label: 'Science' },
+    { value: 'commerce', label: 'Commerce' },
+    { value: 'design', label: 'Design' },
+    { value: 'education', label: 'Education' },
+    { value: 'vocational', label: 'Vocational/Skill-Based Training' }
+  ];
+
   return (
     <div className="w-full max-w-6xl mx-auto">
       <div className="mb-8 flex flex-col md:flex-row gap-4 items-center">
@@ -63,11 +87,9 @@ const CourseExplorer: React.FC<CourseExplorerProps> = ({ onAskAboutCourse }) => 
               <SelectValue placeholder="Course Level" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">All Levels</SelectItem>
-              <SelectItem value="undergraduate">Undergraduate</SelectItem>
-              <SelectItem value="postgraduate">Postgraduate</SelectItem>
-              <SelectItem value="diploma">Diploma</SelectItem>
-              <SelectItem value="certificate">Certificate</SelectItem>
+              {levelOptions.map(option => (
+                <SelectItem key={option.value} value={option.value}>{option.label}</SelectItem>
+              ))}
             </SelectContent>
           </Select>
           
@@ -79,12 +101,9 @@ const CourseExplorer: React.FC<CourseExplorerProps> = ({ onAskAboutCourse }) => 
               <SelectValue placeholder="Field of Study" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">All Fields</SelectItem>
-              <SelectItem value="engineering">Engineering</SelectItem>
-              <SelectItem value="medicine">Medicine</SelectItem>
-              <SelectItem value="business">Business</SelectItem>
-              <SelectItem value="arts">Arts & Design</SelectItem>
-              <SelectItem value="science">Science</SelectItem>
+              {fieldOptions.map(option => (
+                <SelectItem key={option.value} value={option.value}>{option.label}</SelectItem>
+              ))}
             </SelectContent>
           </Select>
         </div>
