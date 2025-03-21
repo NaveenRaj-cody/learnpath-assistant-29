@@ -1,4 +1,5 @@
-import { CourseLevel, SubjectArea } from '@/contexts/ChatContext';
+
+import { CourseLevel, SubjectArea } from '@/types/filters';
 import { coursesData } from '@/data/coursesData';
 
 // Helper function to get a random item from an array
