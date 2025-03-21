@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import Header from '@/components/Header';
@@ -45,7 +44,7 @@ const CollegeDetailsPage = () => {
       <div className="min-h-screen bg-background flex flex-col">
         <Header />
         <div className="flex-1 container mx-auto py-8 px-4 flex items-center justify-center">
-          <p className="text-[#757575] dark:text-gray-400">Loading college details...</p>
+          <p>Loading college details...</p>
         </div>
       </div>
     );
@@ -62,25 +61,25 @@ const CollegeDetailsPage = () => {
           <Button 
             variant="outline" 
             onClick={() => navigate('/colleges')} 
-            className="mb-6 text-[#1E88E5] border-[#1E88E5] hover:bg-[#1E88E5]/5 hover:text-[#1E88E5]"
+            className="mb-6"
           >
             ← Back to Colleges
           </Button>
           
-          <Card className="border-[#F5F5F5] dark:border-gray-800 shadow-md animate-fade-in overflow-hidden mb-6">
-            <CardHeader className="bg-gradient-to-r from-[#1E88E5]/10 to-transparent">
+          <Card className="border-primary/20 shadow-lg animate-fade-in overflow-hidden mb-6">
+            <CardHeader className="bg-gradient-to-r from-primary/10 to-blue-500/10">
               <div className="flex justify-between items-start">
                 <div>
-                  <CardTitle className="text-2xl text-[#212121] dark:text-white">{collegeDetails.name}</CardTitle>
-                  <CardDescription className="flex items-center gap-1 mt-1 text-[#757575] dark:text-gray-400">
+                  <CardTitle className="text-2xl">{collegeDetails.name}</CardTitle>
+                  <CardDescription className="flex items-center gap-1 mt-1">
                     <MapPin className="h-3.5 w-3.5" />
                     {collegeDetails.location}
                   </CardDescription>
-                  <div className="flex items-center mt-2 text-[#FB8C00]">
+                  <div className="flex items-center mt-2 text-amber-500">
                     {[...Array(5)].map((_, i) => (
                       <Star 
                         key={i} 
-                        className={`h-4 w-4 ${i < Math.floor(Number(starRating)) ? 'fill-[#FB8C00]' : 'fill-none'}`} 
+                        className={`h-4 w-4 ${i < Math.floor(Number(starRating)) ? 'fill-amber-500' : 'fill-none'}`} 
                       />
                     ))}
                     <span className="ml-1 text-sm">{starRating}</span>
@@ -91,26 +90,26 @@ const CollegeDetailsPage = () => {
           </Card>
           
           <Tabs defaultValue="overview" className="w-full">
-            <TabsList className="w-full justify-start mb-4 bg-[#F5F5F5] dark:bg-gray-800">
-              <TabsTrigger value="overview" className="data-[state=active]:bg-[#1E88E5] data-[state=active]:text-white">Overview</TabsTrigger>
-              <TabsTrigger value="courses" className="data-[state=active]:bg-[#1E88E5] data-[state=active]:text-white">Courses</TabsTrigger>
-              <TabsTrigger value="placement" className="data-[state=active]:bg-[#1E88E5] data-[state=active]:text-white">Placement</TabsTrigger>
-              <TabsTrigger value="alumni" className="data-[state=active]:bg-[#1E88E5] data-[state=active]:text-white">Alumni</TabsTrigger>
+            <TabsList className="w-full justify-start mb-4 bg-muted/50">
+              <TabsTrigger value="overview">Overview</TabsTrigger>
+              <TabsTrigger value="courses">Courses</TabsTrigger>
+              <TabsTrigger value="placement">Placement</TabsTrigger>
+              <TabsTrigger value="alumni">Alumni</TabsTrigger>
             </TabsList>
             
             <TabsContent value="overview" className="mt-0">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <h3 className="text-lg font-semibold mb-3 flex items-center gap-2 text-[#212121] dark:text-white">
-                    <Award className="h-4 w-4 text-[#1E88E5]" />
+                  <h3 className="text-lg font-semibold mb-3 flex items-center gap-2">
+                    <Award className="h-4 w-4 text-primary" />
                     College Profile
                   </h3>
-                  <Card className="bg-white dark:bg-gray-900 border-[#F5F5F5] dark:border-gray-800 h-full">
+                  <Card className="bg-muted/30 border-primary/10 h-full">
                     <CardContent className="p-4">
                       <div className="space-y-4">
                         <div>
-                          <h4 className="font-medium mb-2 text-[#212121] dark:text-white">About:</h4>
-                          <p className="text-[#757575] dark:text-gray-400">
+                          <h4 className="font-medium mb-2">About:</h4>
+                          <p>
                             {collegeDetails.name} is a prestigious institution known for 
                             excellence in education and research. The college offers a diverse 
                             range of programs with state-of-the-art facilities.
@@ -118,12 +117,12 @@ const CollegeDetailsPage = () => {
                         </div>
                         
                         <div>
-                          <h4 className="font-medium mb-2 text-[#212121] dark:text-white">Key Features:</h4>
+                          <h4 className="font-medium mb-2">Key Features:</h4>
                           <ul className="space-y-1">
                             {collegeDetails.features.map((feature, index) => (
                               <li key={index} className="flex items-center gap-2">
-                                <div className="w-1.5 h-1.5 rounded-full bg-[#1E88E5]"></div>
-                                <span className="text-[#757575] dark:text-gray-400">{feature}</span>
+                                <div className="w-1.5 h-1.5 rounded-full bg-primary"></div>
+                                <span>{feature}</span>
                               </li>
                             ))}
                           </ul>
@@ -134,41 +133,41 @@ const CollegeDetailsPage = () => {
                 </div>
                 
                 <div>
-                  <h3 className="text-lg font-semibold mb-3 flex items-center gap-2 text-[#212121] dark:text-white">
-                    <Star className="h-4 w-4 text-[#1E88E5]" />
+                  <h3 className="text-lg font-semibold mb-3 flex items-center gap-2">
+                    <Star className="h-4 w-4 text-primary" />
                     Highlights
                   </h3>
-                  <Card className="bg-white dark:bg-gray-900 border-[#F5F5F5] dark:border-gray-800 h-full">
+                  <Card className="bg-muted/30 border-primary/10 h-full">
                     <CardContent className="p-4">
                       <div className="grid grid-cols-2 gap-4">
-                        <div className="bg-[#F5F5F5] dark:bg-gray-800 rounded-lg p-3 shadow-sm">
-                          <h4 className="text-sm font-medium text-[#757575] dark:text-gray-400 mb-1">Established</h4>
-                          <p className="font-semibold text-[#212121] dark:text-white">1965</p>
+                        <div className="bg-background rounded-lg p-3 shadow-sm">
+                          <h4 className="text-sm font-medium text-muted-foreground mb-1">Established</h4>
+                          <p className="font-semibold">1965</p>
                         </div>
                         
-                        <div className="bg-[#F5F5F5] dark:bg-gray-800 rounded-lg p-3 shadow-sm">
-                          <h4 className="text-sm font-medium text-[#757575] dark:text-gray-400 mb-1">Students</h4>
-                          <p className="font-semibold text-[#212121] dark:text-white">5,000+</p>
+                        <div className="bg-background rounded-lg p-3 shadow-sm">
+                          <h4 className="text-sm font-medium text-muted-foreground mb-1">Students</h4>
+                          <p className="font-semibold">5,000+</p>
                         </div>
                         
-                        <div className="bg-[#F5F5F5] dark:bg-gray-800 rounded-lg p-3 shadow-sm">
-                          <h4 className="text-sm font-medium text-[#757575] dark:text-gray-400 mb-1">Faculty</h4>
-                          <p className="font-semibold text-[#212121] dark:text-white">300+</p>
+                        <div className="bg-background rounded-lg p-3 shadow-sm">
+                          <h4 className="text-sm font-medium text-muted-foreground mb-1">Faculty</h4>
+                          <p className="font-semibold">300+</p>
                         </div>
                         
-                        <div className="bg-[#F5F5F5] dark:bg-gray-800 rounded-lg p-3 shadow-sm">
-                          <h4 className="text-sm font-medium text-[#757575] dark:text-gray-400 mb-1">Campus Size</h4>
-                          <p className="font-semibold text-[#212121] dark:text-white">500 acres</p>
+                        <div className="bg-background rounded-lg p-3 shadow-sm">
+                          <h4 className="text-sm font-medium text-muted-foreground mb-1">Campus Size</h4>
+                          <p className="font-semibold">500 acres</p>
                         </div>
                         
-                        <div className="bg-[#F5F5F5] dark:bg-gray-800 rounded-lg p-3 shadow-sm">
-                          <h4 className="text-sm font-medium text-[#757575] dark:text-gray-400 mb-1">Placement</h4>
-                          <p className="font-semibold text-[#212121] dark:text-white">95%</p>
+                        <div className="bg-background rounded-lg p-3 shadow-sm">
+                          <h4 className="text-sm font-medium text-muted-foreground mb-1">Placement</h4>
+                          <p className="font-semibold">95%</p>
                         </div>
                         
-                        <div className="bg-[#F5F5F5] dark:bg-gray-800 rounded-lg p-3 shadow-sm">
-                          <h4 className="text-sm font-medium text-[#757575] dark:text-gray-400 mb-1">Accreditation</h4>
-                          <p className="font-semibold text-[#212121] dark:text-white">A+ Grade</p>
+                        <div className="bg-background rounded-lg p-3 shadow-sm">
+                          <h4 className="text-sm font-medium text-muted-foreground mb-1">Accreditation</h4>
+                          <p className="font-semibold">A+ Grade</p>
                         </div>
                       </div>
                     </CardContent>
@@ -178,29 +177,29 @@ const CollegeDetailsPage = () => {
             </TabsContent>
             
             <TabsContent value="courses" className="mt-0">
-              <h3 className="text-lg font-semibold mb-4 flex items-center gap-2 text-[#212121] dark:text-white">
-                <GraduationCap className="h-4 w-4 text-[#1E88E5]" />
+              <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                <GraduationCap className="h-4 w-4 text-primary" />
                 Available Courses
               </h3>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {relatedCourses.map((course) => (
-                  <Card key={course.id} className="border-[#F5F5F5] dark:border-gray-800 hover:border-[#1E88E5] transition-colors">
+                  <Card key={course.id} className="hover:border-primary transition-colors">
                     <CardHeader className="pb-2">
-                      <CardTitle className="text-lg flex items-center justify-between text-[#212121] dark:text-white">
+                      <CardTitle className="text-lg flex items-center justify-between">
                         <span>{course.name}</span>
-                        <Badge variant="outline" className="ml-2 bg-[#1E88E5]/10 text-[#1E88E5] border-[#1E88E5]/20">
+                        <Badge variant="outline" className="ml-2">
                           {course.level}
                         </Badge>
                       </CardTitle>
-                      <CardDescription className="text-[#757575] dark:text-gray-400">{course.field}</CardDescription>
+                      <CardDescription>{course.duration} • {course.field}</CardDescription>
                     </CardHeader>
                     <CardContent className="pb-2">
                       <div className="space-y-3">
                         <div>
-                          <h4 className="text-sm font-medium mb-2 text-[#212121] dark:text-white">Minimum Cut-off:</h4>
+                          <h4 className="text-sm font-medium mb-2">Minimum Cut-off:</h4>
                           <div className="text-sm flex items-center">
-                            <span className="font-medium bg-[#43A047]/10 text-[#43A047] px-3 py-1 rounded-full">
+                            <span className="font-medium bg-primary/10 text-primary px-3 py-1 rounded-full">
                               {(parseInt(Math.random() * 5 + 93 + "") + "%")}
                             </span>
                           </div>
@@ -213,44 +212,44 @@ const CollegeDetailsPage = () => {
             </TabsContent>
             
             <TabsContent value="placement" className="mt-0">
-              <h3 className="text-lg font-semibold mb-4 flex items-center gap-2 text-[#212121] dark:text-white">
-                <Briefcase className="h-4 w-4 text-[#1E88E5]" />
+              <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                <Briefcase className="h-4 w-4 text-primary" />
                 Placement Details
               </h3>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <Card className="border-[#F5F5F5] dark:border-gray-800 hover:shadow-md transition-all">
+                <Card className="border border-muted hover:shadow-md transition-all">
                   <CardHeader>
-                    <CardTitle className="text-[#212121] dark:text-white">Placement Statistics</CardTitle>
+                    <CardTitle>Placement Statistics</CardTitle>
                   </CardHeader>
                   <CardContent>
                     <ul className="space-y-2">
                       <li className="flex justify-between items-center">
-                        <span className="text-[#757575] dark:text-gray-400">Placement Rate</span>
-                        <span className="font-semibold text-[#43A047]">95%</span>
+                        <span>Placement Rate</span>
+                        <span className="font-semibold text-primary">95%</span>
                       </li>
                       <li className="flex justify-between items-center">
-                        <span className="text-[#757575] dark:text-gray-400">Average Package</span>
-                        <span className="font-semibold text-[#43A047]">₹12 LPA</span>
+                        <span>Average Package</span>
+                        <span className="font-semibold text-primary">₹12 LPA</span>
                       </li>
                       <li className="flex justify-between items-center">
-                        <span className="text-[#757575] dark:text-gray-400">Highest Package</span>
-                        <span className="font-semibold text-[#43A047]">₹45 LPA</span>
+                        <span>Highest Package</span>
+                        <span className="font-semibold text-primary">₹45 LPA</span>
                       </li>
                       <li className="flex justify-between items-center">
-                        <span className="text-[#757575] dark:text-gray-400">Companies Visited</span>
-                        <span className="font-semibold text-[#43A047]">150+</span>
+                        <span>Companies Visited</span>
+                        <span className="font-semibold text-primary">150+</span>
                       </li>
                     </ul>
                   </CardContent>
                 </Card>
                 
-                <Card className="border-[#F5F5F5] dark:border-gray-800 hover:shadow-md transition-all">
+                <Card className="border border-muted hover:shadow-md transition-all">
                   <CardHeader>
-                    <CardTitle className="text-[#212121] dark:text-white">Top Recruiters</CardTitle>
+                    <CardTitle>Top Recruiters</CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <ul className="space-y-2 text-[#757575] dark:text-gray-400">
+                    <ul className="space-y-2">
                       <li>Google</li>
                       <li>Microsoft</li>
                       <li>Amazon</li>
@@ -263,81 +262,81 @@ const CollegeDetailsPage = () => {
             </TabsContent>
             
             <TabsContent value="alumni" className="mt-0">
-              <h3 className="text-lg font-semibold mb-4 flex items-center gap-2 text-[#212121] dark:text-white">
-                <Users className="h-4 w-4 text-[#1E88E5]" />
+              <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                <Users className="h-4 w-4 text-primary" />
                 Notable Alumni
               </h3>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <Card className="border-[#F5F5F5] dark:border-gray-800 hover:shadow-md transition-all">
+                <Card className="border border-muted hover:shadow-md transition-all">
                   <CardHeader>
                     <div className="flex items-center gap-4">
-                      <div className="w-16 h-16 rounded-full overflow-hidden bg-[#F5F5F5] dark:bg-gray-800">
+                      <div className="w-16 h-16 rounded-full overflow-hidden bg-muted">
                         <img 
                           src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=250&h=250&fit=crop" 
                           alt="Sundar Pichai" 
                           className="w-full h-full object-cover"
                         />
                       </div>
-                      <CardTitle className="text-[#212121] dark:text-white">Sundar Pichai</CardTitle>
+                      <CardTitle>Sundar Pichai</CardTitle>
                     </div>
                   </CardHeader>
                   <CardContent>
-                    <p className="text-sm text-[#757575] dark:text-gray-400">CEO of Google</p>
+                    <p className="text-sm">CEO of Google</p>
                   </CardContent>
                 </Card>
                 
-                <Card className="border-[#F5F5F5] dark:border-gray-800 hover:shadow-md transition-all">
+                <Card className="border border-muted hover:shadow-md transition-all">
                   <CardHeader>
                     <div className="flex items-center gap-4">
-                      <div className="w-16 h-16 rounded-full overflow-hidden bg-[#F5F5F5] dark:bg-gray-800">
+                      <div className="w-16 h-16 rounded-full overflow-hidden bg-muted">
                         <img 
                           src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=250&h=250&fit=crop" 
                           alt="Satya Nadella" 
                           className="w-full h-full object-cover"
                         />
                       </div>
-                      <CardTitle className="text-[#212121] dark:text-white">Satya Nadella</CardTitle>
+                      <CardTitle>Satya Nadella</CardTitle>
                     </div>
                   </CardHeader>
                   <CardContent>
-                    <p className="text-sm text-[#757575] dark:text-gray-400">CEO of Microsoft</p>
+                    <p className="text-sm">CEO of Microsoft</p>
                   </CardContent>
                 </Card>
                 
-                <Card className="border-[#F5F5F5] dark:border-gray-800 hover:shadow-md transition-all">
+                <Card className="border border-muted hover:shadow-md transition-all">
                   <CardHeader>
                     <div className="flex items-center gap-4">
-                      <div className="w-16 h-16 rounded-full overflow-hidden bg-[#F5F5F5] dark:bg-gray-800">
+                      <div className="w-16 h-16 rounded-full overflow-hidden bg-muted">
                         <img 
                           src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=250&h=250&fit=crop" 
                           alt="N. R. Narayana Murthy" 
                           className="w-full h-full object-cover"
                         />
                       </div>
-                      <CardTitle className="text-[#212121] dark:text-white">N. R. Narayana Murthy</CardTitle>
+                      <CardTitle>N. R. Narayana Murthy</CardTitle>
                     </div>
                   </CardHeader>
                   <CardContent>
-                    <p className="text-sm text-[#757575] dark:text-gray-400">Co-founder of Infosys</p>
+                    <p className="text-sm">Co-founder of Infosys</p>
                   </CardContent>
                 </Card>
                 
-                <Card className="border-[#F5F5F5] dark:border-gray-800 hover:shadow-md transition-all">
+                <Card className="border border-muted hover:shadow-md transition-all">
                   <CardHeader>
                     <div className="flex items-center gap-4">
-                      <div className="w-16 h-16 rounded-full overflow-hidden bg-[#F5F5F5] dark:bg-gray-800">
+                      <div className="w-16 h-16 rounded-full overflow-hidden bg-muted">
                         <img 
                           src="https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=250&h=250&fit=crop" 
                           alt="Nandan Nilekani" 
                           className="w-full h-full object-cover"
                         />
                       </div>
-                      <CardTitle className="text-[#212121] dark:text-white">Nandan Nilekani</CardTitle>
+                      <CardTitle>Nandan Nilekani</CardTitle>
                     </div>
                   </CardHeader>
                   <CardContent>
-                    <p className="text-sm text-[#757575] dark:text-gray-400">Co-founder of Infosys</p>
+                    <p className="text-sm">Co-founder of Infosys</p>
                   </CardContent>
                 </Card>
               </div>
