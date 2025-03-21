@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -78,12 +79,10 @@
 
   h1, h2, h3, h4, h5, h6 {
     @apply text-foreground font-medium tracking-tight relative z-10;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
   }
 
   p, li, span {
     @apply text-foreground/90 leading-relaxed relative z-10;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
   }
 
   a {
@@ -131,12 +130,12 @@
 
 @layer components {
   .glass-panel {
-    @apply backdrop-blur-lg bg-white/20 dark:bg-black/30 border border-white/30 dark:border-white/10 shadow-lg relative z-10;
+    @apply backdrop-blur-md bg-white/60 dark:bg-black/50 border border-white/20 dark:border-white/10 shadow-lg relative z-10;
   }
   
   .glass-input {
-    @apply bg-white/40 dark:bg-black/40 border border-white/40 dark:border-white/10 backdrop-blur-md focus:bg-white/60 dark:focus:bg-black/50 transition-all duration-300;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    @apply bg-white/60 dark:bg-black/50 border border-white/30 dark:border-white/10 backdrop-blur-md focus:bg-white/80 dark:focus:bg-black/60 transition-all duration-300;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
   }
 
   .chat-bubble-user {
@@ -149,7 +148,7 @@
   
   .card-hover {
     @apply transition-all duration-300 hover:shadow-lg hover:-translate-y-1;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
   }
   
   .subtle-underline {
@@ -168,18 +167,17 @@
 
   /* Card consistent styling */
   .styled-card {
-    @apply border border-border bg-card shadow-sm hover:shadow-md transition-shadow rounded-lg overflow-hidden relative z-10;
-  }
-  
-  /* 3D text effect for better legibility over the 3D background */
-  .text-3d {
-    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.4), 0 2px 5px rgba(0, 0, 0, 0.1);
-    @apply relative z-10;
+    @apply border border-border bg-card/90 shadow-sm hover:shadow-md transition-shadow rounded-lg overflow-hidden relative z-10 backdrop-blur-sm;
   }
   
   /* Content wrapper with backdrop blur for better text legibility */
   .content-wrapper {
-    @apply relative z-10 bg-background/70 dark:bg-background/50 backdrop-blur-sm;
+    @apply relative z-10 bg-background/80 dark:bg-background/70 backdrop-blur-sm;
+  }
+  
+  /* Main content container */
+  .main-container {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8;
   }
 }
 
@@ -245,35 +243,50 @@ html {
   @apply text-amber-500 fill-none;
 }
 
-/* Main content needs to be above the 3D background */
+/* Main content needs to be above the background */
 main, header, footer, .card, .button, input, select {
   @apply relative z-10;
 }
 
-/* Add a subtle text shadow to improve text legibility over the 3D background */
+/* Add subtle shadows to improve text legibility */
 h1, h2, h3, .card-title, .button-text {
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  @apply drop-shadow-sm;
 }
 
-/* Additional styles for better contrast with 3D background */
+/* Additional styles for better contrast with background */
 .content-area {
-  @apply relative z-20 bg-background/70 dark:bg-background/60 backdrop-blur-sm rounded-lg p-6;
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  @apply relative z-20 bg-background/90 dark:bg-background/80 backdrop-blur-sm rounded-lg p-6;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.03);
 }
 
 /* Card with improved visibility */
 .enhanced-card {
   @apply bg-white/90 dark:bg-black/80 backdrop-blur-md relative z-20 rounded-lg;
-  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 10px 10px -5px rgba(0, 0, 0, 0.02);
 }
 
 /* Improve button visibility */
 .btn-enhanced {
-  @apply relative z-20 shadow-lg;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  @apply relative z-20 shadow-sm;
 }
 
 /* Add depth to main content containers */
 main, section, .main-content {
   @apply relative z-10;
+}
+
+/* Improved background for cards in light/dark mode */
+.feature-card {
+  @apply bg-gradient-to-br from-white/90 to-white/70 dark:from-gray-800/90 dark:to-gray-900/90 backdrop-blur-sm;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+}
+
+/* Smooth animations */
+.smooth-transition {
+  @apply transition-all duration-300 ease-in-out;
+}
+
+/* Improved button hover effects */
+.hover-lift {
+  @apply transition-transform duration-200 hover:-translate-y-1;
 }
