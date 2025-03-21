@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from '@/components/Header';
@@ -14,6 +15,7 @@ import StarRating from '@/components/StarRating';
 import { CollegeType, CollegeAffiliation, CollegeSpecialization } from '@/types/filters';
 import { ScrollArea } from "@/components/ui/scroll-area";
 
+// Comprehensive list of states and union territories in India with their districts
 const statesData = [
   { name: "Andhra Pradesh", districts: ["Alluri Sitarama Raju", "Anakapalli", "Anantapur", "Annamaya", "Bapatla", "Chittoor", "East Godavari", "Eluru", "Guntur", "Kadapa", "Kakinada", "Konaseema", "Krishna", "Kurnool", "Manyam", "N T Rama Rao", "Nandyal", "Nellore", "Palnadu", "Prakasam", "Sri Balaji", "Sri Satya Sai", "Srikakulam", "Visakhapatnam", "Vizianagaram", "West Godavari"] },
   { name: "Arunachal Pradesh", districts: ["Anjaw", "Bichom", "Changlang", "Dibang Valley", "East Kameng", "East Siang", "Kamle", "Keyi Panyor", "Kra Daadi", "Kurung Kumey", "Lepa Rada", "Lohit", "Longding", "Lower Dibang Valley", "Lower Siang", "Lower Subansiri", "Namsai", "Pakke Kessang", "Papum Pare", "Shi Yomi", "Siang", "Tawang", "Tirap", "Upper Siang", "Upper Subansiri", "West Kameng", "West Siang"] },
@@ -27,7 +29,7 @@ const statesData = [
   { name: "Jharkhand", districts: ["Bokaro", "Chatra", "Deoghar", "Dhanbad", "Dumka", "East Singhbhum", "Garhwa", "Giridih", "Godda", "Gumla", "Hazaribagh", "Jamtara", "Khunti", "Koderma", "Latehar", "Lohardaga", "Pakur", "Palamu", "Ramgarh", "Ranchi", "Sahebganj", "Seraikela Kharsawan", "Simdega", "West Singhbhum"] },
   { name: "Karnataka", districts: ["Bagalkot", "Bangalore Rural", "Bangalore Urban", "Belgaum", "Bellary", "Bidar", "Chamarajanagar", "Chikkaballapur", "Chikkamagaluru", "Chitradurga", "Dakshina Kannada", "Davanagere", "Dharwad", "Gadag", "Hassan", "Haveri", "Kalaburagi", "Kodagu", "Kolar", "Koppal", "Mandya", "Mysore", "Raichur", "Ramanagara", "Shimoga", "Tumkur", "Udupi", "Uttara Kannada", "Vijayanagara", "Vijayapura", "Yadgir"] },
   { name: "Kerala", districts: ["Alappuzha", "Ernakulam", "Idukki", "Kannur", "Kasaragod", "Kollam", "Kottayam", "Kozhikode", "Malappuram", "Palakkad", "Pathanamthitta", "Thiruvananthapuram", "Thrissur", "Wayanad"] },
-  { name: "Madhya Pradesh", districts: ["Agar Malwa", "Alirajpur", "Anuppur", "Ashoknagar", "Balaghat", "Barwani", "Betul", "Bhind", "Bhopal", "Burhanpur", "Chhatarpur", "Chhindwara", "Damoh", "Datia", "Dewas", "Dhar", "Dindori", "Guna", "Gwalior", "Harda", "Hoshangabad", "Indore", "Jabalpur", "Jhaua", "Katni", "Khandwa", "Khargone", "Maihar", "Mandla", "Mandsaur", "Mauganj", "Morena", "Narsinghpur", "Neemuch", "Niwari", "Pandhurna", "Panna", "Raisen", "Rajgarh", "Ratlam", "Rewa", "Sagar", "Satna", "Sehore", "Seoni", "Shahdol", "Shajapur", "Sheopur", "Shivpuri", "Sidhi", "Singrauli", "Tikamgarh", "Ujjain", "Umaria", "Vidisha"] },
+  { name: "Madhya Pradesh", districts: ["Agar Malwa", "Alirajpur", "Anuppur", "Ashoknagar", "Balaghat", "Barwani", "Betul", "Bhind", "Bhopal", "Burhanpur", "Chhatarpur", "Chhindwara", "Damoh", "Datia", "Dewas", "Dhar", "Dindori", "Guna", "Gwalior", "Harda", "Hoshangabad", "Indore", "Jabalpur", "Jhabua", "Katni", "Khandwa", "Khargone", "Maihar", "Mandla", "Mandsaur", "Mauganj", "Morena", "Narsinghpur", "Neemuch", "Niwari", "Pandhurna", "Panna", "Raisen", "Rajgarh", "Ratlam", "Rewa", "Sagar", "Satna", "Sehore", "Seoni", "Shahdol", "Shajapur", "Sheopur", "Shivpuri", "Sidhi", "Singrauli", "Tikamgarh", "Ujjain", "Umaria", "Vidisha"] },
   { name: "Maharashtra", districts: ["Ahmednagar", "Akola", "Amravati", "Aurangabad", "Beed", "Bhandara", "Buldhana", "Chandrapur", "Dhule", "Gadchiroli", "Gondia", "Hingoli", "Jalgaon", "Jalna", "Kolhapur", "Latur", "Mumbai City", "Mumbai Suburban", "Nagpur", "Nanded", "Nandurbar", "Nashik", "Osmanabad", "Palghar", "Parbhani", "Pune", "Raigad", "Ratnagiri", "Sangli", "Satara", "Sindhudurg", "Solapur", "Thane", "Wardha", "Washim", "Yavatmal"] },
   { name: "Manipur", districts: ["Bishnupur", "Chandel", "Churachandpur", "Imphal East", "Imphal West", "Jiribam", "Kakching", "Kamjong", "Kangpokpi", "Noney", "Pherzawl", "Senapati", "Tamenglong", "Tengnoupal", "Thoubal", "Ukhrul"] },
   { name: "Meghalaya", districts: ["East Garo Hills", "East Jaintia Hills", "East Khasi Hills", "Mairang", "North Garo Hills", "Ri Bhoi", "South Garo Hills", "South West Garo Hills", "South West Khasi Hills", "West Garo Hills", "West Jaintia Hills", "West Khasi Hills"] },
@@ -43,6 +45,7 @@ const statesData = [
   { name: "Uttar Pradesh", districts: ["Agra", "Aligarh", "Ambedkar Nagar", "Amethi", "Amroha", "Auraiya", "Ayodhya", "Azamgarh", "Baghpat", "Bahraich", "Ballia", "Balrampur", "Banda", "Barabanki", "Bareilly", "Basti", "Bhadohi", "Bijnor", "Budaun", "Bulandshahr", "Chandauli", "Chitrakoot", "Deoria", "Etah", "Etawah", "Farrukhabad", "Fatehpur", "Firozabad", "Gautam Buddha Nagar", "Ghaziabad", "Ghazipur", "Gonda", "Gorakhpur", "Hamirpur", "Hapur", "Hardoi", "Hathras", "Jalaun", "Jaunpur", "Jhansi", "Kannauj", "Kanpur Dehat", "Kanpur Nagar", "Kasganj", "Kaushambi", "Kushinagar", "Lakhimpur Kheri", "Lalitpur", "Lucknow", "Maharajganj", "Mahoba", "Mainpuri", "Mathura", "Mau", "Meerut", "Mirzapur", "Moradabad", "Muzaffarnagar", "Pilibhit", "Pratapgarh", "Prayagraj", "Raebareli", "Rampur", "Saharanpur", "Sambhal", "Sant Kabir Nagar", "Shahjahanpur", "Shamli", "Shravasti", "Siddharthnagar", "Sitapur", "Sonbhadra", "Sultanpur", "Unnao", "Varanasi"] },
   { name: "Uttarakhand", districts: ["Almora", "Bageshwar", "Chamoli", "Champawat", "Dehradun", "Haridwar", "Nainital", "Pauri", "Pithoragarh", "Rudraprayag", "Tehri", "Udham Singh Nagar", "Uttarkashi"] },
   { name: "West Bengal", districts: ["Alipurduar", "Bankura", "Birbhum", "Cooch Behar", "Dakshin Dinajpur", "Darjeeling", "Hooghly", "Howrah", "Jalpaiguri", "Jhargram", "Kalimpong", "Kolkata", "Malda", "Murshidabad", "Nadia", "North 24 Parganas", "Paschim Bardhaman", "Paschim Medinipur", "Purba Bardhaman", "Purba Medinipur", "Purulia", "South 24 Parganas", "Uttar Dinajpur"] },
+  // Union Territories
   { name: "Andaman and Nicobar Islands", districts: ["Nicobar", "North Middle Andaman", "South Andaman"] },
   { name: "Chandigarh", districts: ["Chandigarh"] },
   { name: "Dadra and Nagar Haveli and Daman and Diu", districts: ["Dadra and Nagar Haveli", "Daman", "Diu"] },
@@ -113,6 +116,7 @@ const CollegesPage = () => {
     const matchesSearch = searchTerm === '' || 
       college.name.toLowerCase().includes(searchTerm.toLowerCase());
     
+    // Check for college type match
     const matchesType = collegeTypeFilter === 'all' || 
       (collegeTypeFilter === 'engineering' && college.name.includes('Engineering')) ||
       (collegeTypeFilter === 'medical' && college.name.includes('Medical')) ||
@@ -124,6 +128,7 @@ const CollegesPage = () => {
       (collegeTypeFilter === 'veterinary' && college.name.includes('Veterinary')) ||
       (collegeTypeFilter === 'hotel' && college.name.includes('Hotel'));
     
+    // Check for college affiliation match
     const matchesAffiliation = collegeAffiliationFilter === 'all' || 
       (collegeAffiliationFilter === 'central' && college.name.includes('Indian Institute')) ||
       (collegeAffiliationFilter === 'state' && college.name.includes('State')) ||
@@ -131,6 +136,7 @@ const CollegesPage = () => {
       (collegeAffiliationFilter === 'deemed' && college.name.includes('University')) ||
       (collegeAffiliationFilter === 'autonomous' && (college.name.includes('College') || college.name.includes('Institute')));
     
+    // Check for specialization match - this is a simplification for demo
     const matchesSpecialization = specializationFilter === 'all' || 
       (specializationFilter === 'women' && college.name.toLowerCase().includes('women')) ||
       (specializationFilter === 'men' && college.name.toLowerCase().includes('men')) ||
@@ -180,37 +186,37 @@ const CollegesPage = () => {
       
       <main className="flex-1 container mx-auto py-8 px-4">
         <AnimatedTransition>
-          <h1 className="text-3xl font-bold mb-8 text-[#212121] dark:text-white">Colleges</h1>
+          <h1 className="text-3xl font-bold mb-8 text-gradient">Colleges</h1>
           
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
             <div className="lg:col-span-1">
-              <Card className="border-[#F5F5F5] dark:border-gray-800 hover:shadow-lg transition-all duration-300">
-                <CardHeader className="bg-gradient-to-r from-primary/5 to-transparent">
-                  <CardTitle className="text-xl text-[#212121] dark:text-white">Filters</CardTitle>
-                  <CardDescription className="text-[#757575] dark:text-gray-400">Refine your college search</CardDescription>
+              <Card className="glass-panel hover:shadow-lg transition-all duration-300">
+                <CardHeader>
+                  <CardTitle className="text-xl">Filters</CardTitle>
+                  <CardDescription>Refine your college search</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="space-y-2">
-                    <label className="text-sm font-medium text-[#212121] dark:text-gray-300">Search</label>
+                    <label className="text-sm font-medium">Search</label>
                     <div className="relative">
-                      <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[#757575] h-4 w-4" />
+                      <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
                       <Input
                         type="text"
                         placeholder="Search colleges..."
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
-                        className="pl-10 border-[#E0E0E0] dark:border-gray-700 focus:border-primary focus:ring-1 focus:ring-primary"
+                        className="pl-10 glass-input active:scale-[0.99] focus:scale-[1.01] transition-all hover:border-primary/50"
                       />
                     </div>
                   </div>
                   
                   <div className="space-y-2">
-                    <label className="text-sm font-medium text-[#212121] dark:text-gray-300">College Type</label>
+                    <label className="text-sm font-medium">College Type</label>
                     <Select
                       value={collegeTypeFilter}
                       onValueChange={(value) => handleFilterChange('type', value)}
                     >
-                      <SelectTrigger className="border-[#E0E0E0] dark:border-gray-700 bg-white dark:bg-gray-900 focus:ring-1 focus:ring-primary">
+                      <SelectTrigger className="glass-input active:scale-[0.98] hover:shadow-md transition-all">
                         <SelectValue placeholder="Select college type" />
                       </SelectTrigger>
                       <SelectContent>
@@ -222,12 +228,12 @@ const CollegesPage = () => {
                   </div>
                   
                   <div className="space-y-2">
-                    <label className="text-sm font-medium text-[#212121] dark:text-gray-300">College Affiliation</label>
+                    <label className="text-sm font-medium">College Affiliation</label>
                     <Select
                       value={collegeAffiliationFilter}
                       onValueChange={(value) => handleFilterChange('affiliation', value)}
                     >
-                      <SelectTrigger className="border-[#E0E0E0] dark:border-gray-700 bg-white dark:bg-gray-900 focus:ring-1 focus:ring-primary">
+                      <SelectTrigger className="glass-input active:scale-[0.98] hover:shadow-md transition-all">
                         <SelectValue placeholder="Select college affiliation" />
                       </SelectTrigger>
                       <SelectContent>
@@ -239,12 +245,12 @@ const CollegesPage = () => {
                   </div>
                   
                   <div className="space-y-2">
-                    <label className="text-sm font-medium text-[#212121] dark:text-gray-300">Specialization</label>
+                    <label className="text-sm font-medium">Specialization</label>
                     <Select
                       value={specializationFilter}
                       onValueChange={(value) => handleFilterChange('specialization', value)}
                     >
-                      <SelectTrigger className="border-[#E0E0E0] dark:border-gray-700 bg-white dark:bg-gray-900 focus:ring-1 focus:ring-primary">
+                      <SelectTrigger className="glass-input active:scale-[0.98] hover:shadow-md transition-all">
                         <SelectValue placeholder="Select specialization" />
                       </SelectTrigger>
                       <SelectContent>
@@ -256,12 +262,12 @@ const CollegesPage = () => {
                   </div>
                   
                   <div className="space-y-2">
-                    <label className="text-sm font-medium text-[#212121] dark:text-gray-300">States and Union Territories</label>
+                    <label className="text-sm font-medium">States and Union Territories</label>
                     <Select
                       value={stateFilter}
                       onValueChange={(value) => handleFilterChange('state', value)}
                     >
-                      <SelectTrigger className="border-[#E0E0E0] dark:border-gray-700 bg-white dark:bg-gray-900 focus:ring-1 focus:ring-primary">
+                      <SelectTrigger className="glass-input active:scale-[0.98] hover:shadow-md transition-all">
                         <SelectValue placeholder="Select state/UT" />
                       </SelectTrigger>
                       <SelectContent>
@@ -277,12 +283,12 @@ const CollegesPage = () => {
                   
                   {stateFilter !== 'all' && (
                     <div className="space-y-2">
-                      <label className="text-sm font-medium text-[#212121] dark:text-gray-300">District</label>
+                      <label className="text-sm font-medium">District</label>
                       <Select
                         value={districtFilter}
                         onValueChange={(value) => handleFilterChange('district', value)}
                       >
-                        <SelectTrigger className="border-[#E0E0E0] dark:border-gray-700 bg-white dark:bg-gray-900 focus:ring-1 focus:ring-primary">
+                        <SelectTrigger className="glass-input active:scale-[0.98] hover:shadow-md transition-all">
                           <SelectValue placeholder="Select district" />
                         </SelectTrigger>
                         <SelectContent>
@@ -299,7 +305,7 @@ const CollegesPage = () => {
                   
                   <Button 
                     variant="outline" 
-                    className="w-full text-[#1E88E5] border-[#1E88E5] hover:bg-[#1E88E5]/5 hover:text-[#1E88E5] transition-all active:scale-[0.98]"
+                    className="w-full hover:bg-primary/10 hover:text-primary hover:shadow-md active:scale-[0.97] transition-all"
                     onClick={() => {
                       setSearchTerm('');
                       setCollegeTypeFilter('all');
@@ -321,15 +327,15 @@ const CollegesPage = () => {
             
             <div className="lg:col-span-2">
               <div className="mb-4 flex justify-between items-center">
-                <h2 className="text-xl font-semibold text-[#212121] dark:text-white">Results ({filteredColleges.length})</h2>
+                <h2 className="text-xl font-semibold">Results ({filteredColleges.length})</h2>
               </div>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {filteredColleges.length === 0 ? (
-                  <div className="col-span-full bg-[#F5F5F5] dark:bg-gray-800 rounded-lg p-8 text-center">
-                    <Building className="mx-auto h-12 w-12 text-[#757575] dark:text-gray-400 mb-4" />
-                    <h3 className="text-lg font-medium mb-2 text-[#212121] dark:text-white">No colleges found</h3>
-                    <p className="text-[#757575] dark:text-gray-400 mb-4">Try adjusting your filters</p>
+                  <div className="col-span-full bg-muted rounded-lg p-8 text-center">
+                    <Building className="mx-auto h-12 w-12 text-muted-foreground/50 mb-4" />
+                    <h3 className="text-lg font-medium mb-2">No colleges found</h3>
+                    <p className="text-muted-foreground mb-4">Try adjusting your filters</p>
                     <Button 
                       variant="outline" 
                       onClick={() => {
@@ -344,20 +350,20 @@ const CollegesPage = () => {
                           duration: 1500,
                         });
                       }}
-                      className="bg-white dark:bg-gray-900 text-[#1E88E5] border-[#1E88E5] hover:bg-[#1E88E5]/5"
+                      className="hover:bg-primary/10 hover:text-primary hover:shadow-md active:scale-[0.97] transition-all"
                     >
                       Reset Filters
                     </Button>
                   </div>
                 ) : (
                   filteredColleges.map((college, index) => (
-                    <Card key={index} className="h-full border-[#F5F5F5] dark:border-gray-800 hover:border-[#1E88E5] dark:hover:border-[#1E88E5] hover:shadow-md transition-all duration-300">
+                    <Card key={index} className="h-full cursor-pointer hover:border-primary transition-colors hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
                       <CardHeader className="pb-2">
                         <div className="flex justify-between items-start mb-2">
                           <StarRating rating={getCollegeRating(college.name)} />
                         </div>
-                        <CardTitle className="text-lg text-[#212121] dark:text-white">{college.name}</CardTitle>
-                        <CardDescription className="flex items-center gap-1 text-[#757575] dark:text-gray-400">
+                        <CardTitle className="text-lg">{college.name}</CardTitle>
+                        <CardDescription className="flex items-center gap-1">
                           <MapPin className="h-3 w-3" />
                           {college.location}
                         </CardDescription>
@@ -365,7 +371,8 @@ const CollegesPage = () => {
                       <CardFooter>
                         <Button 
                           size="sm" 
-                          className="w-full bg-[#1E88E5] hover:bg-[#1976D2] text-white transition-all active:scale-[0.98]" 
+                          className="w-full hover:bg-primary/90 hover:shadow-md active:scale-[0.96] transition-all" 
+                          variant="outline"
                           onClick={() => handleViewDetails(college)}
                         >
                           View Details

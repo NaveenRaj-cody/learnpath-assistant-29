@@ -27,18 +27,18 @@ const GradientBackground = () => {
     window.addEventListener('resize', resizeCanvas);
     resizeCanvas();
     
-    // Colors based on new color palette
+    // Colors based on theme
     const colors = isDark 
-      ? ['#1E88E5', '#43A047', '#7E57C2', '#5c6bc0'] 
-      : ['#1E88E5', '#43A047', '#7E57C2', '#64B5F6'];
+      ? ['#1e1b4b', '#312e81', '#4338ca', '#3730a3'] 
+      : ['#dbeafe', '#bfdbfe', '#93c5fd', '#60a5fa'];
     
-    // Create gradient points - fewer points for cleaner look
-    const points = Array.from({ length: 4 }, () => ({
+    // Create gradient points
+    const points = Array.from({ length: 6 }, () => ({
       x: Math.random() * width,
       y: Math.random() * height,
-      vx: Math.random() * 0.4 - 0.2, // Slower movement
-      vy: Math.random() * 0.4 - 0.2, // Slower movement
-      radius: Math.random() * (isDark ? 400 : 350) + 150,
+      vx: Math.random() * 0.5 - 0.25,
+      vy: Math.random() * 0.5 - 0.25,
+      radius: Math.random() * (isDark ? 600 : 500) + 200,
       color: colors[Math.floor(Math.random() * colors.length)]
     }));
     
@@ -47,18 +47,18 @@ const GradientBackground = () => {
       ctx.clearRect(0, 0, width, height);
       
       // Create gradient background
-      const baseColor = isDark ? '#121212' : '#FFFFFF';
+      const baseColor = isDark ? '#030712' : '#f8fafc';
       ctx.fillStyle = baseColor;
       ctx.fillRect(0, 0, width, height);
       
-      // Draw gradient blobs with softer gradients
+      // Draw gradient blobs
       points.forEach(point => {
         const gradient = ctx.createRadialGradient(
           point.x, point.y, 0, 
           point.x, point.y, point.radius
         );
         
-        gradient.addColorStop(0, point.color + (isDark ? '20' : '15')); // More subtle
+        gradient.addColorStop(0, point.color + (isDark ? '60' : '40'));
         gradient.addColorStop(1, point.color + '00');
         
         ctx.fillStyle = gradient;
@@ -66,7 +66,7 @@ const GradientBackground = () => {
         ctx.arc(point.x, point.y, point.radius, 0, Math.PI * 2);
         ctx.fill();
         
-        // Move points very slowly
+        // Move points slowly
         point.x += point.vx;
         point.y += point.vy;
         
@@ -89,7 +89,7 @@ const GradientBackground = () => {
     <canvas 
       ref={canvasRef} 
       className="fixed inset-0 -z-10 w-full h-full"
-      style={{ opacity: 0.7 }} // Reduce opacity for subtlety
+      style={{ opacity: 0.8 }}
     />
   );
 };

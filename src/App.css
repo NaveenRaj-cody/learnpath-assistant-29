@@ -1,4 +1,3 @@
-
 #root {
   max-width: 1280px;
   margin: 0 auto;
@@ -13,7 +12,7 @@
   transition: filter 300ms;
 }
 .logo:hover {
-  filter: drop-shadow(0 0 2em #1E88E5aa);
+  filter: drop-shadow(0 0 2em #646cffaa);
 }
 .logo.react:hover {
   filter: drop-shadow(0 0 2em #61dafbaa);
@@ -39,42 +38,5 @@
 }
 
 .read-the-docs {
-  color: #757575;
-}
-
-/* New color theme specific styles */
-.text-primary-color {
-  color: #1E88E5;
-}
-
-.text-secondary-color {
-  color: #43A047;
-}
-
-.text-accent-color {
-  color: #7E57C2;
-}
-
-.text-alert-color {
-  color: #FB8C00;
-}
-
-.bg-primary-soft {
-  background-color: rgba(30, 136, 229, 0.1);
-}
-
-.bg-secondary-soft {
-  background-color: rgba(67, 160, 71, 0.1);
-}
-
-.bg-accent-soft {
-  background-color: rgba(126, 87, 194, 0.1);
-}
-
-.bg-alert-soft {
-  background-color: rgba(251, 140, 0, 0.1);
-}
-
-.border-primary-soft {
-  border-color: rgba(30, 136, 229, 0.2);
+  color: #888;
 }
