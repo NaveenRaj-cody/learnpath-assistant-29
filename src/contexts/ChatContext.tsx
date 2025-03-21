@@ -2,9 +2,7 @@ import React, { createContext, useContext, useState, useEffect, useCallback } fr
 import { Message } from '@/components/MessageBubble';
 import { v4 as uuidv4 } from 'uuid';
 import { processMessage } from '@/utils/chatUtils';
-
-export type CourseLevel = 'undergraduate' | 'postgraduate' | 'diploma' | 'certificate' | 'all';
-export type SubjectArea = 'engineering' | 'medicine' | 'business' | 'arts' | 'science' | 'all';
+import { CourseLevel, SubjectArea } from '@/types/filters';
 
 interface ChatContextType {
   messages: Message[];
