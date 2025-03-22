@@ -2,7 +2,7 @@
 import React, { useRef } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { useTheme } from 'next-themes';
-import { OrbitControls, useTexture } from '@react-three/drei';
+import { OrbitControls } from '@react-three/drei';
 import * as THREE from 'three';
 
 const GraduationCapWithDiploma = ({ position, rotationSpeed = 0.01, scale = 1 }) => {
@@ -128,38 +128,7 @@ const FloatingGraduationItems = () => {
   );
 };
 
-// Background planes that add depth without distraction
-const BackgroundPlanes = () => {
-  const { theme } = useTheme();
-  const isDark = theme === 'dark';
-
-  return (
-    <>
-      {/* Distant background plane */}
-      <mesh position={[0, 0, -20]} receiveShadow>
-        <planeGeometry args={[100, 100]} />
-        <meshStandardMaterial 
-          color={isDark ? "#020617" : "#f1f5f9"} 
-          transparent
-          opacity={0.4}
-          side={THREE.DoubleSide}
-        />
-      </mesh>
-      
-      {/* Mid-distance plane with slight color variation */}
-      <mesh position={[0, 0, -15]} rotation={[0, Math.PI * 0.03, 0]} receiveShadow>
-        <planeGeometry args={[80, 80]} />
-        <meshStandardMaterial 
-          color={isDark ? "#0f172a" : "#e2e8f0"} 
-          transparent
-          opacity={0.3}
-          side={THREE.DoubleSide}
-        />
-      </mesh>
-    </>
-  );
-};
-
+// Updated to remove the white background planes
 const ThreeDBackground: React.FC = () => {
   const { theme } = useTheme();
   const isDark = theme === 'dark';
@@ -196,7 +165,7 @@ const ThreeDBackground: React.FC = () => {
           color={isDark ? "#4c1d95" : "#c4b5fd"} 
         />
         
-        <BackgroundPlanes />
+        {/* Removed the BackgroundPlanes component entirely */}
         <FloatingGraduationItems />
         
         <OrbitControls 
