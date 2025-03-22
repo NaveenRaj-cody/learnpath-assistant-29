@@ -1,5 +1,5 @@
 
-export type CourseLevel = 'all' | 'diploma' | 'undergraduate' | 'postgraduate' | 'doctoral' | 'certificate';
+export type CourseLevel = 'all' | 'diploma' | 'undergraduate' | 'postgraduate' | 'doctoral';
 
 export type SubjectArea = 
   | 'all' 
@@ -12,7 +12,12 @@ export type SubjectArea =
   | 'commerce' 
   | 'design' 
   | 'education' 
-  | 'vocational';
+  | 'vocational'
+  | 'agriculture'
+  | 'information-technology'
+  | 'hospitality'
+  | 'media'
+  | 'paramedical';
 
 export type CollegeType = 
   | 'all' 

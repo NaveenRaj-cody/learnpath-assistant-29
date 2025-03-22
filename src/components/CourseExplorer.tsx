@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { cn } from "@/lib/utils";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
-import { BriefcaseIcon, BookOpen, Building, Search, GraduationCap } from 'lucide-react';
+import { BriefcaseIcon, BookOpen, Building, Search, GraduationCap, X } from 'lucide-react';
 import { coursesData } from '@/data/coursesData';
 import { useChat } from '@/contexts/ChatContext';
 import AnimatedTransition from './AnimatedTransition';
@@ -20,9 +20,122 @@ interface CourseExplorerProps {
 const CourseExplorer: React.FC<CourseExplorerProps> = ({ onAskAboutCourse }) => {
   const { setCourseFilter } = useChat();
   const [searchTerm, setSearchTerm] = useState('');
+  const [searchSuggestions, setSearchSuggestions] = useState<string[]>([]);
   const [levelFilter, setLevelFilter] = useState<CourseLevel>('all');
   const [fieldFilter, setFieldFilter] = useState<SubjectArea>('all');
   const [selectedTab, setSelectedTab] = useState('courses');
+
+  // Define field options based on level selection
+  const levelSpecificFields = useMemo(() => {
+    const diplomaFields = [
+      { value: 'engineering', label: 'Engineering and Technology' },
+      { value: 'medicine', label: 'Medical and Paramedical' },
+      { value: 'arts', label: 'Arts and Design' },
+      { value: 'business', label: 'Commerce and Business' },
+      { value: 'agriculture', label: 'Agriculture and Allied Sciences' },
+      { value: 'hospitality', label: 'Hotel Management and Hospitality' },
+      { value: 'vocational', label: 'Vocational and Skill-Based Courses' },
+      { value: 'education', label: 'Education' },
+    ];
+
+    const undergraduateFields = [
+      { value: 'engineering', label: 'Engineering and Technology' },
+      { value: 'medicine', label: 'Medical and Health Sciences' },
+      { value: 'arts', label: 'Arts and Humanities' },
+      { value: 'business', label: 'Commerce and Business' },
+      { value: 'science', label: 'Science' },
+      { value: 'law', label: 'Law' },
+      { value: 'agriculture', label: 'Agriculture and Allied Sciences' },
+      { value: 'hospitality', label: 'Hotel Management and Hospitality' },
+      { value: 'media', label: 'Design and Media' },
+    ];
+
+    const postgraduateFields = [
+      { value: 'engineering', label: 'Engineering and Technology' },
+      { value: 'medicine', label: 'Medical and Health Sciences' },
+      { value: 'arts', label: 'Arts and Humanities' },
+      { value: 'business', label: 'Commerce and Business' },
+      { value: 'science', label: 'Science' },
+      { value: 'law', label: 'Law' },
+      { value: 'agriculture', label: 'Agriculture and Allied Sciences' },
+      { value: 'hospitality', label: 'Hotel Management and Hospitality' },
+      { value: 'media', label: 'Design and Media' },
+      { value: 'education', label: 'Education' },
+    ];
+
+    const doctoralFields = [
+      { value: 'engineering', label: 'Engineering and Technology' },
+      { value: 'medicine', label: 'Medical and Health Sciences' },
+      { value: 'science', label: 'Science' },
+      { value: 'arts', label: 'Arts and Humanities' },
+      { value: 'business', label: 'Commerce and Business' },
+      { value: 'law', label: 'Law' },
+      { value: 'agriculture', label: 'Agriculture and Allied Sciences' },
+      { value: 'education', label: 'Education' },
+      { value: 'hospitality', label: 'Hotel Management and Hospitality' },
+      { value: 'media', label: 'Design and Media' },
+    ];
+
+    const allFields = [
+      { value: 'all', label: 'All Fields' },
+      { value: 'engineering', label: 'Engineering & Technical' },
+      { value: 'medicine', label: 'Healthcare & Medical Sciences' },
+      { value: 'business', label: 'Business & Management' },
+      { value: 'law', label: 'Law' },
+      { value: 'arts', label: 'Arts, Design & Creative' },
+      { value: 'science', label: 'Science' },
+      { value: 'commerce', label: 'Commerce' },
+      { value: 'design', label: 'Design' },
+      { value: 'education', label: 'Education' },
+      { value: 'vocational', label: 'Vocational & Industrial Training' },
+      { value: 'agriculture', label: 'Agriculture & Allied Fields' },
+      { value: 'information-technology', label: 'Information Technology' },
+      { value: 'hospitality', label: 'Hospitality & Tourism' },
+      { value: 'media', label: 'Media & Communication' },
+      { value: 'paramedical', label: 'Paramedical Sciences' }
+    ];
+
+    switch (levelFilter) {
+      case 'diploma':
+        return [{ value: 'all', label: 'All Fields' }, ...diplomaFields];
+      case 'undergraduate':
+        return [{ value: 'all', label: 'All Fields' }, ...undergraduateFields];
+      case 'postgraduate':
+        return [{ value: 'all', label: 'All Fields' }, ...postgraduateFields];
+      case 'doctoral':
+        return [{ value: 'all', label: 'All Fields' }, ...doctoralFields];
+      default:
+        return allFields;
+    }
+  }, [levelFilter]);
+
+  // Reset field filter when level changes
+  useEffect(() => {
+    if (levelFilter !== 'all') {
+      // Check if current fieldFilter is valid for the new level
+      const isValidField = levelSpecificFields.some(field => field.value === fieldFilter);
+      if (!isValidField) {
+        setFieldFilter('all');
+      }
+    }
+  }, [levelFilter, levelSpecificFields, fieldFilter]);
+
+  // Generate search suggestions
+  useEffect(() => {
+    if (searchTerm.length >= 2) {
+      const suggestions = coursesData
+        .filter(course => 
+          course.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          course.description.toLowerCase().includes(searchTerm.toLowerCase())
+        )
+        .map(course => course.name)
+        .slice(0, 5); // Limit to 5 suggestions
+      
+      setSearchSuggestions(suggestions);
+    } else {
+      setSearchSuggestions([]);
+    }
+  }, [searchTerm]);
 
   const filteredCourses = coursesData.filter(course => {
     const matchesSearch = searchTerm === '' || 
@@ -46,28 +159,14 @@ const CourseExplorer: React.FC<CourseExplorerProps> = ({ onAskAboutCourse }) => 
     { value: 'diploma', label: 'Diploma' },
     { value: 'undergraduate', label: 'Undergraduate (UG)' },
     { value: 'postgraduate', label: 'Postgraduate (PG)' },
-    { value: 'doctoral', label: 'Doctoral' },
-    { value: 'certificate', label: 'Certificate' }
+    { value: 'doctoral', label: 'Doctoral' }
+    // Removed certificate option
   ];
 
-  const fieldOptions = [
-    { value: 'all', label: 'All Fields' },
-    { value: 'engineering', label: 'Engineering & Technical' },
-    { value: 'medicine', label: 'Healthcare & Medical Sciences' },
-    { value: 'business', label: 'Business & Management' },
-    { value: 'law', label: 'Law' },
-    { value: 'arts', label: 'Arts, Design & Creative' },
-    { value: 'science', label: 'Science' },
-    { value: 'commerce', label: 'Commerce' },
-    { value: 'design', label: 'Design' },
-    { value: 'education', label: 'Education' },
-    { value: 'vocational', label: 'Vocational & Industrial Training' },
-    { value: 'agriculture', label: 'Agriculture & Allied Fields' },
-    { value: 'information-technology', label: 'Information Technology' },
-    { value: 'hospitality', label: 'Hospitality & Tourism' },
-    { value: 'media', label: 'Media & Communication' },
-    { value: 'paramedical', label: 'Paramedical Sciences' }
-  ];
+  const handleSuggestionClick = (suggestion: string) => {
+    setSearchTerm(suggestion);
+    setSearchSuggestions([]);
+  };
 
   return (
     <div className="w-full max-w-6xl mx-auto">
@@ -81,6 +180,32 @@ const CourseExplorer: React.FC<CourseExplorerProps> = ({ onAskAboutCourse }) => 
             onChange={(e) => setSearchTerm(e.target.value)}
             className="pl-10 pr-4 py-6 w-full glass-input"
           />
+          {searchTerm && (
+            <button 
+              className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground"
+              onClick={() => setSearchTerm('')}
+            >
+              <X className="h-4 w-4" />
+            </button>
+          )}
+          
+          {/* Search suggestions */}
+          {searchSuggestions.length > 0 && (
+            <div className="absolute z-10 w-full mt-1 bg-white dark:bg-gray-800 shadow-lg rounded-md border border-border/50 max-h-60 overflow-y-auto">
+              <ul className="py-1">
+                {searchSuggestions.map((suggestion, index) => (
+                  <li 
+                    key={index} 
+                    className="px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer flex items-center"
+                    onClick={() => handleSuggestionClick(suggestion)}
+                  >
+                    <Search className="h-4 w-4 mr-2 text-muted-foreground" />
+                    <span>{suggestion}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
         </div>
         
         <div className="flex gap-2 w-full md:w-auto">
@@ -106,7 +231,7 @@ const CourseExplorer: React.FC<CourseExplorerProps> = ({ onAskAboutCourse }) => 
               <SelectValue placeholder="Field of Study" />
             </SelectTrigger>
             <SelectContent>
-              {fieldOptions.map(option => (
+              {levelSpecificFields.map(option => (
                 <SelectItem key={option.value} value={option.value}>{option.label}</SelectItem>
               ))}
             </SelectContent>
