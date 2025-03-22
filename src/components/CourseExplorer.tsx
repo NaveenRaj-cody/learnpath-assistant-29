@@ -52,16 +52,21 @@ const CourseExplorer: React.FC<CourseExplorerProps> = ({ onAskAboutCourse }) => 
 
   const fieldOptions = [
     { value: 'all', label: 'All Fields' },
-    { value: 'engineering', label: 'Engineering' },
-    { value: 'medicine', label: 'Medicine' },
-    { value: 'business', label: 'Business/Management' },
+    { value: 'engineering', label: 'Engineering & Technical' },
+    { value: 'medicine', label: 'Healthcare & Medical Sciences' },
+    { value: 'business', label: 'Business & Management' },
     { value: 'law', label: 'Law' },
-    { value: 'arts', label: 'Arts and Humanities' },
+    { value: 'arts', label: 'Arts, Design & Creative' },
     { value: 'science', label: 'Science' },
     { value: 'commerce', label: 'Commerce' },
     { value: 'design', label: 'Design' },
     { value: 'education', label: 'Education' },
-    { value: 'vocational', label: 'Vocational/Skill-Based Training' }
+    { value: 'vocational', label: 'Vocational & Industrial Training' },
+    { value: 'agriculture', label: 'Agriculture & Allied Fields' },
+    { value: 'information-technology', label: 'Information Technology' },
+    { value: 'hospitality', label: 'Hospitality & Tourism' },
+    { value: 'media', label: 'Media & Communication' },
+    { value: 'paramedical', label: 'Paramedical Sciences' }
   ];
 
   return (
