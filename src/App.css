@@ -83,4 +83,37 @@
   .text-sm-mobile {
     font-size: 0.875rem;
   }
+  
+  /* Improved mobile card grid */
+  .mobile-card-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.5rem;
+  }
+  
+  .mobile-compact-card {
+    padding: 0.5rem;
+    font-size: 0.75rem;
+    line-height: 1rem;
+  }
+  
+  .mobile-compact-card h3 {
+    font-size: 0.875rem;
+    margin-bottom: 0.25rem;
+  }
+  
+  .mobile-compact-card p {
+    margin-bottom: 0.25rem;
+  }
+  
+  .mobile-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  
+  .mobile-filters > * {
+    flex: 1 1 calc(50% - 0.25rem);
+    min-width: 120px;
+  }
 }
