@@ -10,10 +10,12 @@ import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover
 import { BookOpen, BriefcaseIcon, Building, DollarSign, TrendingUp, Award, ArrowLeft, GraduationCap, Info } from 'lucide-react';
 import { coursesData, Course } from '@/data/coursesData';
 import AnimatedTransition from '@/components/AnimatedTransition';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 const CourseDetailsPage = () => {
   const { courseId } = useParams();
   const navigate = useNavigate();
+  const isMobile = useIsMobile();
   const [course, setCourse] = useState<Course | null>(null);
   const [activeTab, setActiveTab] = useState('overview');
   const [selectedCompany, setSelectedCompany] = useState<string | null>(null);
@@ -92,14 +94,14 @@ const CourseDetailsPage = () => {
 
   const renderJobDetails = (job: string) => {
     return (
-      <div className="space-y-3">
-        <h4 className="font-semibold text-md">{job}</h4>
-        <p className="text-sm">{jobDescriptions[job] || "No description available."}</p>
-        <div className="pt-2">
-          <Badge variant="outline" className="mr-2 bg-primary/10">
+      <div className="space-y-2 sm:space-y-3">
+        <h4 className="font-semibold text-sm sm:text-md">{job}</h4>
+        <p className="text-xs sm:text-sm">{jobDescriptions[job] || "No description available."}</p>
+        <div className="pt-1 sm:pt-2">
+          <Badge variant="outline" className="mr-2 bg-primary/10 text-[10px] sm:text-xs">
             {course?.field || "General"}
           </Badge>
-          <Badge variant="outline">
+          <Badge variant="outline" className="text-[10px] sm:text-xs">
             {course?.level || "Entry Level"}
           </Badge>
         </div>
@@ -111,8 +113,8 @@ const CourseDetailsPage = () => {
     return (
       <div className="min-h-screen bg-background flex flex-col">
         <Header />
-        <div className="flex-1 container mx-auto py-8 px-4 flex items-center justify-center">
-          <p>Loading course details...</p>
+        <div className="flex-1 container mx-auto py-4 sm:py-8 px-3 sm:px-4 flex items-center justify-center">
+          <p className="text-sm sm:text-base">Loading course details...</p>
         </div>
       </div>
     );
@@ -122,30 +124,31 @@ const CourseDetailsPage = () => {
     <div className="min-h-screen bg-background flex flex-col">
       <Header />
       
-      <main className="flex-1 container mx-auto py-8 px-4">
+      <main className="flex-1 container mx-auto py-4 sm:py-8 px-3 sm:px-4">
         <AnimatedTransition>
           <Button 
             variant="outline" 
+            size={isMobile ? "sm" : "default"}
             onClick={() => navigate('/courses')} 
-            className="mb-6"
+            className="mb-3 sm:mb-6 text-xs sm:text-sm"
           >
             ← Back to Courses
           </Button>
           
           {course ? (
             <>
-              <Card className="border-primary/20 shadow-lg animate-fade-in overflow-hidden mb-6">
-                <CardHeader className="bg-gradient-to-r from-primary/10 to-blue-500/10">
-                  <div className="flex flex-col md:flex-row md:justify-between md:items-start gap-4">
+              <Card className="border-primary/20 shadow-lg animate-fade-in overflow-hidden mb-3 sm:mb-6">
+                <CardHeader className="bg-gradient-to-r from-primary/10 to-blue-500/10 p-3 sm:p-6">
+                  <div className="flex flex-col md:flex-row md:justify-between md:items-start gap-2 sm:gap-4">
                     <div>
-                      <CardTitle className="text-2xl md:text-3xl mb-2">{course.name}</CardTitle>
-                      <CardDescription className="text-base">{course.description}</CardDescription>
+                      <CardTitle className="text-xl sm:text-2xl md:text-3xl mb-1 sm:mb-2">{course.name}</CardTitle>
+                      <CardDescription className="text-sm sm:text-base">{course.description}</CardDescription>
                     </div>
-                    <div className="flex flex-wrap gap-2">
-                      <Badge variant="outline" className="bg-primary/10 text-primary border-primary/20">
+                    <div className="flex flex-wrap gap-1 sm:gap-2">
+                      <Badge variant="outline" className="bg-primary/10 text-primary border-primary/20 text-[10px] sm:text-xs">
                         {course.level}
                       </Badge>
-                      <Badge variant="outline" className="bg-secondary/10 text-secondary-foreground">
+                      <Badge variant="outline" className="bg-secondary/10 text-secondary-foreground text-[10px] sm:text-xs">
                         {course.field}
                       </Badge>
                     </div>
@@ -154,37 +157,37 @@ const CourseDetailsPage = () => {
               </Card>
               
               <Tabs defaultValue="overview" className="w-full">
-                <TabsList className="w-full justify-start mb-4 bg-muted/50">
-                  <TabsTrigger value="overview">Overview</TabsTrigger>
-                  <TabsTrigger value="jobs">Job Opportunities</TabsTrigger>
+                <TabsList className="w-full justify-start mb-3 sm:mb-4 bg-muted/50 h-9 sm:h-10">
+                  <TabsTrigger value="overview" className="text-xs sm:text-sm">Overview</TabsTrigger>
+                  <TabsTrigger value="jobs" className="text-xs sm:text-sm">Job Opportunities</TabsTrigger>
                 </TabsList>
                 
                 <TabsContent value="overview" className="mt-0">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-6">
                     <div>
                       <Card className="h-full bg-muted/30 border-primary/10">
-                        <CardHeader className="pb-2">
-                          <CardTitle className="text-lg flex items-center gap-2">
-                            <GraduationCap className="h-5 w-5 text-primary" />
+                        <CardHeader className="pb-1 sm:pb-2 p-3 sm:p-6">
+                          <CardTitle className="text-base sm:text-lg flex items-center gap-1 sm:gap-2">
+                            <GraduationCap className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
                             Course Details
                           </CardTitle>
                         </CardHeader>
-                        <CardContent className="space-y-4">
+                        <CardContent className="space-y-2 sm:space-y-4 p-3 sm:p-6 pt-0 sm:pt-0">
                           <div>
-                            <h3 className="font-medium text-sm text-muted-foreground">Level</h3>
-                            <p>{course.level}</p>
+                            <h3 className="font-medium text-xs sm:text-sm text-muted-foreground">Level</h3>
+                            <p className="text-xs sm:text-sm">{course.level}</p>
                           </div>
                           <div>
-                            <h3 className="font-medium text-sm text-muted-foreground">Duration</h3>
-                            <p>{course.duration}</p>
+                            <h3 className="font-medium text-xs sm:text-sm text-muted-foreground">Duration</h3>
+                            <p className="text-xs sm:text-sm">{course.duration}</p>
                           </div>
                           <div>
-                            <h3 className="font-medium text-sm text-muted-foreground">Field</h3>
-                            <p>{course.field}</p>
+                            <h3 className="font-medium text-xs sm:text-sm text-muted-foreground">Field</h3>
+                            <p className="text-xs sm:text-sm">{course.field}</p>
                           </div>
                           <div>
-                            <h3 className="font-medium text-sm text-muted-foreground">Description</h3>
-                            <p>{course.description}</p>
+                            <h3 className="font-medium text-xs sm:text-sm text-muted-foreground">Description</h3>
+                            <p className="text-xs sm:text-sm">{course.description}</p>
                           </div>
                         </CardContent>
                       </Card>
@@ -192,21 +195,21 @@ const CourseDetailsPage = () => {
                     
                     <div>
                       <Card className="h-full bg-muted/30 border-primary/10">
-                        <CardHeader className="pb-2">
-                          <CardTitle className="text-lg flex items-center gap-2">
-                            <BriefcaseIcon className="h-5 w-5 text-primary" />
+                        <CardHeader className="pb-1 sm:pb-2 p-3 sm:p-6">
+                          <CardTitle className="text-base sm:text-lg flex items-center gap-1 sm:gap-2">
+                            <BriefcaseIcon className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
                             Career Prospects
                           </CardTitle>
                         </CardHeader>
-                        <CardContent>
+                        <CardContent className="p-3 sm:p-6 pt-0 sm:pt-0">
                           <div className="grid grid-cols-1 gap-2">
                             {course.careerProspects.map((career, index) => (
                               <Badge 
                                 key={index} 
-                                className="justify-start py-2 bg-secondary/20 hover:bg-secondary/30 cursor-pointer transition-colors"
+                                className="justify-start py-1 sm:py-2 bg-secondary/20 hover:bg-secondary/30 cursor-pointer transition-colors text-[10px] sm:text-xs"
                                 onClick={() => navigate(`/careers/${encodeURIComponent(career)}`)}
                               >
-                                <BriefcaseIcon className="h-3.5 w-3.5 mr-2" />
+                                <BriefcaseIcon className="h-3 w-3 sm:h-3.5 sm:w-3.5 mr-1 sm:mr-2" />
                                 {career}
                               </Badge>
                             ))}
@@ -220,41 +223,42 @@ const CourseDetailsPage = () => {
                 <TabsContent value="jobs" className="mt-0">
                   {selectedCompany ? (
                     <div>
-                      <div className="flex items-center justify-between mb-4">
-                        <h3 className="text-lg font-semibold flex items-center gap-2">
-                          <Building className="h-5 w-5 text-primary" />
+                      <div className="flex items-center justify-between mb-3 sm:mb-4">
+                        <h3 className="text-base sm:text-lg font-semibold flex items-center gap-1 sm:gap-2">
+                          <Building className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
                           Job Opportunities at {selectedCompany}
                         </h3>
                         <Button 
                           variant="outline" 
-                          size="sm" 
+                          size={isMobile ? "sm" : "default"} 
                           onClick={() => setSelectedCompany(null)}
+                          className="text-xs sm:text-sm"
                         >
                           Back to Companies
                         </Button>
                       </div>
                       
                       <Card className="bg-muted/30 border-primary/10">
-                        <CardContent className="p-6">
-                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <CardContent className="p-3 sm:p-6">
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
                             {companyJobOpportunities[selectedCompany]?.map((job, index) => (
                               <Popover key={index}>
                                 <PopoverTrigger asChild>
                                   <Card className="hover:border-primary transition-colors cursor-pointer">
-                                    <CardHeader className="pb-2">
-                                      <CardTitle className="text-lg flex items-center gap-2">
-                                        <BriefcaseIcon className="h-4 w-4 text-primary" />
+                                    <CardHeader className="pb-1 sm:pb-2 p-3 sm:p-4">
+                                      <CardTitle className="text-sm sm:text-lg flex items-center gap-1 sm:gap-2">
+                                        <BriefcaseIcon className="h-3 w-3 sm:h-4 sm:w-4 text-primary" />
                                         {job}
                                       </CardTitle>
                                     </CardHeader>
-                                    <CardFooter className="pt-0">
+                                    <CardFooter className="pt-0 p-3 sm:p-4">
                                       <div className="flex justify-end w-full">
-                                        <Info className="h-4 w-4 text-muted-foreground" />
+                                        <Info className="h-3 w-3 sm:h-4 sm:w-4 text-muted-foreground" />
                                       </div>
                                     </CardFooter>
                                   </Card>
                                 </PopoverTrigger>
-                                <PopoverContent className="w-80 p-4">
+                                <PopoverContent className="w-64 sm:w-80 p-3 sm:p-4">
                                   {renderJobDetails(job)}
                                 </PopoverContent>
                               </Popover>
@@ -265,23 +269,23 @@ const CourseDetailsPage = () => {
                     </div>
                   ) : (
                     <div>
-                      <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
-                        <Building className="h-5 w-5 text-primary" />
+                      <h3 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4 flex items-center gap-1 sm:gap-2">
+                        <Building className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
                         Top Companies Hiring
                       </h3>
                       
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4">
                         {Object.keys(companyJobOpportunities).map((company, index) => (
                           <Card 
                             key={index} 
                             className="cursor-pointer hover:border-primary transition-colors"
                             onClick={() => handleCompanyClick(company)}
                           >
-                            <CardHeader className="p-4">
-                              <CardTitle className="text-lg">{company}</CardTitle>
+                            <CardHeader className="p-3 sm:p-4">
+                              <CardTitle className="text-base sm:text-lg">{company}</CardTitle>
                             </CardHeader>
-                            <CardContent className="pb-4 pt-0">
-                              <p className="text-sm text-muted-foreground">
+                            <CardContent className="pb-3 sm:pb-4 pt-0 px-3 sm:px-4">
+                              <p className="text-xs sm:text-sm text-muted-foreground">
                                 {companyJobOpportunities[company].length} job opportunities available
                               </p>
                             </CardContent>
@@ -294,8 +298,8 @@ const CourseDetailsPage = () => {
               </Tabs>
             </>
           ) : (
-            <div className="text-center py-12">
-              <p>Loading course details...</p>
+            <div className="text-center py-6 sm:py-12">
+              <p className="text-sm sm:text-base">Loading course details...</p>
             </div>
           )}
         </AnimatedTransition>
