@@ -46,13 +46,13 @@ const Header = ({ className }: HeaderProps) => {
   };
 
   return (
-    <header className={cn("w-full py-4 px-6 flex items-center justify-between bg-background/60 backdrop-blur-md border-b", className)}>
-      <Link to="/" className="flex items-center gap-2">
-        <GraduationCap className="h-6 w-6 text-primary" />
-        <span className="font-bold text-xl">CareerPath</span>
+    <header className={cn("w-full py-3 px-4 sm:py-4 sm:px-6 flex items-center justify-between bg-background/60 backdrop-blur-md border-b", className)}>
+      <Link to="/" className="flex items-center gap-1 sm:gap-2">
+        <GraduationCap className="h-5 w-5 sm:h-6 sm:w-6 text-primary" />
+        <span className="font-bold text-lg sm:text-xl">CareerPath</span>
       </Link>
       
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-2 sm:gap-4">
         {/* Desktop navigation */}
         <nav className="hidden md:flex items-center gap-6">
           {menuItems.map((item) => (
@@ -100,7 +100,7 @@ const Header = ({ className }: HeaderProps) => {
         {/* Mobile navigation */}
         <Sheet open={isOpen} onOpenChange={setIsOpen}>
           <SheetTrigger asChild className="md:hidden">
-            <Button variant="ghost" size="icon" className="active:scale-95 transition-all">
+            <Button variant="ghost" size="icon" className="h-8 w-8 active:scale-95 transition-all">
               <Menu className="h-5 w-5" />
               <span className="sr-only">Toggle menu</span>
             </Button>
