@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from '@/components/Header';
@@ -14,8 +13,8 @@ import { useToast } from "@/hooks/use-toast";
 import StarRating from '@/components/StarRating';
 import { CollegeType, CollegeAffiliation, CollegeSpecialization } from '@/types/filters';
 import { ScrollArea } from "@/components/ui/scroll-area";
+import SearchableSelect from '@/components/SearchableSelect';
 
-// Comprehensive list of states and union territories in India with their districts
 const statesData = [
   { name: "Andhra Pradesh", districts: ["Alluri Sitarama Raju", "Anakapalli", "Anantapur", "Annamaya", "Bapatla", "Chittoor", "East Godavari", "Eluru", "Guntur", "Kadapa", "Kakinada", "Konaseema", "Krishna", "Kurnool", "Manyam", "N T Rama Rao", "Nandyal", "Nellore", "Palnadu", "Prakasam", "Sri Balaji", "Sri Satya Sai", "Srikakulam", "Visakhapatnam", "Vizianagaram", "West Godavari"] },
   { name: "Arunachal Pradesh", districts: ["Anjaw", "Bichom", "Changlang", "Dibang Valley", "East Kameng", "East Siang", "Kamle", "Keyi Panyor", "Kra Daadi", "Kurung Kumey", "Lepa Rada", "Lohit", "Longding", "Lower Dibang Valley", "Lower Siang", "Lower Subansiri", "Namsai", "Pakke Kessang", "Papum Pare", "Shi Yomi", "Siang", "Tawang", "Tirap", "Upper Siang", "Upper Subansiri", "West Kameng", "West Siang"] },
@@ -29,7 +28,7 @@ const statesData = [
   { name: "Jharkhand", districts: ["Bokaro", "Chatra", "Deoghar", "Dhanbad", "Dumka", "East Singhbhum", "Garhwa", "Giridih", "Godda", "Gumla", "Hazaribagh", "Jamtara", "Khunti", "Koderma", "Latehar", "Lohardaga", "Pakur", "Palamu", "Ramgarh", "Ranchi", "Sahebganj", "Seraikela Kharsawan", "Simdega", "West Singhbhum"] },
   { name: "Karnataka", districts: ["Bagalkot", "Bangalore Rural", "Bangalore Urban", "Belgaum", "Bellary", "Bidar", "Chamarajanagar", "Chikkaballapur", "Chikkamagaluru", "Chitradurga", "Dakshina Kannada", "Davanagere", "Dharwad", "Gadag", "Hassan", "Haveri", "Kalaburagi", "Kodagu", "Kolar", "Koppal", "Mandya", "Mysore", "Raichur", "Ramanagara", "Shimoga", "Tumkur", "Udupi", "Uttara Kannada", "Vijayanagara", "Vijayapura", "Yadgir"] },
   { name: "Kerala", districts: ["Alappuzha", "Ernakulam", "Idukki", "Kannur", "Kasaragod", "Kollam", "Kottayam", "Kozhikode", "Malappuram", "Palakkad", "Pathanamthitta", "Thiruvananthapuram", "Thrissur", "Wayanad"] },
-  { name: "Madhya Pradesh", districts: ["Agar Malwa", "Alirajpur", "Anuppur", "Ashoknagar", "Balaghat", "Barwani", "Betul", "Bhind", "Bhopal", "Burhanpur", "Chhatarpur", "Chhindwara", "Damoh", "Datia", "Dewas", "Dhar", "Dindori", "Guna", "Gwalior", "Harda", "Hoshangabad", "Indore", "Jabalpur", "Jhabua", "Katni", "Khandwa", "Khargone", "Maihar", "Mandla", "Mandsaur", "Mauganj", "Morena", "Narsinghpur", "Neemuch", "Niwari", "Pandhurna", "Panna", "Raisen", "Rajgarh", "Ratlam", "Rewa", "Sagar", "Satna", "Sehore", "Seoni", "Shahdol", "Shajapur", "Sheopur", "Shivpuri", "Sidhi", "Singrauli", "Tikamgarh", "Ujjain", "Umaria", "Vidisha"] },
+  { name: "Madhya Pradesh", districts: ["Agar Malwa", "Alirajpur", "Anuppur", "Ashoknagar", "Balaghat", "Barwani", "Betul", "Bhind", "Bhopal", "Burhanpur", "Chhatarpur", "Chhindwara", "Damoh", "Datia", "Dewas", "Dhar", "Dindori", "Guna", "Gwalior", "Harda", "Hoshangabad", "Indore", "Jabalpur", "Jhau", "Katni", "Khandwa", "Khargone", "Maihar", "Mandla", "Mandsaur", "Mauganj", "Morena", "Narsinghpur", "Neemuch", "Niwari", "Pandhurna", "Panna", "Raisen", "Rajgarh", "Ratlam", "Rewa", "Sagar", "Satna", "Sehore", "Seoni", "Shahdol", "Shajapur", "Sheopur", "Shivpuri", "Sidhi", "Singrauli", "Tikamgarh", "Ujjain", "Umaria", "Vidisha"] },
   { name: "Maharashtra", districts: ["Ahmednagar", "Akola", "Amravati", "Aurangabad", "Beed", "Bhandara", "Buldhana", "Chandrapur", "Dhule", "Gadchiroli", "Gondia", "Hingoli", "Jalgaon", "Jalna", "Kolhapur", "Latur", "Mumbai City", "Mumbai Suburban", "Nagpur", "Nanded", "Nandurbar", "Nashik", "Osmanabad", "Palghar", "Parbhani", "Pune", "Raigad", "Ratnagiri", "Sangli", "Satara", "Sindhudurg", "Solapur", "Thane", "Wardha", "Washim", "Yavatmal"] },
   { name: "Manipur", districts: ["Bishnupur", "Chandel", "Churachandpur", "Imphal East", "Imphal West", "Jiribam", "Kakching", "Kamjong", "Kangpokpi", "Noney", "Pherzawl", "Senapati", "Tamenglong", "Tengnoupal", "Thoubal", "Ukhrul"] },
   { name: "Meghalaya", districts: ["East Garo Hills", "East Jaintia Hills", "East Khasi Hills", "Mairang", "North Garo Hills", "Ri Bhoi", "South Garo Hills", "South West Garo Hills", "South West Khasi Hills", "West Garo Hills", "West Jaintia Hills", "West Khasi Hills"] },
@@ -45,7 +44,6 @@ const statesData = [
   { name: "Uttar Pradesh", districts: ["Agra", "Aligarh", "Ambedkar Nagar", "Amethi", "Amroha", "Auraiya", "Ayodhya", "Azamgarh", "Baghpat", "Bahraich", "Ballia", "Balrampur", "Banda", "Barabanki", "Bareilly", "Basti", "Bhadohi", "Bijnor", "Budaun", "Bulandshahr", "Chandauli", "Chitrakoot", "Deoria", "Etah", "Etawah", "Farrukhabad", "Fatehpur", "Firozabad", "Gautam Buddha Nagar", "Ghaziabad", "Ghazipur", "Gonda", "Gorakhpur", "Hamirpur", "Hapur", "Hardoi", "Hathras", "Jalaun", "Jaunpur", "Jhansi", "Kannauj", "Kanpur Dehat", "Kanpur Nagar", "Kasganj", "Kaushambi", "Kushinagar", "Lakhimpur Kheri", "Lalitpur", "Lucknow", "Maharajganj", "Mahoba", "Mainpuri", "Mathura", "Mau", "Meerut", "Mirzapur", "Moradabad", "Muzaffarnagar", "Pilibhit", "Pratapgarh", "Prayagraj", "Raebareli", "Rampur", "Saharanpur", "Sambhal", "Sant Kabir Nagar", "Shahjahanpur", "Shamli", "Shravasti", "Siddharthnagar", "Sitapur", "Sonbhadra", "Sultanpur", "Unnao", "Varanasi"] },
   { name: "Uttarakhand", districts: ["Almora", "Bageshwar", "Chamoli", "Champawat", "Dehradun", "Haridwar", "Nainital", "Pauri", "Pithoragarh", "Rudraprayag", "Tehri", "Udham Singh Nagar", "Uttarkashi"] },
   { name: "West Bengal", districts: ["Alipurduar", "Bankura", "Birbhum", "Cooch Behar", "Dakshin Dinajpur", "Darjeeling", "Hooghly", "Howrah", "Jalpaiguri", "Jhargram", "Kalimpong", "Kolkata", "Malda", "Murshidabad", "Nadia", "North 24 Parganas", "Paschim Bardhaman", "Paschim Medinipur", "Purba Bardhaman", "Purba Medinipur", "Purulia", "South 24 Parganas", "Uttar Dinajpur"] },
-  // Union Territories
   { name: "Andaman and Nicobar Islands", districts: ["Nicobar", "North Middle Andaman", "South Andaman"] },
   { name: "Chandigarh", districts: ["Chandigarh"] },
   { name: "Dadra and Nagar Haveli and Daman and Diu", districts: ["Dadra and Nagar Haveli", "Daman", "Diu"] },
@@ -107,16 +105,25 @@ const CollegesPage = () => {
     { value: 'men', label: 'Men\'s College' },
     { value: 'coed', label: 'Co-education' }
   ];
+
+  const stateOptions = [
+    { value: 'all', label: 'All States & UTs' },
+    ...statesData.map(state => ({ value: state.name, label: state.name }))
+  ];
   
   const availableDistricts = stateFilter === 'all' 
     ? [] 
     : statesData.find(state => state.name === stateFilter)?.districts || [];
+    
+  const districtOptions = [
+    { value: 'all', label: 'All Districts' },
+    ...availableDistricts.map(district => ({ value: district, label: district }))
+  ];
   
   const filteredColleges = uniqueColleges.filter(college => {
     const matchesSearch = searchTerm === '' || 
       college.name.toLowerCase().includes(searchTerm.toLowerCase());
     
-    // Check for college type match
     const matchesType = collegeTypeFilter === 'all' || 
       (collegeTypeFilter === 'engineering' && college.name.includes('Engineering')) ||
       (collegeTypeFilter === 'medical' && college.name.includes('Medical')) ||
@@ -128,7 +135,6 @@ const CollegesPage = () => {
       (collegeTypeFilter === 'veterinary' && college.name.includes('Veterinary')) ||
       (collegeTypeFilter === 'hotel' && college.name.includes('Hotel'));
     
-    // Check for college affiliation match
     const matchesAffiliation = collegeAffiliationFilter === 'all' || 
       (collegeAffiliationFilter === 'central' && college.name.includes('Indian Institute')) ||
       (collegeAffiliationFilter === 'state' && college.name.includes('State')) ||
@@ -136,7 +142,6 @@ const CollegesPage = () => {
       (collegeAffiliationFilter === 'deemed' && college.name.includes('University')) ||
       (collegeAffiliationFilter === 'autonomous' && (college.name.includes('College') || college.name.includes('Institute')));
     
-    // Check for specialization match - this is a simplification for demo
     const matchesSpecialization = specializationFilter === 'all' || 
       (specializationFilter === 'women' && college.name.toLowerCase().includes('women')) ||
       (specializationFilter === 'men' && college.name.toLowerCase().includes('men')) ||
@@ -263,43 +268,27 @@ const CollegesPage = () => {
                   
                   <div className="space-y-2">
                     <label className="text-sm font-medium">States and Union Territories</label>
-                    <Select
+                    <SearchableSelect
+                      options={stateOptions}
                       value={stateFilter}
                       onValueChange={(value) => handleFilterChange('state', value)}
-                    >
-                      <SelectTrigger className="glass-input active:scale-[0.98] hover:shadow-md transition-all">
-                        <SelectValue placeholder="Select state/UT" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <ScrollArea className="h-[300px]">
-                          <SelectItem value="all">All States & UTs</SelectItem>
-                          {statesData.map((state) => (
-                            <SelectItem key={state.name} value={state.name}>{state.name}</SelectItem>
-                          ))}
-                        </ScrollArea>
-                      </SelectContent>
-                    </Select>
+                      placeholder="Select state/UT"
+                      className="glass-input"
+                      noResultsText="No states found"
+                    />
                   </div>
                   
                   {stateFilter !== 'all' && (
                     <div className="space-y-2">
                       <label className="text-sm font-medium">District</label>
-                      <Select
+                      <SearchableSelect
+                        options={districtOptions}
                         value={districtFilter}
                         onValueChange={(value) => handleFilterChange('district', value)}
-                      >
-                        <SelectTrigger className="glass-input active:scale-[0.98] hover:shadow-md transition-all">
-                          <SelectValue placeholder="Select district" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <ScrollArea className="h-[200px]">
-                            <SelectItem value="all">All Districts</SelectItem>
-                            {availableDistricts.map((district) => (
-                              <SelectItem key={district} value={district}>{district}</SelectItem>
-                            ))}
-                          </ScrollArea>
-                        </SelectContent>
-                      </Select>
+                        placeholder="Select district"
+                        className="glass-input"
+                        noResultsText="No districts found"
+                      />
                     </div>
                   )}
                   
