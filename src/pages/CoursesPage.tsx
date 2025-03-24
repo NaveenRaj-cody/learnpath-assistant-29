@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from '@/components/Header';
 import { Input } from "@/components/ui/input";
@@ -18,6 +18,105 @@ const CoursesPage = () => {
   const [levelFilter, setLevelFilter] = useState<CourseLevel>('all');
   const [fieldFilter, setFieldFilter] = useState<SubjectArea>('all');
   const [durationFilter, setDurationFilter] = useState('all');
+  
+  // Define level-specific field options based on level selection
+  const levelSpecificFields = useMemo(() => {
+    const diplomaFields = [
+      { value: 'all', label: 'All Fields' },
+      { value: 'engineering', label: 'Engineering and Technology' },
+      { value: 'medicine', label: 'Medical and Paramedical' },
+      { value: 'arts', label: 'Arts and Design' },
+      { value: 'business', label: 'Commerce and Business' },
+      { value: 'agriculture', label: 'Agriculture and Allied Sciences' },
+      { value: 'hospitality', label: 'Hotel Management and Hospitality' },
+      { value: 'vocational', label: 'Vocational and Skill-Based Courses' },
+      { value: 'education', label: 'Education' },
+    ];
+
+    const undergraduateFields = [
+      { value: 'all', label: 'All Fields' },
+      { value: 'engineering', label: 'Engineering and Technology' },
+      { value: 'medicine', label: 'Medical and Health Sciences' },
+      { value: 'arts', label: 'Arts and Humanities' },
+      { value: 'business', label: 'Commerce and Business' },
+      { value: 'science', label: 'Science' },
+      { value: 'law', label: 'Law' },
+      { value: 'agriculture', label: 'Agriculture and Allied Sciences' },
+      { value: 'hospitality', label: 'Hotel Management and Hospitality' },
+      { value: 'media', label: 'Design and Media' },
+    ];
+
+    const postgraduateFields = [
+      { value: 'all', label: 'All Fields' },
+      { value: 'engineering', label: 'Engineering and Technology' },
+      { value: 'medicine', label: 'Medical and Health Sciences' },
+      { value: 'arts', label: 'Arts and Humanities' },
+      { value: 'business', label: 'Commerce and Business' },
+      { value: 'science', label: 'Science' },
+      { value: 'law', label: 'Law' },
+      { value: 'agriculture', label: 'Agriculture and Allied Sciences' },
+      { value: 'hospitality', label: 'Hotel Management and Hospitality' },
+      { value: 'media', label: 'Design and Media' },
+      { value: 'education', label: 'Education' },
+    ];
+
+    const doctoralFields = [
+      { value: 'all', label: 'All Fields' },
+      { value: 'engineering', label: 'Engineering and Technology' },
+      { value: 'medicine', label: 'Medical and Health Sciences' },
+      { value: 'science', label: 'Science' },
+      { value: 'arts', label: 'Arts and Humanities' },
+      { value: 'business', label: 'Commerce and Business' },
+      { value: 'law', label: 'Law' },
+      { value: 'agriculture', label: 'Agriculture and Allied Sciences' },
+      { value: 'education', label: 'Education' },
+      { value: 'hospitality', label: 'Hotel Management and Hospitality' },
+      { value: 'media', label: 'Design and Media' },
+    ];
+
+    const allFields = [
+      { value: 'all', label: 'All Fields' },
+      { value: 'engineering', label: 'Engineering & Technical' },
+      { value: 'medicine', label: 'Healthcare & Medical Sciences' },
+      { value: 'business', label: 'Business & Management' },
+      { value: 'law', label: 'Law' },
+      { value: 'arts', label: 'Arts, Design & Creative' },
+      { value: 'science', label: 'Science' },
+      { value: 'commerce', label: 'Commerce' },
+      { value: 'design', label: 'Design' },
+      { value: 'education', label: 'Education' },
+      { value: 'vocational', label: 'Vocational & Industrial Training' },
+      { value: 'agriculture', label: 'Agriculture & Allied Fields' },
+      { value: 'information-technology', label: 'Information Technology' },
+      { value: 'hospitality', label: 'Hospitality & Tourism' },
+      { value: 'media', label: 'Media & Communication' },
+      { value: 'paramedical', label: 'Paramedical Sciences' }
+    ];
+
+    switch (levelFilter) {
+      case 'diploma':
+        return diplomaFields;
+      case 'undergraduate':
+        return undergraduateFields;
+      case 'postgraduate':
+        return postgraduateFields;
+      case 'doctoral':
+        return doctoralFields;
+      default:
+        return allFields;
+    }
+  }, [levelFilter]);
+
+  // Reset field filter when level changes
+  useEffect(() => {
+    if (levelFilter !== 'all') {
+      // Check if current fieldFilter is valid for the new level
+      const isValidField = levelSpecificFields.some(field => field.value === fieldFilter);
+      if (!isValidField) {
+        setFieldFilter('all');
+      }
+    }
+  }, [levelFilter, levelSpecificFields, fieldFilter]);
   
   // Extract unique durations based on current filters
   const getFilteredDurations = () => {
@@ -61,22 +160,7 @@ const CoursesPage = () => {
     { value: 'diploma', label: 'Diploma' },
     { value: 'undergraduate', label: 'Undergraduate (UG)' },
     { value: 'postgraduate', label: 'Postgraduate (PG)' },
-    { value: 'doctoral', label: 'Doctoral' },
-    { value: 'certificate', label: 'Certificate' }
-  ];
-
-  const fieldOptions = [
-    { value: 'all', label: 'All Fields' },
-    { value: 'engineering', label: 'Engineering' },
-    { value: 'medicine', label: 'Medicine' },
-    { value: 'business', label: 'Business/Management' },
-    { value: 'law', label: 'Law' },
-    { value: 'arts', label: 'Arts and Humanities' },
-    { value: 'science', label: 'Science' },
-    { value: 'commerce', label: 'Commerce' },
-    { value: 'design', label: 'Design' },
-    { value: 'education', label: 'Education' },
-    { value: 'vocational', label: 'Vocational/Skill-Based Training' }
+    { value: 'doctoral', label: 'Doctoral' }
   ];
 
   return (
@@ -139,7 +223,7 @@ const CoursesPage = () => {
                         <SelectValue placeholder="Select field" />
                       </SelectTrigger>
                       <SelectContent>
-                        {fieldOptions.map(option => (
+                        {levelSpecificFields.map(option => (
                           <SelectItem key={option.value} value={option.value}>{option.label}</SelectItem>
                         ))}
                       </SelectContent>
