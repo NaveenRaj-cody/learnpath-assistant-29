@@ -91,7 +91,6 @@ const CareersPage = () => {
     field: course.field
   }));
   
-  // Generate career options for searchable select
   const careerOptions = React.useMemo(() => {
     const allCareers = new Set<string>();
     
@@ -107,7 +106,6 @@ const CareersPage = () => {
     })).sort((a, b) => a.label.localeCompare(b.label));
   }, []);
   
-  // Generate course options for searchable select
   const courseOptions = allCourses
     .filter(course => selectedField === 'all' || course.field === selectedField)
     .map(course => ({
@@ -369,14 +367,14 @@ const CareersPage = () => {
       </main>
 
       <Dialog open={isCareerDialogOpen} onOpenChange={setIsCareerDialogOpen}>
-        <DialogContent className="sm:max-w-[600px] glass-panel">
+        <DialogContent className="sm:max-w-[500px] max-w-[90vw] max-h-[80vh] overflow-y-auto glass-panel">
           <DialogHeader>
             <DialogTitle className="text-xl">{selectedCareer} Career Details</DialogTitle>
             <DialogDescription>
               Comprehensive information about this career path
             </DialogDescription>
           </DialogHeader>
-          <div className="space-y-4 py-4">
+          <div className="space-y-4 py-4 overflow-y-auto">
             {selectedCareer && (
               <>
                 <div className="grid grid-cols-2 gap-4">
