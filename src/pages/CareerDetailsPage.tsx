@@ -5,12 +5,13 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { BriefcaseIcon, Building, LineChart, MapPin, TrendingUp, Users, GraduationCap, Award, Globe, Banknote } from 'lucide-react';
+import { BriefcaseIcon, Building, LineChart, MapPin, TrendingUp, Users, GraduationCap, Award, Globe, Banknote, ArrowLeft } from 'lucide-react';
 import { coursesData } from '@/data/coursesData';
 import AnimatedTransition from '@/components/AnimatedTransition';
 import StarRating from '@/components/StarRating';
 import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { useIsMobile } from '@/hooks/use-mobile';
 
 interface CareerDetails {
   career: string;
@@ -185,6 +186,7 @@ const CareerDetailsPage = () => {
   const { careerName } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
+  const isMobile = useIsMobile();
   const [careerDetails, setCareerDetails] = useState<CareerDetails | null>(null);
   const [activeTab, setActiveTab] = useState('overview');
   const [selectedRegion, setSelectedRegion] = useState<'india' | 'global'>('global');
@@ -273,77 +275,78 @@ const CareerDetailsPage = () => {
     <div className="min-h-screen bg-background flex flex-col">
       <Header />
       
-      <main className="flex-1 container mx-auto py-8 px-4">
+      <main className="flex-1 container mx-auto py-3 sm:py-8 px-2 sm:px-4 overflow-y-auto">
         <AnimatedTransition>
           <Button 
             variant="outline" 
             onClick={() => navigate('/careers')} 
-            className="mb-6"
+            className="mb-2 sm:mb-6"
+            size={isMobile ? "sm" : "default"}
           >
-            ← Back to Careers
+            <ArrowLeft className="h-3 w-3 sm:h-4 sm:w-4 mr-1" /> Back to Careers
           </Button>
           
-          <Card className="border-primary/20 shadow-lg animate-fade-in overflow-hidden mb-6">
-            <CardHeader className="bg-gradient-to-r from-primary/10 to-blue-500/10">
-              <div className="flex justify-between items-start">
+          <Card className="border-primary/20 shadow-lg animate-fade-in overflow-hidden mb-3 sm:mb-6">
+            <CardHeader className="bg-gradient-to-r from-primary/10 to-blue-500/10 p-3 sm:p-6">
+              <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-2">
                 <div>
-                  <CardTitle className="text-2xl">{careerDetails.career}</CardTitle>
-                  <CardDescription className="max-w-2xl">{careerDetails.description}</CardDescription>
+                  <CardTitle className="text-base sm:text-2xl">{careerDetails.career}</CardTitle>
+                  <CardDescription className="text-xs sm:text-sm max-w-2xl line-clamp-3 sm:line-clamp-none">{careerDetails.description}</CardDescription>
                 </div>
-                <Badge variant="outline" className="bg-primary/10 text-primary border-primary/20">
+                <Badge variant="outline" className="bg-primary/10 text-primary border-primary/20 text-[10px] sm:text-sm w-fit">
                   {careerDetails.courses[0]?.field || "Professional"}
                 </Badge>
               </div>
             </CardHeader>
           </Card>
 
-          <Card className="border-primary/20 shadow-md mb-6 animate-fade-in overflow-hidden">
-            <CardHeader className="bg-gradient-to-r from-green-500/10 to-blue-500/10 pb-3">
+          <Card className="border-primary/20 shadow-md mb-3 sm:mb-6 animate-fade-in overflow-hidden">
+            <CardHeader className="bg-gradient-to-r from-green-500/10 to-blue-500/10 pb-1 sm:pb-3 p-2 sm:p-6">
               <div className="flex justify-between items-center">
-                <CardTitle className="text-lg flex items-center gap-2">
-                  <Banknote className="h-5 w-5 text-primary" />
+                <CardTitle className="text-sm sm:text-lg flex items-center gap-1 sm:gap-2">
+                  <Banknote className="h-3 w-3 sm:h-5 sm:w-5 text-primary" />
                   Salary Insights ({selectedRegion === 'india' ? 'India' : 'Global'})
                 </CardTitle>
                 <Button 
                   variant="outline" 
                   size="sm" 
                   onClick={() => setIsSalaryDialogOpen(true)}
-                  className="text-xs"
+                  className="text-[10px] sm:text-xs"
                 >
-                  Detailed Comparison
+                  Comparison
                 </Button>
               </div>
             </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-3 gap-4 py-2">
-                <div className="text-center p-3 bg-muted/30 rounded-md">
-                  <h4 className="text-xs text-muted-foreground mb-1">Entry Level</h4>
-                  <p className="font-semibold text-primary">{salaryDetails.entry}</p>
+            <CardContent className="p-2 sm:p-6">
+              <div className="grid grid-cols-3 gap-1 sm:gap-4 py-1 sm:py-2">
+                <div className="text-center p-1 sm:p-3 bg-muted/30 rounded-md">
+                  <h4 className="text-[8px] sm:text-xs text-muted-foreground mb-0.5 sm:mb-1">Entry Level</h4>
+                  <p className="font-semibold text-primary text-[10px] sm:text-sm">{salaryDetails.entry}</p>
                 </div>
-                <div className="text-center p-3 bg-muted/30 rounded-md">
-                  <h4 className="text-xs text-muted-foreground mb-1">Mid Level</h4>
-                  <p className="font-semibold text-primary">{salaryDetails.mid}</p>
+                <div className="text-center p-1 sm:p-3 bg-muted/30 rounded-md">
+                  <h4 className="text-[8px] sm:text-xs text-muted-foreground mb-0.5 sm:mb-1">Mid Level</h4>
+                  <p className="font-semibold text-primary text-[10px] sm:text-sm">{salaryDetails.mid}</p>
                 </div>
-                <div className="text-center p-3 bg-muted/30 rounded-md">
-                  <h4 className="text-xs text-muted-foreground mb-1">Senior Level</h4>
-                  <p className="font-semibold text-primary">{salaryDetails.senior}</p>
+                <div className="text-center p-1 sm:p-3 bg-muted/30 rounded-md">
+                  <h4 className="text-[8px] sm:text-xs text-muted-foreground mb-0.5 sm:mb-1">Senior Level</h4>
+                  <p className="font-semibold text-primary text-[10px] sm:text-sm">{salaryDetails.senior}</p>
                 </div>
               </div>
-              <div className="text-xs text-center text-muted-foreground mt-2">
+              <div className="text-[8px] sm:text-xs text-center text-muted-foreground mt-1 sm:mt-2">
                 Salaries vary based on company, location, and experience
               </div>
             </CardContent>
           </Card>
           
-          <div className="mb-6">
+          <div className="mb-2 sm:mb-6">
             <Tabs value={selectedRegion} onValueChange={(value) => handleRegionChange(value as 'india' | 'global')}>
-              <TabsList>
-                <TabsTrigger value="global" className="flex items-center gap-1">
-                  <Globe className="w-4 h-4" />
+              <TabsList className="h-7 sm:h-10">
+                <TabsTrigger value="global" className="flex items-center gap-0.5 sm:gap-1 text-xs sm:text-sm px-2 py-1 sm:px-3 sm:py-2">
+                  <Globe className="w-3 h-3 sm:w-4 sm:h-4" />
                   <span>Global</span>
                 </TabsTrigger>
-                <TabsTrigger value="india" className="flex items-center gap-1">
-                  <MapPin className="w-4 h-4" />
+                <TabsTrigger value="india" className="flex items-center gap-0.5 sm:gap-1 text-xs sm:text-sm px-2 py-1 sm:px-3 sm:py-2">
+                  <MapPin className="w-3 h-3 sm:w-4 sm:h-4" />
                   <span>India</span>
                 </TabsTrigger>
               </TabsList>
@@ -351,38 +354,44 @@ const CareerDetailsPage = () => {
           </div>
           
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <TabsList className="w-full justify-start mb-4 bg-muted/50">
-              <TabsTrigger value="overview" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Overview</TabsTrigger>
-              <TabsTrigger value="market" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Job Market</TabsTrigger>
-              <TabsTrigger value="education" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Education</TabsTrigger>
+            <TabsList className="w-full justify-start mb-2 sm:mb-4 bg-muted/50 h-7 sm:h-10 overflow-x-auto">
+              <TabsTrigger value="overview" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground text-xs sm:text-sm px-2 sm:px-3">
+                Overview
+              </TabsTrigger>
+              <TabsTrigger value="market" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground text-xs sm:text-sm px-2 sm:px-3">
+                Job Market
+              </TabsTrigger>
+              <TabsTrigger value="education" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground text-xs sm:text-sm px-2 sm:px-3">
+                Education
+              </TabsTrigger>
             </TabsList>
             
             <TabsContent value="overview" className="mt-0">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-2 sm:gap-6">
                 <div>
-                  <h3 className="text-lg font-semibold mb-3 flex items-center gap-2">
-                    <BriefcaseIcon className="h-4 w-4 text-primary" />
+                  <h3 className="text-sm sm:text-lg font-semibold mb-1 sm:mb-3 flex items-center gap-1 sm:gap-2">
+                    <BriefcaseIcon className="h-3 w-3 sm:h-4 sm:w-4 text-primary" />
                     Career Profile
                   </h3>
                   <Card className="bg-muted/30 border-primary/10">
-                    <CardContent className="p-4">
-                      <p className="mb-4">{careerDetails.description}</p>
+                    <CardContent className="p-2 sm:p-4">
+                      <p className="mb-2 sm:mb-4 text-xs sm:text-sm">{careerDetails.description}</p>
                       <div>
-                        <h4 className="font-medium mb-2">Key Skills Required:</h4>
-                        <div className="flex flex-wrap gap-2 mb-4">
+                        <h4 className="font-medium mb-1 sm:mb-2 text-xs sm:text-sm">Key Skills Required:</h4>
+                        <div className="flex flex-wrap gap-1 sm:gap-2 mb-2 sm:mb-4">
                           {careerDetails.skills.map((skill, index) => (
-                            <Badge key={index} className="bg-secondary/20 text-secondary-foreground">
+                            <Badge key={index} className="bg-secondary/20 text-secondary-foreground text-[8px] sm:text-xs">
                               {skill}
                             </Badge>
                           ))}
                         </div>
                       </div>
                       <div>
-                        <h4 className="font-medium mb-2">Related Courses:</h4>
-                        <ul className="space-y-1">
+                        <h4 className="font-medium mb-1 sm:mb-2 text-xs sm:text-sm">Related Courses:</h4>
+                        <ul className="space-y-0.5 sm:space-y-1 text-xs sm:text-sm">
                           {careerDetails.courses.map((course, index) => (
-                            <li key={index} className="flex items-center gap-2">
-                              <div className="w-1.5 h-1.5 rounded-full bg-primary"></div>
+                            <li key={index} className="flex items-center gap-1 sm:gap-2">
+                              <div className="w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-primary"></div>
                               <span>{course.name}</span>
                             </li>
                           ))}
@@ -393,17 +402,17 @@ const CareerDetailsPage = () => {
                 </div>
                 
                 <div>
-                  <h3 className="text-lg font-semibold mb-3 flex items-center gap-2">
-                    <LineChart className="h-4 w-4 text-primary" />
+                  <h3 className="text-sm sm:text-lg font-semibold mb-1 sm:mb-3 flex items-center gap-1 sm:gap-2">
+                    <LineChart className="h-3 w-3 sm:h-4 sm:w-4 text-primary" />
                     Industry Overview
                   </h3>
                   <Card className="bg-muted/30 border-primary/10">
-                    <CardContent className="p-4">
-                      <div className="space-y-4">
+                    <CardContent className="p-2 sm:p-4">
+                      <div className="space-y-2 sm:space-y-4">
                         <div>
-                          <h4 className="font-medium mb-2">Demand:</h4>
-                          <div className="flex items-center gap-3">
-                            <div className="flex-1 h-2 bg-muted rounded-full">
+                          <h4 className="font-medium mb-1 sm:mb-2 text-xs sm:text-sm">Demand:</h4>
+                          <div className="flex items-center gap-2 sm:gap-3">
+                            <div className="flex-1 h-1.5 sm:h-2 bg-muted rounded-full">
                               <div 
                                 className="h-full bg-primary rounded-full" 
                                 style={{ 
@@ -415,7 +424,7 @@ const CareerDetailsPage = () => {
                                 }}
                               ></div>
                             </div>
-                            <span className="font-medium text-sm">{careerDetails.jobMarket[selectedRegion].demand}</span>
+                            <span className="font-medium text-xs sm:text-sm">{careerDetails.jobMarket[selectedRegion].demand}</span>
                           </div>
                         </div>
                       </div>
@@ -426,21 +435,21 @@ const CareerDetailsPage = () => {
             </TabsContent>
             
             <TabsContent value="market" className="mt-0">
-              <div className="grid grid-cols-1 gap-6">
+              <div className="grid grid-cols-1 gap-2 sm:gap-6">
                 <div>
-                  <h3 className="text-lg font-semibold mb-3 flex items-center gap-2">
-                    <MapPin className="h-4 w-4 text-primary" />
+                  <h3 className="text-sm sm:text-lg font-semibold mb-1 sm:mb-3 flex items-center gap-1 sm:gap-2">
+                    <MapPin className="h-3 w-3 sm:h-4 sm:w-4 text-primary" />
                     {selectedRegion === 'india' ? 'Indian' : 'Global'} Job Market
                   </h3>
                   <Card className="bg-muted/30 border-primary/10">
-                    <CardContent className="p-4">
-                      <div className="space-y-4">
+                    <CardContent className="p-2 sm:p-4">
+                      <div className="space-y-2 sm:space-y-4">
                         <div>
-                          <h4 className="font-medium mb-2">Top Companies Hiring:</h4>
-                          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                          <h4 className="font-medium mb-1 sm:mb-2 text-xs sm:text-sm">Top Companies Hiring:</h4>
+                          <div className="grid grid-cols-2 sm:grid-cols-3 gap-1 sm:gap-2">
                             {careerDetails.jobMarket[selectedRegion].companiesHiring.map((company, index) => (
-                              <Badge key={index} variant="outline" className="justify-start">
-                                <Building className="h-3 w-3 mr-1" />
+                              <Badge key={index} variant="outline" className="justify-start py-0.5 sm:py-1 text-[8px] sm:text-xs">
+                                <Building className="h-2 w-2 sm:h-3 sm:w-3 mr-0.5 sm:mr-1" />
                                 {company}
                               </Badge>
                             ))}
@@ -454,20 +463,20 @@ const CareerDetailsPage = () => {
             </TabsContent>
             
             <TabsContent value="education" className="mt-0">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-2 sm:gap-6">
                 <div>
-                  <h3 className="text-lg font-semibold mb-3 flex items-center gap-2">
-                    <GraduationCap className="h-4 w-4 text-primary" />
+                  <h3 className="text-sm sm:text-lg font-semibold mb-1 sm:mb-3 flex items-center gap-1 sm:gap-2">
+                    <GraduationCap className="h-3 w-3 sm:h-4 sm:w-4 text-primary" />
                     Educational Requirements
                   </h3>
                   <Card className="bg-muted/30 border-primary/10">
-                    <CardContent className="p-4">
+                    <CardContent className="p-2 sm:p-4">
                       <div>
-                        <h4 className="font-medium mb-2">Required Degrees:</h4>
-                        <ul className="space-y-1">
+                        <h4 className="font-medium mb-1 sm:mb-2 text-xs sm:text-sm">Required Degrees:</h4>
+                        <ul className="space-y-0.5 sm:space-y-1 text-xs sm:text-sm">
                           {careerDetails.education.requiredDegrees.map((degree, index) => (
-                            <li key={index} className="flex items-center gap-2">
-                              <div className="w-1.5 h-1.5 rounded-full bg-primary"></div>
+                            <li key={index} className="flex items-center gap-1 sm:gap-2">
+                              <div className="w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-primary"></div>
                               <span>{degree}</span>
                             </li>
                           ))}
@@ -478,17 +487,17 @@ const CareerDetailsPage = () => {
                 </div>
                 
                 <div>
-                  <h3 className="text-lg font-semibold mb-3 flex items-center gap-2">
-                    <Award className="h-4 w-4 text-primary" />
+                  <h3 className="text-sm sm:text-lg font-semibold mb-1 sm:mb-3 flex items-center gap-1 sm:gap-2">
+                    <Award className="h-3 w-3 sm:h-4 sm:w-4 text-primary" />
                     Recommended Courses
                   </h3>
                   <Card className="bg-muted/30 border-primary/10">
-                    <CardContent className="p-4">
+                    <CardContent className="p-2 sm:p-4">
                       <div>
-                        <ul className="space-y-1">
+                        <ul className="space-y-0.5 sm:space-y-1 text-xs sm:text-sm">
                           {careerDetails.courses.map((course, index) => (
-                            <li key={index} className="flex items-center gap-2">
-                              <div className="w-1.5 h-1.5 rounded-full bg-primary"></div>
+                            <li key={index} className="flex items-center gap-1 sm:gap-2">
+                              <div className="w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-primary"></div>
                               <span>{course.name}</span>
                             </li>
                           ))}
@@ -504,46 +513,46 @@ const CareerDetailsPage = () => {
       </main>
 
       <Dialog open={isSalaryDialogOpen} onOpenChange={setIsSalaryDialogOpen}>
-        <DialogContent className="sm:max-w-[600px]">
+        <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle>Detailed Salary Information</DialogTitle>
-            <DialogDescription>
+            <DialogTitle className="text-base sm:text-xl">Detailed Salary Information</DialogTitle>
+            <DialogDescription className="text-xs sm:text-sm">
               Salary ranges for {careerDetails.career} in different regions and experience levels
             </DialogDescription>
           </DialogHeader>
           
-          <div className="space-y-6 py-4">
-            <div className="space-y-4">
-              <h3 className="text-lg font-medium flex items-center gap-2">
-                <Globe className="h-4 w-4 text-primary" /> Global Markets
+          <div className="space-y-4 sm:space-y-6 py-2 sm:py-4">
+            <div className="space-y-2 sm:space-y-4">
+              <h3 className="text-sm sm:text-lg font-medium flex items-center gap-1 sm:gap-2">
+                <Globe className="h-3 w-3 sm:h-4 sm:w-4 text-primary" /> Global Markets
               </h3>
-              <div className="space-y-2">
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-1">
-                    <p className="text-sm font-medium">Entry Level:</p>
-                    <div className="p-2 bg-muted rounded-md text-center">
+              <div className="space-y-1 sm:space-y-2">
+                <div className="grid grid-cols-2 gap-2 sm:gap-4">
+                  <div className="space-y-0.5 sm:space-y-1">
+                    <p className="text-xs sm:text-sm font-medium">Entry Level:</p>
+                    <div className="p-1 sm:p-2 bg-muted rounded-md text-center text-xs sm:text-sm">
                       {careerDetails.jobMarket.global.salaryRange.entry}
                     </div>
                   </div>
-                  <div className="space-y-1">
-                    <p className="text-sm font-medium">Mid Level:</p>
-                    <div className="p-2 bg-muted rounded-md text-center">
+                  <div className="space-y-0.5 sm:space-y-1">
+                    <p className="text-xs sm:text-sm font-medium">Mid Level:</p>
+                    <div className="p-1 sm:p-2 bg-muted rounded-md text-center text-xs sm:text-sm">
                       {careerDetails.jobMarket.global.salaryRange.mid}
                     </div>
                   </div>
                 </div>
-                <div className="space-y-1">
-                  <p className="text-sm font-medium">Senior Level:</p>
-                  <div className="p-2 bg-muted rounded-md text-center">
+                <div className="space-y-0.5 sm:space-y-1">
+                  <p className="text-xs sm:text-sm font-medium">Senior Level:</p>
+                  <div className="p-1 sm:p-2 bg-muted rounded-md text-center text-xs sm:text-sm">
                     {careerDetails.jobMarket.global.salaryRange.senior}
                   </div>
                 </div>
-                <div className="pt-2">
-                  <h4 className="text-sm font-medium mb-1">Top Paying Locations:</h4>
-                  <div className="flex flex-wrap gap-2 mt-2">
+                <div className="pt-1 sm:pt-2">
+                  <h4 className="text-xs sm:text-sm font-medium mb-0.5 sm:mb-1">Top Paying Locations:</h4>
+                  <div className="flex flex-wrap gap-1 sm:gap-2 mt-1 sm:mt-2">
                     {careerDetails.jobMarket.global.locations.slice(0, 3).map((location, i) => (
-                      <Badge key={i} variant="outline" className="bg-green-500/10">
-                        <MapPin className="h-3 w-3 mr-1" />
+                      <Badge key={i} variant="outline" className="bg-green-500/10 text-[8px] sm:text-xs">
+                        <MapPin className="h-2 w-2 sm:h-3 sm:w-3 mr-0.5 sm:mr-1" />
                         {location}
                       </Badge>
                     ))}
@@ -552,37 +561,37 @@ const CareerDetailsPage = () => {
               </div>
             </div>
 
-            <div className="space-y-4">
-              <h3 className="text-lg font-medium flex items-center gap-2">
-                <MapPin className="h-4 w-4 text-primary" /> Indian Market
+            <div className="space-y-2 sm:space-y-4">
+              <h3 className="text-sm sm:text-lg font-medium flex items-center gap-1 sm:gap-2">
+                <MapPin className="h-3 w-3 sm:h-4 sm:w-4 text-primary" /> Indian Market
               </h3>
-              <div className="space-y-2">
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-1">
-                    <p className="text-sm font-medium">Entry Level:</p>
-                    <div className="p-2 bg-muted rounded-md text-center">
+              <div className="space-y-1 sm:space-y-2">
+                <div className="grid grid-cols-2 gap-2 sm:gap-4">
+                  <div className="space-y-0.5 sm:space-y-1">
+                    <p className="text-xs sm:text-sm font-medium">Entry Level:</p>
+                    <div className="p-1 sm:p-2 bg-muted rounded-md text-center text-xs sm:text-sm">
                       {careerDetails.jobMarket.india.salaryRange.entry}
                     </div>
                   </div>
-                  <div className="space-y-1">
-                    <p className="text-sm font-medium">Mid Level:</p>
-                    <div className="p-2 bg-muted rounded-md text-center">
+                  <div className="space-y-0.5 sm:space-y-1">
+                    <p className="text-xs sm:text-sm font-medium">Mid Level:</p>
+                    <div className="p-1 sm:p-2 bg-muted rounded-md text-center text-xs sm:text-sm">
                       {careerDetails.jobMarket.india.salaryRange.mid}
                     </div>
                   </div>
                 </div>
-                <div className="space-y-1">
-                  <p className="text-sm font-medium">Senior Level:</p>
-                  <div className="p-2 bg-muted rounded-md text-center">
+                <div className="space-y-0.5 sm:space-y-1">
+                  <p className="text-xs sm:text-sm font-medium">Senior Level:</p>
+                  <div className="p-1 sm:p-2 bg-muted rounded-md text-center text-xs sm:text-sm">
                     {careerDetails.jobMarket.india.salaryRange.senior}
                   </div>
                 </div>
-                <div className="pt-2">
-                  <h4 className="text-sm font-medium mb-1">Top Paying Cities:</h4>
-                  <div className="flex flex-wrap gap-2 mt-2">
+                <div className="pt-1 sm:pt-2">
+                  <h4 className="text-xs sm:text-sm font-medium mb-0.5 sm:mb-1">Top Paying Cities:</h4>
+                  <div className="flex flex-wrap gap-1 sm:gap-2 mt-1 sm:mt-2">
                     {careerDetails.jobMarket.india.locations.slice(0, 3).map((location, i) => (
-                      <Badge key={i} variant="outline" className="bg-green-500/10">
-                        <MapPin className="h-3 w-3 mr-1" />
+                      <Badge key={i} variant="outline" className="bg-green-500/10 text-[8px] sm:text-xs">
+                        <MapPin className="h-2 w-2 sm:h-3 sm:w-3 mr-0.5 sm:mr-1" />
                         {location}
                       </Badge>
                     ))}
@@ -591,23 +600,23 @@ const CareerDetailsPage = () => {
               </div>
             </div>
 
-            <div className="space-y-2">
-              <h4 className="text-sm font-medium mb-1">Salary Growth Factors:</h4>
-              <ul className="space-y-1 text-sm">
-                <li className="flex items-center gap-2">
-                  <div className="w-1.5 h-1.5 rounded-full bg-primary"></div>
+            <div className="space-y-1 sm:space-y-2">
+              <h4 className="text-xs sm:text-sm font-medium mb-0.5 sm:mb-1">Salary Growth Factors:</h4>
+              <ul className="space-y-0.5 sm:space-y-1 text-[10px] sm:text-sm">
+                <li className="flex items-center gap-1 sm:gap-2">
+                  <div className="w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-primary"></div>
                   <span>Specialization in high-demand areas</span>
                 </li>
-                <li className="flex items-center gap-2">
-                  <div className="w-1.5 h-1.5 rounded-full bg-primary"></div>
+                <li className="flex items-center gap-1 sm:gap-2">
+                  <div className="w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-primary"></div>
                   <span>Advanced certifications and degrees</span>
                 </li>
-                <li className="flex items-center gap-2">
-                  <div className="w-1.5 h-1.5 rounded-full bg-primary"></div>
+                <li className="flex items-center gap-1 sm:gap-2">
+                  <div className="w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-primary"></div>
                   <span>Leadership and management experience</span>
                 </li>
-                <li className="flex items-center gap-2">
-                  <div className="w-1.5 h-1.5 rounded-full bg-primary"></div>
+                <li className="flex items-center gap-1 sm:gap-2">
+                  <div className="w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-primary"></div>
                   <span>Industry shifts and market demand</span>
                 </li>
               </ul>
