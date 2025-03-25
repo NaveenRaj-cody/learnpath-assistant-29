@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import Header from '@/components/Header';
@@ -72,7 +71,7 @@ const CourseDetailsPage = () => {
     "IT Specialist": "Provide technical expertise and support for IT systems. Troubleshoot and resolve complex technical issues.",
     "Junior Developer": "Entry-level software development role. Learn while contributing to real projects under mentorship.",
     "Business Consultant": "Advise clients on business strategies and processes. Combine industry knowledge with analytical skills.",
-    "QA Engineer": "Ensure software quality through testing and automation. Focus on finding bugs and improving user experience.",
+    "QA Engineer": "Ensure software quality through testing and automation. Focus on both manual and automated testing approaches.",
     "System Administrator": "Manage and maintain IT infrastructure. Ensure system security, performance, and reliability.",
     "Technology Analyst": "Analyze technology trends and their business implications. Provide strategic advice on technology adoption.",
     "Technical Lead": "Lead a team of developers while contributing to code. Provide technical direction and mentorship.",
@@ -206,8 +205,7 @@ const CourseDetailsPage = () => {
                             {course.careerProspects.map((career, index) => (
                               <Badge 
                                 key={index} 
-                                className="justify-start py-1 sm:py-2 bg-secondary/20 hover:bg-secondary/30 cursor-pointer transition-colors text-[10px] sm:text-xs"
-                                onClick={() => navigate(`/careers/${encodeURIComponent(career)}`)}
+                                className="justify-start py-1 sm:py-2 bg-secondary/20 hover:bg-secondary/30 cursor-default transition-colors text-[10px] sm:text-xs"
                               >
                                 <BriefcaseIcon className="h-3 w-3 sm:h-3.5 sm:w-3.5 mr-1 sm:mr-2" />
                                 {career}
@@ -274,7 +272,7 @@ const CourseDetailsPage = () => {
                         Top Companies Hiring
                       </h3>
                       
-                      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                         {Object.keys(companyJobOpportunities).map((company, index) => (
                           <Card 
                             key={index} 
