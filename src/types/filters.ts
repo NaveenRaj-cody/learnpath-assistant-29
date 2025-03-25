@@ -1,4 +1,5 @@
 
+
 export type CourseLevel = 
   | 'all' 
   | 'undergraduate' 
@@ -19,12 +20,27 @@ export type SubjectArea =
   | 'commerce' 
   | 'design' 
   | 'education' 
-  | 'vocational'
+  | 'vocational' 
   | 'agriculture'
   | 'information-technology'
   | 'hospitality'
   | 'media'
-  | 'paramedical';
+  | 'paramedical'
+  | 'social-sciences'
+  | 'management'
+  | 'architecture'
+  | 'computer-applications'
+  | 'hotel-management'
+  | 'pharmacy'
+  | 'accountancy'
+  | 'veterinary'
+  | 'fashion'
+  | 'integrated-law'
+  | 'integrated-science'
+  | 'integrated-management'
+  | 'integrated-technology'
+  | 'integrated-education'
+  | 'others';
 
 export type CollegeType = 
   | 'all' 
@@ -51,3 +67,4 @@ export type CollegeSpecialization =
   | 'women' 
   | 'men' 
   | 'coed';
+

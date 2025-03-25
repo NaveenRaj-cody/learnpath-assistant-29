@@ -1,3 +1,4 @@
+
 import React, { useState, useMemo, useEffect } from 'react';
 import { cn } from "@/lib/utils";
 import { Card } from "@/components/ui/card";
@@ -26,84 +27,114 @@ const CourseExplorer: React.FC<CourseExplorerProps> = ({ onAskAboutCourse }) => 
 
   // Define field options based on level selection
   const levelSpecificFields = useMemo(() => {
-    const diplomaFields = [
-      { value: 'engineering', label: 'Engineering and Technology' },
-      { value: 'medicine', label: 'Medical and Paramedical' },
-      { value: 'arts', label: 'Arts and Design' },
-      { value: 'business', label: 'Commerce and Business' },
-      { value: 'agriculture', label: 'Agriculture and Allied Sciences' },
-      { value: 'hospitality', label: 'Hotel Management and Hospitality' },
-      { value: 'vocational', label: 'Vocational and Skill-Based Courses' },
-      { value: 'education', label: 'Education' },
-    ];
-
+    // Common "All Fields" option for all levels
+    const allFieldsOption = { value: 'all', label: 'All Fields' };
+    
+    // Undergraduate Fields
     const undergraduateFields = [
-      { value: 'engineering', label: 'Engineering and Technology' },
-      { value: 'medicine', label: 'Medical and Health Sciences' },
-      { value: 'arts', label: 'Arts and Humanities' },
-      { value: 'business', label: 'Commerce and Business' },
+      { value: 'arts', label: 'Arts/Humanities' },
       { value: 'science', label: 'Science' },
+      { value: 'commerce', label: 'Commerce' },
+      { value: 'engineering', label: 'Engineering/Technology' },
+      { value: 'medicine', label: 'Medicine/Allied Health Sciences' },
       { value: 'law', label: 'Law' },
-      { value: 'agriculture', label: 'Agriculture and Allied Sciences' },
-      { value: 'hospitality', label: 'Hotel Management and Hospitality' },
-      { value: 'media', label: 'Design and Media' },
+      { value: 'design', label: 'Design/Architecture' },
+      { value: 'computer-applications', label: 'Computer Applications' },
+      { value: 'hotel-management', label: 'Hotel Management' },
+      { value: 'others', label: 'Others' }
     ];
-
+    
+    // Postgraduate Fields
     const postgraduateFields = [
-      { value: 'engineering', label: 'Engineering and Technology' },
-      { value: 'medicine', label: 'Medical and Health Sciences' },
-      { value: 'arts', label: 'Arts and Humanities' },
-      { value: 'business', label: 'Commerce and Business' },
+      { value: 'arts', label: 'Arts/Humanities' },
       { value: 'science', label: 'Science' },
+      { value: 'management', label: 'Commerce/Management' },
+      { value: 'engineering', label: 'Engineering/Technology' },
+      { value: 'medicine', label: 'Medicine/Allied Health Sciences' },
       { value: 'law', label: 'Law' },
-      { value: 'agriculture', label: 'Agriculture and Allied Sciences' },
-      { value: 'hospitality', label: 'Hotel Management and Hospitality' },
-      { value: 'media', label: 'Design and Media' },
+      { value: 'computer-applications', label: 'Computer Applications' },
+      { value: 'design', label: 'Design/Architecture' },
+      { value: 'others', label: 'Others' }
     ];
-
+    
+    // Doctoral Fields
     const doctoralFields = [
-      { value: 'engineering', label: 'Engineering and Technology' },
-      { value: 'medicine', label: 'Medical and Health Sciences' },
+      { value: 'arts', label: 'Arts/Humanities' },
       { value: 'science', label: 'Science' },
-      { value: 'arts', label: 'Arts and Humanities' },
-      { value: 'business', label: 'Commerce and Business' },
+      { value: 'social-sciences', label: 'Social Sciences' },
+      { value: 'engineering', label: 'Engineering/Technology' },
+      { value: 'medicine', label: 'Medicine/Allied Health Sciences' },
       { value: 'law', label: 'Law' },
-      { value: 'agriculture', label: 'Agriculture and Allied Sciences' },
-      { value: 'education', label: 'Education' },
-      { value: 'hospitality', label: 'Hotel Management and Hospitality' },
-      { value: 'media', label: 'Design and Media' },
+      { value: 'management', label: 'Management' },
+      { value: 'architecture', label: 'Architecture/Design' },
+      { value: 'others', label: 'Others' }
     ];
-
-    const allFields = [
-      { value: 'all', label: 'All Fields' },
+    
+    // Diploma Fields
+    const diplomaFields = [
+      { value: 'engineering', label: 'Engineering/Technology' },
+      { value: 'information-technology', label: 'Computer Applications/IT' },
+      { value: 'paramedical', label: 'Healthcare/Paramedical' },
+      { value: 'business', label: 'Business/Management' },
+      { value: 'hospitality', label: 'Hospitality/Tourism' },
+      { value: 'fashion', label: 'Design/Fashion' },
+      { value: 'vocational', label: 'Vocational Trades' },
+      { value: 'agriculture', label: 'Agriculture' },
+      { value: 'education', label: 'Education' },
+      { value: 'media', label: 'Media/Communication' },
+      { value: 'others', label: 'Others' }
+    ];
+    
+    // Integrated Program Fields
+    const integratedFields = [
+      { value: 'integrated-law', label: 'Integrated Law' },
+      { value: 'integrated-science', label: 'Integrated Science' },
+      { value: 'integrated-management', label: 'Integrated Management' },
+      { value: 'integrated-technology', label: 'Integrated Technology' },
+      { value: 'integrated-education', label: 'Integrated Teacher Education' },
+      { value: 'others', label: 'Others' }
+    ];
+    
+    // Professional Degree Fields
+    const professionalFields = [
+      { value: 'medicine', label: 'Medicine' },
+      { value: 'law', label: 'Law' },
+      { value: 'architecture', label: 'Architecture' },
+      { value: 'pharmacy', label: 'Pharmacy' },
+      { value: 'education', label: 'Education' },
+      { value: 'business', label: 'Business Administration' },
+      { value: 'accountancy', label: 'Accountancy' },
+      { value: 'veterinary', label: 'Veterinary Science' },
+      { value: 'others', label: 'Others' }
+    ];
+    
+    // Default Fields for when no level is selected
+    const defaultFields = [
       { value: 'engineering', label: 'Engineering & Technical' },
       { value: 'medicine', label: 'Healthcare & Medical Sciences' },
       { value: 'business', label: 'Business & Management' },
       { value: 'law', label: 'Law' },
       { value: 'arts', label: 'Arts, Design & Creative' },
       { value: 'science', label: 'Science' },
-      { value: 'commerce', label: 'Commerce' },
-      { value: 'design', label: 'Design' },
-      { value: 'education', label: 'Education' },
-      { value: 'vocational', label: 'Vocational & Industrial Training' },
-      { value: 'agriculture', label: 'Agriculture & Allied Fields' },
-      { value: 'information-technology', label: 'Information Technology' },
-      { value: 'hospitality', label: 'Hospitality & Tourism' },
-      { value: 'media', label: 'Media & Communication' },
-      { value: 'paramedical', label: 'Paramedical Sciences' }
+      { value: 'others', label: 'Others' }
     ];
-
+    
+    // Return the appropriate field options based on the selected level
     switch (levelFilter) {
-      case 'diploma':
-        return [{ value: 'all', label: 'All Fields' }, ...diplomaFields];
       case 'undergraduate':
-        return [{ value: 'all', label: 'All Fields' }, ...undergraduateFields];
+        return [allFieldsOption, ...undergraduateFields];
       case 'postgraduate':
-        return [{ value: 'all', label: 'All Fields' }, ...postgraduateFields];
+        return [allFieldsOption, ...postgraduateFields];
       case 'doctoral':
-        return [{ value: 'all', label: 'All Fields' }, ...doctoralFields];
+        return [allFieldsOption, ...doctoralFields];
+      case 'diploma':
+        return [allFieldsOption, ...diplomaFields];
+      case 'integrated':
+        return [allFieldsOption, ...integratedFields];
+      case 'professional':
+        return [allFieldsOption, ...professionalFields];
       default:
-        return allFields;
+        return [allFieldsOption, ...defaultFields];
     }
   }, [levelFilter]);
 
@@ -153,10 +184,12 @@ const CourseExplorer: React.FC<CourseExplorerProps> = ({ onAskAboutCourse }) => 
 
   const levelOptions = [
     { value: 'all', label: 'All Levels' },
-    { value: 'diploma', label: 'Diploma' },
-    { value: 'undergraduate', label: 'Undergraduate (UG)' },
-    { value: 'postgraduate', label: 'Postgraduate (PG)' },
-    { value: 'doctoral', label: 'Doctoral' }
+    { value: 'undergraduate', label: 'Undergraduate Degrees (Bachelor\'s Degrees)' },
+    { value: 'postgraduate', label: 'Postgraduate Degrees (Master\'s Degrees)' },
+    { value: 'doctoral', label: 'Doctoral Degrees (Ph.D.)' },
+    { value: 'diploma', label: 'Diploma and Certificate Programs' },
+    { value: 'integrated', label: 'Integrated Programs' },
+    { value: 'professional', label: 'Professional Degrees' }
   ];
 
   const handleSuggestionClick = (suggestion: string) => {
