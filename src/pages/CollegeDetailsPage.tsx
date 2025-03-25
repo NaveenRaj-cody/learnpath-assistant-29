@@ -9,16 +9,13 @@ import { MapPin, GraduationCap, Users, Briefcase, Award, Star, Medal, CheckSquar
 import { coursesData, Course } from '@/data/coursesData';
 import AnimatedTransition from '@/components/AnimatedTransition';
 import { CollegeCredentials } from '@/types/filters';
+import { collegesData, College } from '@/data/collegesData';
+import { getCollegesByIds } from '@/utils/dataUtils';
 
 const CollegeDetailsPage = () => {
   const { collegeName } = useParams();
   const navigate = useNavigate();
-  const [collegeDetails, setCollegeDetails] = useState<{
-    name: string;
-    location: string;
-    ranking: string;
-    features: string[];
-  } | null>(null);
+  const [collegeDetails, setCollegeDetails] = useState<College | null>(null);
   const [relatedCourses, setRelatedCourses] = useState<Course[]>([]);
   const [collegeCredentials, setCollegeCredentials] = useState<CollegeCredentials>({
     ranking: 'Top 10 in India',
@@ -30,23 +27,24 @@ const CollegeDetailsPage = () => {
     if (collegeName) {
       const decodedCollegeName = decodeURIComponent(collegeName);
       
-      const courses = coursesData.filter(course => 
-        course.topColleges.some(college => college.name === decodedCollegeName)
-      );
+      // Find the college by name
+      const foundCollege = collegesData.find(college => college.name === decodedCollegeName);
       
-      if (courses.length > 0) {
-        const college = courses[0].topColleges.find(col => col.name === decodedCollegeName);
-        if (college) {
-          setCollegeDetails(college);
-          
-          const rankingInfo = college.ranking ? college.ranking : 'Unranked';
-          setCollegeCredentials({
-            ranking: rankingInfo,
-            accreditation: rankingInfo.includes('Top') ? 'A+ Grade (NAAC)' : 'B++ Grade (NAAC)',
-            affiliation: college.name.includes('Institute') ? 'Autonomous Institution' : 
-                         (college.name.includes('University') ? 'University' : 'Affiliated to State University')
-          });
-        }
+      if (foundCollege) {
+        setCollegeDetails(foundCollege);
+        
+        const rankingInfo = foundCollege.ranking ? foundCollege.ranking : 'Unranked';
+        setCollegeCredentials({
+          ranking: rankingInfo,
+          accreditation: rankingInfo.includes('Top') ? 'A+ Grade (NAAC)' : 'B++ Grade (NAAC)',
+          affiliation: foundCollege.name.includes('Institute') ? 'Autonomous Institution' : 
+                      (foundCollege.name.includes('University') ? 'University' : 'Affiliated to State University')
+        });
+        
+        // Find courses that have this college in their topCollegeIds
+        const courses = coursesData.filter(course => 
+          course.topCollegeIds.includes(foundCollege.id)
+        );
         
         setRelatedCourses(courses);
       }

@@ -5,7 +5,8 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { MapPin, Search, Building, X, Medal, CheckSquare } from 'lucide-react';
-import { coursesData, College } from '@/data/coursesData';
+import { coursesData } from '@/data/coursesData';
+import { collegesData, College } from '@/data/collegesData';
 import AnimatedTransition from '@/components/AnimatedTransition';
 import CoursesModal from '@/components/CoursesModal';
 import { useToast } from "@/hooks/use-toast";
@@ -15,6 +16,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import SearchableSelect from '@/components/SearchableSelect';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { getCollegesByIds } from '@/utils/dataUtils';
 
 const statesData = [
   { name: "Andhra Pradesh", districts: ["Alluri Sitarama Raju", "Anakapalli", "Anantapur", "Annamaya", "Bapatla", "Chittoor", "East Godavari", "Eluru", "Guntur", "Kadapa", "Kakinada", "Konaseema", "Krishna", "Kurnool", "Manyam", "N T Rama Rao", "Nandyal", "Nellore", "Palnadu", "Prakasam", "Sri Balaji", "Sri Satya Sai", "Srikakulam", "Visakhapatnam", "Vizianagaram", "West Godavari"] },
@@ -92,11 +94,7 @@ const CollegesPage = () => {
   const [showCoursesModal, setShowCoursesModal] = useState(false);
   const [modalType, setModalType] = useState<'courses' | 'colleges'>('colleges');
 
-  const allColleges = coursesData.flatMap(course => course.topColleges);
-  
-  const uniqueColleges = allColleges.filter((college, index, self) =>
-    index === self.findIndex((c) => c.name === college.name)
-  );
+  const uniqueColleges = collegesData;
   
   const collegeTypeOptions = [
     { value: 'all', label: 'All Types' },
@@ -342,173 +340,3 @@ const CollegesPage = () => {
                       <SelectTrigger className="w-full glass-input">
                         <SelectValue placeholder="Select college affiliation" />
                       </SelectTrigger>
-                      <SelectContent>
-                        {collegeAffiliationOptions.map(option => (
-                          <SelectItem key={option.value} value={option.value}>{option.label}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium">Specialization</label>
-                    <Select
-                      value={specializationFilter}
-                      onValueChange={(value) => handleFilterChange('specialization', value)}
-                    >
-                      <SelectTrigger className="w-full glass-input">
-                        <SelectValue placeholder="Select specialization" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {specializationOptions.map(option => (
-                          <SelectItem key={option.value} value={option.value}>{option.label}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium">States and Union Territories</label>
-                    <SearchableSelect
-                      options={stateOptions}
-                      value={stateFilter}
-                      onValueChange={(value) => handleFilterChange('state', value)}
-                      placeholder="Select state/UT"
-                      className="glass-input"
-                      noResultsText="No states found"
-                    />
-                  </div>
-                  
-                  {stateFilter !== 'all' && (
-                    <div className="space-y-2">
-                      <label className="text-sm font-medium">District</label>
-                      <SearchableSelect
-                        options={districtOptions}
-                        value={districtFilter}
-                        onValueChange={(value) => handleFilterChange('district', value)}
-                        placeholder="Select district"
-                        className="glass-input"
-                        noResultsText="No districts found"
-                      />
-                    </div>
-                  )}
-                  
-                  <Button 
-                    variant="outline" 
-                    className="w-full hover:bg-primary/10 hover:text-primary hover:shadow-md active:scale-[0.97] transition-all"
-                    onClick={() => {
-                      setSearchTerm('');
-                      setCollegeTypeFilter('all');
-                      setCollegeAffiliationFilter('all');
-                      setSpecializationFilter('all');
-                      setStateFilter('all');
-                      setDistrictFilter('all');
-                      toast({
-                        description: "All filters reset",
-                        duration: 1500,
-                      });
-                    }}
-                  >
-                    Reset Filters
-                  </Button>
-                </CardContent>
-              </Card>
-            </div>
-            
-            <div className="lg:col-span-2">
-              <div className="mb-4 flex justify-between items-center">
-                <h2 className="text-xl font-semibold">Results ({filteredColleges.length})</h2>
-              </div>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {filteredColleges.length === 0 ? (
-                  <div className="col-span-full bg-muted rounded-lg p-8 text-center">
-                    <Building className="mx-auto h-12 w-12 text-muted-foreground/50 mb-4" />
-                    <h3 className="text-lg font-medium mb-2">No colleges found</h3>
-                    <p className="text-muted-foreground mb-4">Try adjusting your filters</p>
-                    <Button 
-                      variant="outline" 
-                      onClick={() => {
-                        setSearchTerm('');
-                        setCollegeTypeFilter('all');
-                        setCollegeAffiliationFilter('all');
-                        setSpecializationFilter('all');
-                        setStateFilter('all');
-                        setDistrictFilter('all');
-                        toast({
-                          description: "All filters reset",
-                          duration: 1500,
-                        });
-                      }}
-                      className="hover:bg-primary/10 hover:text-primary hover:shadow-md active:scale-[0.97] transition-all"
-                    >
-                      Reset Filters
-                    </Button>
-                  </div>
-                ) : (
-                  filteredColleges.map((college, index) => {
-                    const collegeCredentials = getCollegeCredentials(college);
-                    return (
-                      <Card key={index} className="flex flex-col h-full cursor-pointer hover:border-primary transition-colors hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
-                        <CardHeader className="pb-2">
-                          <div className="flex justify-between items-start mb-2">
-                            <StarRating rating={getCollegeRating(college.name)} />
-                          </div>
-                          <CardTitle className="text-lg">{college.name}</CardTitle>
-                          <CardDescription className="flex items-center gap-1">
-                            <MapPin className="h-3 w-3" />
-                            {college.location}
-                          </CardDescription>
-                        </CardHeader>
-                        <CardContent className="pt-0 pb-2 flex-grow">
-                          <div className="space-y-2 text-sm">
-                            {collegeCredentials.ranking && (
-                              <div className="flex items-start gap-2">
-                                <Medal className="h-4 w-4 text-amber-500 mt-0.5 shrink-0" />
-                                <span className="text-xs">{collegeCredentials.ranking}</span>
-                              </div>
-                            )}
-                            {collegeCredentials.accreditation && (
-                              <div className="flex items-start gap-2">
-                                <CheckSquare className="h-4 w-4 text-green-500 mt-0.5 shrink-0" />
-                                <span className="text-xs">{collegeCredentials.accreditation}</span>
-                              </div>
-                            )}
-                            {collegeCredentials.affiliation && (
-                              <div className="flex items-start gap-2">
-                                <Building className="h-4 w-4 text-blue-500 mt-0.5 shrink-0" />
-                                <span className="text-xs">{collegeCredentials.affiliation}</span>
-                              </div>
-                            )}
-                          </div>
-                        </CardContent>
-                        <CardFooter className="mt-auto">
-                          <Button 
-                            size="sm" 
-                            className="w-full hover:bg-primary/90 hover:shadow-md active:scale-[0.96] transition-all" 
-                            variant="outline"
-                            onClick={() => handleViewDetails(college)}
-                          >
-                            View Details
-                          </Button>
-                        </CardFooter>
-                      </Card>
-                    );
-                  })
-                )}
-              </div>
-            </div>
-          </div>
-        </AnimatedTransition>
-      </main>
-      
-      <CoursesModal 
-        isOpen={showCoursesModal} 
-        onClose={() => setShowCoursesModal(false)} 
-        type={modalType} 
-      />
-    </div>
-  );
-};
-
-export default CollegesPage;
