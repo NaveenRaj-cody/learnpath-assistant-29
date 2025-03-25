@@ -1,5 +1,12 @@
 
-export type CourseLevel = 'all' | 'diploma' | 'undergraduate' | 'postgraduate' | 'doctoral';
+export type CourseLevel = 
+  | 'all' 
+  | 'undergraduate' 
+  | 'postgraduate' 
+  | 'doctoral' 
+  | 'diploma' 
+  | 'integrated' 
+  | 'professional';
 
 export type SubjectArea = 
   | 'all' 

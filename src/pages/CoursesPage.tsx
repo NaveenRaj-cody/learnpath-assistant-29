@@ -155,10 +155,12 @@ const CoursesPage = () => {
 
   const levelOptions = [
     { value: 'all', label: 'All Levels' },
-    { value: 'diploma', label: 'Diploma' },
-    { value: 'undergraduate', label: 'Undergraduate (UG)' },
-    { value: 'postgraduate', label: 'Postgraduate (PG)' },
-    { value: 'doctoral', label: 'Doctoral' }
+    { value: 'undergraduate', label: 'Undergraduate Degrees (Bachelor\'s Degrees)' },
+    { value: 'postgraduate', label: 'Postgraduate Degrees (Master\'s Degrees)' },
+    { value: 'doctoral', label: 'Doctoral Degrees (Ph.D.)' },
+    { value: 'diploma', label: 'Diploma and Certificate Programs' },
+    { value: 'integrated', label: 'Integrated Programs' },
+    { value: 'professional', label: 'Professional Degrees' }
   ];
 
   return (
