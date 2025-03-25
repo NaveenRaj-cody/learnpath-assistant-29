@@ -72,3 +72,9 @@ export type CollegeSpecialization =
   | 'women' 
   | 'men' 
   | 'coed';
+
+export interface CollegeCredentials {
+  ranking?: string;
+  accreditation?: string;
+  affiliation?: string;
+}

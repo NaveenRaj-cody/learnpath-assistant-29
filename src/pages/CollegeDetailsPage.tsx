@@ -5,9 +5,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { MapPin, GraduationCap, Users, Briefcase, Award, Star } from 'lucide-react';
+import { MapPin, GraduationCap, Users, Briefcase, Award, Star, Medal, CheckSquare, Building } from 'lucide-react';
 import { coursesData, Course } from '@/data/coursesData';
 import AnimatedTransition from '@/components/AnimatedTransition';
+import { CollegeCredentials } from '@/types/filters';
 
 const CollegeDetailsPage = () => {
   const { collegeName } = useParams();
@@ -19,6 +20,11 @@ const CollegeDetailsPage = () => {
     features: string[];
   } | null>(null);
   const [relatedCourses, setRelatedCourses] = useState<Course[]>([]);
+  const [collegeCredentials, setCollegeCredentials] = useState<CollegeCredentials>({
+    ranking: 'Top 10 in India',
+    accreditation: 'A+ Grade (NAAC)',
+    affiliation: 'Autonomous Institution'
+  });
   
   useEffect(() => {
     if (collegeName) {
@@ -32,6 +38,14 @@ const CollegeDetailsPage = () => {
         const college = courses[0].topColleges.find(col => col.name === decodedCollegeName);
         if (college) {
           setCollegeDetails(college);
+          
+          const rankingInfo = college.ranking ? college.ranking : 'Unranked';
+          setCollegeCredentials({
+            ranking: rankingInfo,
+            accreditation: rankingInfo.includes('Top') ? 'A+ Grade (NAAC)' : 'B++ Grade (NAAC)',
+            affiliation: college.name.includes('Institute') ? 'Autonomous Institution' : 
+                         (college.name.includes('University') ? 'University' : 'Affiliated to State University')
+          });
         }
         
         setRelatedCourses(courses);
@@ -114,6 +128,41 @@ const CollegeDetailsPage = () => {
                             excellence in education and research. The college offers a diverse 
                             range of programs with state-of-the-art facilities.
                           </p>
+                        </div>
+                        
+                        <div>
+                          <h4 className="font-medium mb-2">College Credentials:</h4>
+                          <ul className="space-y-2">
+                            {collegeCredentials.ranking && (
+                              <li className="flex items-start gap-2">
+                                <Medal className="h-5 w-5 text-amber-500 mt-0.5 shrink-0" />
+                                <div>
+                                  <span className="font-medium text-sm">Ranking:</span>
+                                  <p className="text-sm">{collegeCredentials.ranking}</p>
+                                </div>
+                              </li>
+                            )}
+                            
+                            {collegeCredentials.accreditation && (
+                              <li className="flex items-start gap-2">
+                                <CheckSquare className="h-5 w-5 text-green-500 mt-0.5 shrink-0" />
+                                <div>
+                                  <span className="font-medium text-sm">Accreditation:</span>
+                                  <p className="text-sm">{collegeCredentials.accreditation}</p>
+                                </div>
+                              </li>
+                            )}
+                            
+                            {collegeCredentials.affiliation && (
+                              <li className="flex items-start gap-2">
+                                <Building className="h-5 w-5 text-blue-500 mt-0.5 shrink-0" />
+                                <div>
+                                  <span className="font-medium text-sm">Affiliation:</span>
+                                  <p className="text-sm">{collegeCredentials.affiliation}</p>
+                                </div>
+                              </li>
+                            )}
+                          </ul>
                         </div>
                         
                         <div>
