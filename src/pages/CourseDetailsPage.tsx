@@ -7,6 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter }
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { BookOpen, BriefcaseIcon, Building, DollarSign, TrendingUp, Award, ArrowLeft, GraduationCap, Info } from 'lucide-react';
 import { coursesData, Course } from '@/data/coursesData';
 import AnimatedTransition from '@/components/AnimatedTransition';
@@ -20,6 +21,7 @@ const CourseDetailsPage = () => {
   const [activeTab, setActiveTab] = useState('overview');
   const [selectedCompany, setSelectedCompany] = useState<string | null>(null);
   const [selectedJob, setSelectedJob] = useState<string | null>(null);
+  const [isJobDialogOpen, setIsJobDialogOpen] = useState(false);
 
   useEffect(() => {
     if (courseId) {
@@ -90,6 +92,11 @@ const CourseDetailsPage = () => {
   const handleCompanyClick = (company: string) => {
     setSelectedCompany(company);
     setSelectedJob(null);
+  };
+
+  const handleJobClick = (job: string) => {
+    setSelectedJob(job);
+    setIsJobDialogOpen(true);
   };
 
   const renderJobDetails = (job: string) => {
@@ -239,28 +246,25 @@ const CourseDetailsPage = () => {
                       
                       <Card className="bg-muted/30 border-primary/10">
                         <CardContent className="p-2 sm:p-6">
-                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-4">
+                          <div className="grid grid-cols-2 sm:grid-cols-2 gap-2 sm:gap-4">
                             {companyJobOpportunities[selectedCompany]?.map((job, index) => (
-                              <Popover key={index}>
-                                <PopoverTrigger asChild>
-                                  <Card className="hover:border-primary transition-colors cursor-pointer">
-                                    <CardHeader className="pb-0 sm:pb-2 p-2 sm:p-4">
-                                      <CardTitle className="text-xs sm:text-base flex items-center gap-1 sm:gap-2">
-                                        <BriefcaseIcon className="h-3 w-3 sm:h-4 sm:w-4 text-primary" />
-                                        {job}
-                                      </CardTitle>
-                                    </CardHeader>
-                                    <CardFooter className="pt-0 p-2 sm:p-4">
-                                      <div className="flex justify-end w-full">
-                                        <Info className="h-3 w-3 sm:h-4 sm:w-4 text-muted-foreground" />
-                                      </div>
-                                    </CardFooter>
-                                  </Card>
-                                </PopoverTrigger>
-                                <PopoverContent className="w-[240px] sm:w-80 p-2 sm:p-4 max-h-[60vh] overflow-y-auto">
-                                  {renderJobDetails(job)}
-                                </PopoverContent>
-                              </Popover>
+                              <Card 
+                                key={index} 
+                                className="hover:border-primary transition-colors cursor-pointer"
+                                onClick={() => handleJobClick(job)}
+                              >
+                                <CardHeader className="pb-0 sm:pb-2 p-2 sm:p-4">
+                                  <CardTitle className="text-xs sm:text-base flex items-center gap-1 sm:gap-2">
+                                    <BriefcaseIcon className="h-3 w-3 sm:h-4 sm:w-4 text-primary" />
+                                    {job}
+                                  </CardTitle>
+                                </CardHeader>
+                                <CardFooter className="pt-0 p-2 sm:p-4">
+                                  <div className="flex justify-end w-full">
+                                    <Info className="h-3 w-3 sm:h-4 sm:w-4 text-muted-foreground" />
+                                  </div>
+                                </CardFooter>
+                              </Card>
                             ))}
                           </div>
                         </CardContent>
@@ -273,7 +277,7 @@ const CourseDetailsPage = () => {
                         Top Companies Hiring
                       </h3>
                       
-                      <div className="grid grid-cols-2 gap-2 sm:gap-4">
+                      <div className="grid grid-cols-2 sm:grid-cols-2 gap-2 sm:gap-4">
                         {Object.keys(companyJobOpportunities).map((company, index) => (
                           <Card 
                             key={index} 
@@ -303,6 +307,98 @@ const CourseDetailsPage = () => {
           )}
         </AnimatedTransition>
       </main>
+
+      {/* Job Details Dialog */}
+      <Dialog open={isJobDialogOpen} onOpenChange={setIsJobDialogOpen}>
+        <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="text-xl">{selectedJob}</DialogTitle>
+            <DialogDescription>
+              Career details and requirements
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-2">
+            {selectedJob && (
+              <>
+                <div className="space-y-2">
+                  <h4 className="text-sm font-medium">Job Description</h4>
+                  <p className="text-sm">{jobDescriptions[selectedJob] || "No description available."}</p>
+                </div>
+                
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <h4 className="text-sm font-medium flex items-center gap-1">
+                      <DollarSign className="h-4 w-4 text-primary" /> Salary Range
+                    </h4>
+                    <div className="bg-muted/30 p-3 rounded-md">
+                      <div className="text-sm mb-1">
+                        <span className="font-medium">India:</span> ₹5-20 LPA
+                      </div>
+                      <div className="text-sm">
+                        <span className="font-medium">Global:</span> $60K-150K/year
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <h4 className="text-sm font-medium flex items-center gap-1">
+                      <TrendingUp className="h-4 w-4 text-primary" /> Growth
+                    </h4>
+                    <div className="bg-muted/30 p-3 rounded-md">
+                      <div className="text-sm mb-1">
+                        <span className="font-medium">Trend:</span> High Demand
+                      </div>
+                      <div className="text-sm">
+                        <span className="font-medium">Outlook:</span> Positive
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="space-y-2">
+                  <h4 className="text-sm font-medium flex items-center gap-1">
+                    <Award className="h-4 w-4 text-primary" /> Required Skills
+                  </h4>
+                  <div className="bg-muted/30 p-3 rounded-md">
+                    <div className="flex flex-wrap gap-2">
+                      {["Technical Knowledge", "Communication", "Problem Solving", "Analytical Thinking", "Teamwork"].map((skill, i) => (
+                        <Badge key={i} variant="secondary" className="bg-secondary/10">
+                          {skill}
+                        </Badge>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="space-y-2">
+                  <h4 className="text-sm font-medium flex items-center gap-1">
+                    <BookOpen className="h-4 w-4 text-primary" /> Education
+                  </h4>
+                  <div className="bg-muted/30 p-3 rounded-md text-sm">
+                    <p>Relevant {course?.level} degree in {course?.field} or related field is typically required.</p>
+                  </div>
+                </div>
+                
+                <div className="space-y-2">
+                  <h4 className="text-sm font-medium flex items-center gap-1">
+                    <Building className="h-4 w-4 text-primary" /> Top Employers
+                  </h4>
+                  <div className="bg-muted/30 p-3 rounded-md">
+                    <div className="grid grid-cols-2 gap-2">
+                      <div className="text-sm">
+                        <span className="font-medium">India:</span> {selectedCompany}, Infosys, TCS
+                      </div>
+                      <div className="text-sm">
+                        <span className="font-medium">Global:</span> {selectedCompany}, Google, Microsoft
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </>
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
