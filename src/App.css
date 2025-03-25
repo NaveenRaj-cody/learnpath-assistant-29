@@ -116,4 +116,14 @@
     flex: 1 1 calc(50% - 0.25rem);
     min-width: 120px;
   }
+  
+  /* Fix for mobile icon+text alignment */
+  .mobile-icon-text-fix {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.25rem;
+    line-height: 1;
+  }
 }
+

@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Link, useNavigate } from "react-router-dom";
@@ -18,7 +17,6 @@ const HeroSection = () => {
   const [isCoursesModalOpen, setIsCoursesModalOpen] = useState(false);
   const [modalType, setModalType] = useState<'courses' | 'colleges'>('courses');
   
-  // Calculate the actual counts from the data
   const coursesCount = coursesData.length;
   const collegesCount = coursesData.reduce((total, course) => total + course.topColleges.length, 0);
   
@@ -74,20 +72,26 @@ const HeroSection = () => {
               <div className="grid grid-cols-3 gap-2">
                 <Button asChild variant="outline" size="sm" className="w-full h-auto py-1.5 sm:py-2 text-xs sm:text-sm hover:bg-primary/10 hover:text-primary hover:shadow-md active:scale-95 transition-all">
                   <Link to="/courses">
-                    <BookOpen className="mr-1 h-3 w-3 sm:h-4 sm:w-4" />
-                    <span className="whitespace-nowrap">Courses</span>
+                    <span className="mobile-icon-text-fix">
+                      <BookOpen className="h-3 w-3 sm:h-4 sm:w-4" />
+                      <span className="whitespace-nowrap">Courses</span>
+                    </span>
                   </Link>
                 </Button>
                 <Button asChild variant="outline" size="sm" className="w-full h-auto py-1.5 sm:py-2 text-xs sm:text-sm hover:bg-primary/10 hover:text-primary hover:shadow-md active:scale-95 transition-all">
                   <Link to="/colleges">
-                    <Building className="mr-1 h-3 w-3 sm:h-4 sm:w-4" />
-                    <span className="whitespace-nowrap">Colleges</span>
+                    <span className="mobile-icon-text-fix">
+                      <Building className="h-3 w-3 sm:h-4 sm:w-4" />
+                      <span className="whitespace-nowrap">Colleges</span>
+                    </span>
                   </Link>
                 </Button>
                 <Button asChild variant="outline" size="sm" className="w-full h-auto py-1.5 sm:py-2 text-xs sm:text-sm hover:bg-primary/10 hover:text-primary hover:shadow-md active:scale-95 transition-all">
                   <Link to="/careers">
-                    <BriefcaseIcon className="mr-1 h-3 w-3 sm:h-4 sm:w-4" />
-                    <span className="whitespace-nowrap">Careers</span>
+                    <span className="mobile-icon-text-fix">
+                      <BriefcaseIcon className="h-3 w-3 sm:h-4 sm:w-4" />
+                      <span className="whitespace-nowrap">Careers</span>
+                    </span>
                   </Link>
                 </Button>
               </div>
