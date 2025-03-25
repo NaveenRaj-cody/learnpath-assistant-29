@@ -300,7 +300,7 @@ const CoursesPage = () => {
                   filteredCourses.map((course) => (
                     <Card 
                       key={course.id} 
-                      className="h-full hover:shadow-lg transition-all duration-300 border-primary/20 animate-fade-in mobile-compact-card"
+                      className="h-full hover:shadow-lg transition-all duration-300 border-primary/20 animate-fade-in mobile-compact-card flex flex-col"
                     >
                       <CardHeader className="pb-1 p-2 sm:p-3 bg-gradient-to-r from-primary/5 to-blue-500/5">
                         <div className="flex justify-between items-start mb-1">
@@ -311,16 +311,16 @@ const CoursesPage = () => {
                         <CardTitle className="text-xs sm:text-sm">{course.name}</CardTitle>
                       </CardHeader>
                       
-                      <CardContent className="pb-1 px-2 sm:px-3 pt-1">
+                      <CardContent className="pb-1 px-2 sm:px-3 pt-1 flex-grow">
                         <div className="text-xs">
-                          <div className="flex justify-between mb-1">
+                          <div className="mb-1">
                             <span className="text-muted-foreground">Duration:</span>
-                            <span className="font-medium">{course.duration}</span>
+                            <span className="font-medium ml-1 inline-block">{course.duration}</span>
                           </div>
                         </div>
                       </CardContent>
                       
-                      <CardFooter className="p-2 sm:p-3">
+                      <CardFooter className="p-2 sm:p-3 mt-auto">
                         <Button 
                           size="sm"
                           className="w-full bg-primary hover:bg-primary/90 transition-all duration-300 h-6 text-[10px] sm:text-xs"
