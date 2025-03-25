@@ -10,9 +10,11 @@ import {
   DialogFooter
 } from "@/components/ui/dialog";
 import { coursesData } from '@/data/coursesData';
+import { collegesData } from '@/data/collegesData';
 import { BookOpen, Building } from 'lucide-react';
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useIsMobile } from '@/hooks/use-mobile';
+import { getCollegesByIds } from '@/utils/dataUtils';
 
 interface CoursesModalProps {
   isOpen: boolean;
@@ -26,11 +28,10 @@ const CoursesModal: React.FC<CoursesModalProps> = ({ isOpen, onClose, type }) =>
   // Extract unique course names or college names from coursesData
   const courses = coursesData.map(course => course.name);
   
-  // Extract all colleges and remove duplicates
-  const allColleges = coursesData.flatMap(course => 
-    course.topColleges.map(college => college.name)
-  );
-  const uniqueColleges = [...new Set(allColleges)];
+  // Extract all colleges using the collegeIds and getCollegesByIds utility
+  const allCollegeIds = coursesData.flatMap(course => course.topCollegeIds);
+  const collegesFromCourses = getCollegesByIds(allCollegeIds);
+  const uniqueColleges = Array.from(new Set(collegesFromCourses.map(college => college.name)));
   
   const isCollegeView = type === 'colleges';
   

@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Link, useNavigate } from "react-router-dom";
@@ -9,6 +10,8 @@ import { ChatProvider, useChat } from '@/contexts/ChatContext';
 import { useAuth } from '@/contexts/AuthContext';
 import CoursesModal from '@/components/CoursesModal';
 import { coursesData } from '@/data/coursesData';
+import { collegesData } from '@/data/collegesData';
+import { getCollegesByIds } from '@/utils/dataUtils';
 
 const HeroSection = () => {
   const { sendMessage } = useChat();
@@ -18,7 +21,9 @@ const HeroSection = () => {
   const [modalType, setModalType] = useState<'courses' | 'colleges'>('courses');
   
   const coursesCount = coursesData.length;
-  const collegesCount = coursesData.reduce((total, course) => total + course.topColleges.length, 0);
+  const allCollegeIds = coursesData.reduce((total, course) => [...total, ...course.topCollegeIds], [] as string[]);
+  const uniqueCollegeIds = Array.from(new Set(allCollegeIds));
+  const collegesCount = uniqueCollegeIds.length;
   
   const handleOpenCoursesModal = () => {
     setModalType('courses');
