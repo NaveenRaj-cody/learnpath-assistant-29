@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import Header from '@/components/Header';
@@ -123,25 +124,25 @@ const CourseDetailsPage = () => {
     <div className="min-h-screen bg-background flex flex-col">
       <Header />
       
-      <main className="flex-1 container mx-auto py-4 sm:py-8 px-3 sm:px-4">
+      <main className="flex-1 container mx-auto py-3 sm:py-8 px-2 sm:px-4">
         <AnimatedTransition>
           <Button 
             variant="outline" 
             size={isMobile ? "sm" : "default"}
             onClick={() => navigate('/courses')} 
-            className="mb-3 sm:mb-6 text-xs sm:text-sm"
+            className="mb-2 sm:mb-6 text-xs sm:text-sm"
           >
-            ← Back to Courses
+            <ArrowLeft className="h-3 w-3 sm:h-4 sm:w-4 mr-1" /> Back to Courses
           </Button>
           
           {course ? (
             <>
               <Card className="border-primary/20 shadow-lg animate-fade-in overflow-hidden mb-3 sm:mb-6">
-                <CardHeader className="bg-gradient-to-r from-primary/10 to-blue-500/10 p-3 sm:p-6">
+                <CardHeader className="bg-gradient-to-r from-primary/10 to-blue-500/10 p-2 sm:p-6">
                   <div className="flex flex-col md:flex-row md:justify-between md:items-start gap-2 sm:gap-4">
                     <div>
-                      <CardTitle className="text-xl sm:text-2xl md:text-3xl mb-1 sm:mb-2">{course.name}</CardTitle>
-                      <CardDescription className="text-sm sm:text-base">{course.description}</CardDescription>
+                      <CardTitle className="text-base sm:text-2xl md:text-3xl mb-1 sm:mb-2">{course.name}</CardTitle>
+                      <CardDescription className="text-xs sm:text-base line-clamp-3 sm:line-clamp-none">{course.description}</CardDescription>
                     </div>
                     <div className="flex flex-wrap gap-1 sm:gap-2">
                       <Badge variant="outline" className="bg-primary/10 text-primary border-primary/20 text-[10px] sm:text-xs">
@@ -156,35 +157,35 @@ const CourseDetailsPage = () => {
               </Card>
               
               <Tabs defaultValue="overview" className="w-full">
-                <TabsList className="w-full justify-start mb-3 sm:mb-4 bg-muted/50 h-9 sm:h-10">
-                  <TabsTrigger value="overview" className="text-xs sm:text-sm">Overview</TabsTrigger>
-                  <TabsTrigger value="jobs" className="text-xs sm:text-sm">Job Opportunities</TabsTrigger>
+                <TabsList className="w-full justify-start mb-2 sm:mb-4 bg-muted/50 h-8 sm:h-10 overflow-x-auto">
+                  <TabsTrigger value="overview" className="text-xs sm:text-sm px-2 sm:px-3">Overview</TabsTrigger>
+                  <TabsTrigger value="jobs" className="text-xs sm:text-sm px-2 sm:px-3">Job Opportunities</TabsTrigger>
                 </TabsList>
                 
                 <TabsContent value="overview" className="mt-0">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-2 sm:gap-6">
                     <div>
                       <Card className="h-full bg-muted/30 border-primary/10">
-                        <CardHeader className="pb-1 sm:pb-2 p-3 sm:p-6">
-                          <CardTitle className="text-base sm:text-lg flex items-center gap-1 sm:gap-2">
-                            <GraduationCap className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
+                        <CardHeader className="pb-0 sm:pb-2 p-2 sm:p-6">
+                          <CardTitle className="text-sm sm:text-lg flex items-center gap-1 sm:gap-2">
+                            <GraduationCap className="h-3 w-3 sm:h-5 sm:w-5 text-primary" />
                             Course Details
                           </CardTitle>
                         </CardHeader>
-                        <CardContent className="space-y-2 sm:space-y-4 p-3 sm:p-6 pt-0 sm:pt-0">
-                          <div>
+                        <CardContent className="space-y-2 sm:space-y-4 p-2 sm:p-6 pt-0 sm:pt-0">
+                          <div className="space-y-1 sm:space-y-2">
                             <h3 className="font-medium text-xs sm:text-sm text-muted-foreground">Level</h3>
                             <p className="text-xs sm:text-sm">{course.level}</p>
                           </div>
-                          <div>
+                          <div className="space-y-1 sm:space-y-2">
                             <h3 className="font-medium text-xs sm:text-sm text-muted-foreground">Duration</h3>
                             <p className="text-xs sm:text-sm">{course.duration}</p>
                           </div>
-                          <div>
+                          <div className="space-y-1 sm:space-y-2">
                             <h3 className="font-medium text-xs sm:text-sm text-muted-foreground">Field</h3>
                             <p className="text-xs sm:text-sm">{course.field}</p>
                           </div>
-                          <div>
+                          <div className="space-y-1 sm:space-y-2">
                             <h3 className="font-medium text-xs sm:text-sm text-muted-foreground">Description</h3>
                             <p className="text-xs sm:text-sm">{course.description}</p>
                           </div>
@@ -194,14 +195,14 @@ const CourseDetailsPage = () => {
                     
                     <div>
                       <Card className="h-full bg-muted/30 border-primary/10">
-                        <CardHeader className="pb-1 sm:pb-2 p-3 sm:p-6">
-                          <CardTitle className="text-base sm:text-lg flex items-center gap-1 sm:gap-2">
-                            <BriefcaseIcon className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
+                        <CardHeader className="pb-0 sm:pb-2 p-2 sm:p-6">
+                          <CardTitle className="text-sm sm:text-lg flex items-center gap-1 sm:gap-2">
+                            <BriefcaseIcon className="h-3 w-3 sm:h-5 sm:w-5 text-primary" />
                             Career Prospects
                           </CardTitle>
                         </CardHeader>
-                        <CardContent className="p-3 sm:p-6 pt-0 sm:pt-0">
-                          <div className="grid grid-cols-1 gap-2">
+                        <CardContent className="p-2 sm:p-6 pt-0 sm:pt-0">
+                          <div className="grid grid-cols-2 gap-2">
                             {course.careerProspects.map((career, index) => (
                               <Badge 
                                 key={index} 
@@ -221,42 +222,42 @@ const CourseDetailsPage = () => {
                 <TabsContent value="jobs" className="mt-0">
                   {selectedCompany ? (
                     <div>
-                      <div className="flex items-center justify-between mb-3 sm:mb-4">
-                        <h3 className="text-base sm:text-lg font-semibold flex items-center gap-1 sm:gap-2">
-                          <Building className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
+                      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-2 sm:mb-4 gap-2">
+                        <h3 className="text-sm sm:text-lg font-semibold flex items-center gap-1 sm:gap-2">
+                          <Building className="h-3 w-3 sm:h-5 sm:w-5 text-primary" />
                           Job Opportunities at {selectedCompany}
                         </h3>
                         <Button 
                           variant="outline" 
                           size={isMobile ? "sm" : "default"} 
                           onClick={() => setSelectedCompany(null)}
-                          className="text-xs sm:text-sm"
+                          className="text-xs sm:text-sm w-full sm:w-auto"
                         >
-                          Back to Companies
+                          <ArrowLeft className="h-3 w-3 sm:h-4 sm:w-4 mr-1" /> Back to Companies
                         </Button>
                       </div>
                       
                       <Card className="bg-muted/30 border-primary/10">
-                        <CardContent className="p-3 sm:p-6">
-                          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
+                        <CardContent className="p-2 sm:p-6">
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-4">
                             {companyJobOpportunities[selectedCompany]?.map((job, index) => (
                               <Popover key={index}>
                                 <PopoverTrigger asChild>
                                   <Card className="hover:border-primary transition-colors cursor-pointer">
-                                    <CardHeader className="pb-1 sm:pb-2 p-3 sm:p-4">
-                                      <CardTitle className="text-sm sm:text-lg flex items-center gap-1 sm:gap-2">
+                                    <CardHeader className="pb-0 sm:pb-2 p-2 sm:p-4">
+                                      <CardTitle className="text-xs sm:text-base flex items-center gap-1 sm:gap-2">
                                         <BriefcaseIcon className="h-3 w-3 sm:h-4 sm:w-4 text-primary" />
                                         {job}
                                       </CardTitle>
                                     </CardHeader>
-                                    <CardFooter className="pt-0 p-3 sm:p-4">
+                                    <CardFooter className="pt-0 p-2 sm:p-4">
                                       <div className="flex justify-end w-full">
                                         <Info className="h-3 w-3 sm:h-4 sm:w-4 text-muted-foreground" />
                                       </div>
                                     </CardFooter>
                                   </Card>
                                 </PopoverTrigger>
-                                <PopoverContent className="w-64 sm:w-80 p-3 sm:p-4">
+                                <PopoverContent className="w-[240px] sm:w-80 p-2 sm:p-4 max-h-[60vh] overflow-y-auto">
                                   {renderJobDetails(job)}
                                 </PopoverContent>
                               </Popover>
@@ -267,24 +268,24 @@ const CourseDetailsPage = () => {
                     </div>
                   ) : (
                     <div>
-                      <h3 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4 flex items-center gap-1 sm:gap-2">
-                        <Building className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
+                      <h3 className="text-sm sm:text-lg font-semibold mb-2 sm:mb-4 flex items-center gap-1 sm:gap-2">
+                        <Building className="h-3 w-3 sm:h-5 sm:w-5 text-primary" />
                         Top Companies Hiring
                       </h3>
                       
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                      <div className="grid grid-cols-2 gap-2 sm:gap-4">
                         {Object.keys(companyJobOpportunities).map((company, index) => (
                           <Card 
                             key={index} 
                             className="cursor-pointer hover:border-primary transition-colors"
                             onClick={() => handleCompanyClick(company)}
                           >
-                            <CardHeader className="p-3 sm:p-4">
-                              <CardTitle className="text-base sm:text-lg">{company}</CardTitle>
+                            <CardHeader className="p-2 sm:p-4">
+                              <CardTitle className="text-sm sm:text-lg truncate">{company}</CardTitle>
                             </CardHeader>
-                            <CardContent className="pb-3 sm:pb-4 pt-0 px-3 sm:px-4">
+                            <CardContent className="pb-2 sm:pb-4 pt-0 px-2 sm:px-4">
                               <p className="text-xs sm:text-sm text-muted-foreground">
-                                {companyJobOpportunities[company].length} job opportunities available
+                                {companyJobOpportunities[company].length} job opportunities
                               </p>
                             </CardContent>
                           </Card>
@@ -296,8 +297,8 @@ const CourseDetailsPage = () => {
               </Tabs>
             </>
           ) : (
-            <div className="text-center py-6 sm:py-12">
-              <p className="text-sm sm:text-base">Loading course details...</p>
+            <div className="text-center py-4 sm:py-12">
+              <p className="text-xs sm:text-base">Loading course details...</p>
             </div>
           )}
         </AnimatedTransition>
