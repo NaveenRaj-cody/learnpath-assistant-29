@@ -1,11 +1,10 @@
-
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from '@/components/Header';
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { MapPin, Search, Building } from 'lucide-react';
+import { MapPin, Search, Building, X } from 'lucide-react';
 import { coursesData, College } from '@/data/coursesData';
 import AnimatedTransition from '@/components/AnimatedTransition';
 import CoursesModal from '@/components/CoursesModal';
@@ -15,6 +14,7 @@ import { CollegeType, CollegeAffiliation, CollegeSpecialization } from '@/types/
 import { ScrollArea } from "@/components/ui/scroll-area";
 import SearchableSelect from '@/components/SearchableSelect';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 const statesData = [
   { name: "Andhra Pradesh", districts: ["Alluri Sitarama Raju", "Anakapalli", "Anantapur", "Annamaya", "Bapatla", "Chittoor", "East Godavari", "Eluru", "Guntur", "Kadapa", "Kakinada", "Konaseema", "Krishna", "Kurnool", "Manyam", "N T Rama Rao", "Nandyal", "Nellore", "Palnadu", "Prakasam", "Sri Balaji", "Sri Satya Sai", "Srikakulam", "Visakhapatnam", "Vizianagaram", "West Godavari"] },
@@ -65,6 +65,7 @@ const CollegesPage = () => {
   const { toast } = useToast();
   const isMobile = useIsMobile();
   const [searchTerm, setSearchTerm] = useState('');
+  const [searchSuggestions, setSearchSuggestions] = useState<string[]>([]);
   const [collegeTypeFilter, setCollegeTypeFilter] = useState<CollegeType>('all');
   const [collegeAffiliationFilter, setCollegeAffiliationFilter] = useState<CollegeAffiliation>('all');
   const [specializationFilter, setSpecializationFilter] = useState<CollegeSpecialization>('all');
@@ -114,6 +115,32 @@ const CollegesPage = () => {
     { value: 'coed', label: 'Co-education' }
   ];
 
+  useEffect(() => {
+    if (searchTerm.length >= 2) {
+      const searchWords = searchTerm.toLowerCase().split(/\s+/).filter(word => word.length > 1);
+      
+      const collegeMatches = uniqueColleges
+        .filter(college => {
+          const collegeName = college.name.toLowerCase();
+          const collegeLocation = college.location.toLowerCase();
+          
+          return searchWords.every(word => 
+            collegeName.includes(word) || collegeLocation.includes(word)
+          );
+        });
+      
+      const nameSuggestions = collegeMatches.map(college => college.name);
+      const locationSuggestions = collegeMatches
+        .map(college => college.location.split(',')[0].trim())
+        .filter(location => location.toLowerCase().includes(searchTerm.toLowerCase()));
+      
+      const allSuggestions = [...new Set([...nameSuggestions, ...locationSuggestions])];
+      setSearchSuggestions(allSuggestions.slice(0, 5));
+    } else {
+      setSearchSuggestions([]);
+    }
+  }, [searchTerm, uniqueColleges]);
+
   const stateOptions = useMemo(() => [
     { value: 'all', label: 'All States & UTs' },
     ...statesData.map(state => ({ value: state.name, label: state.name }))
@@ -128,14 +155,18 @@ const CollegesPage = () => {
     ...availableDistricts.map(district => ({ value: district, label: district }))
   ], [availableDistricts]);
   
-  // Smart search for colleges
   const filteredColleges = useMemo(() => {
+    if (!searchTerm && collegeTypeFilter === 'all' && collegeAffiliationFilter === 'all' && 
+        specializationFilter === 'all' && stateFilter === 'all') {
+      return uniqueColleges;
+    }
+    
     return uniqueColleges.filter(college => {
-      // Smart search implementation
-      const matchesSearch = !searchTerm || searchTerm.split(/\s+/).every(term => 
-        college.name.toLowerCase().includes(term.toLowerCase()) ||
-        college.location.toLowerCase().includes(term.toLowerCase())
-      );
+      const matchesSearch = !searchTerm || searchTerm.split(/\s+/).every(term => {
+        const termLower = term.toLowerCase();
+        return college.name.toLowerCase().includes(termLower) || 
+               college.location.toLowerCase().includes(termLower);
+      });
       
       const matchesType = collegeTypeFilter === 'all' || 
         (collegeTypeFilter === 'engineering' && college.name.toLowerCase().includes('engineering')) ||
@@ -207,6 +238,11 @@ const CollegesPage = () => {
     }
   };
 
+  const handleSuggestionClick = (suggestion: string) => {
+    setSearchTerm(suggestion);
+    setSearchSuggestions([]);
+  };
+
   return (
     <div className="min-h-screen bg-background flex flex-col">
       <Header />
@@ -234,43 +270,83 @@ const CollegesPage = () => {
                         onChange={(e) => setSearchTerm(e.target.value)}
                         className="pl-10 glass-input active:scale-[0.99] focus:scale-[1.01] transition-all hover:border-primary/50"
                       />
+                      {searchTerm && (
+                        <button 
+                          className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground"
+                          onClick={() => setSearchTerm('')}
+                        >
+                          <X className="h-4 w-4" />
+                        </button>
+                      )}
                     </div>
+                    
+                    {searchSuggestions.length > 0 && (
+                      <div className="absolute z-10 w-full mt-1 bg-white dark:bg-gray-800 shadow-lg rounded-md border border-border/50 max-h-60 overflow-y-auto">
+                        <ul className="py-1">
+                          {searchSuggestions.map((suggestion, index) => (
+                            <li 
+                              key={index} 
+                              className="px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer flex items-center"
+                              onClick={() => handleSuggestionClick(suggestion)}
+                            >
+                              <Search className="h-4 w-4 mr-2 text-muted-foreground" />
+                              <span>{suggestion}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
                   </div>
                   
                   <div className="space-y-2">
                     <label className="text-sm font-medium">College Type</label>
-                    <SearchableSelect
-                      options={collegeTypeOptions}
+                    <Select
                       value={collegeTypeFilter}
                       onValueChange={(value) => handleFilterChange('type', value)}
-                      placeholder="Select college type"
-                      className="glass-input"
-                      noResultsText="No college types found"
-                    />
+                    >
+                      <SelectTrigger className="w-full glass-input">
+                        <SelectValue placeholder="Select college type" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {collegeTypeOptions.map(option => (
+                          <SelectItem key={option.value} value={option.value}>{option.label}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                   </div>
                   
                   <div className="space-y-2">
                     <label className="text-sm font-medium">College Affiliation</label>
-                    <SearchableSelect
-                      options={collegeAffiliationOptions}
+                    <Select
                       value={collegeAffiliationFilter}
                       onValueChange={(value) => handleFilterChange('affiliation', value)}
-                      placeholder="Select college affiliation"
-                      className="glass-input"
-                      noResultsText="No affiliations found"
-                    />
+                    >
+                      <SelectTrigger className="w-full glass-input">
+                        <SelectValue placeholder="Select college affiliation" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {collegeAffiliationOptions.map(option => (
+                          <SelectItem key={option.value} value={option.value}>{option.label}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                   </div>
                   
                   <div className="space-y-2">
                     <label className="text-sm font-medium">Specialization</label>
-                    <SearchableSelect
-                      options={specializationOptions}
+                    <Select
                       value={specializationFilter}
                       onValueChange={(value) => handleFilterChange('specialization', value)}
-                      placeholder="Select specialization"
-                      className="glass-input"
-                      noResultsText="No specializations found"
-                    />
+                    >
+                      <SelectTrigger className="w-full glass-input">
+                        <SelectValue placeholder="Select specialization" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {specializationOptions.map(option => (
+                          <SelectItem key={option.value} value={option.value}>{option.label}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                   </div>
                   
                   <div className="space-y-2">
