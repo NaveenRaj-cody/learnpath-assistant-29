@@ -3,13 +3,12 @@ import { useNavigate } from 'react-router-dom';
 import Header from '@/components/Header';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { coursesData } from '@/data/coursesData';
-import { BriefcaseIcon, Globe, MapPin, Building, Search, Banknote, LineChart, Newspaper, Users, Calendar, ArrowUpRight } from 'lucide-react';
+import { BriefcaseIcon, Globe, MapPin, Building, Search, Banknote, LineChart, Newspaper, Users, Calendar, ArrowUpRight, X } from 'lucide-react';
 import AnimatedTransition from '@/components/AnimatedTransition';
 import SearchableSelect from '@/components/SearchableSelect';
 import { SubjectArea } from '@/types/filters';
@@ -81,8 +80,6 @@ const CareersPage = () => {
   const navigate = useNavigate();
   const [selectedRegion, setSelectedRegion] = useState('global');
   const [searchTerm, setSearchTerm] = useState('');
-  const [courseSearchTerm, setCourseSearchTerm] = useState('');
-  const [selectedCourse, setSelectedCourse] = useState('all');
   const [selectedField, setSelectedField] = useState<SubjectArea>('all');
   const [newsFilter, setNewsFilter] = useState('all');
   const [selectedCareer, setSelectedCareer] = useState<string | null>(null);
@@ -94,6 +91,23 @@ const CareersPage = () => {
     field: course.field
   }));
   
+  // Generate career options for searchable select
+  const careerOptions = React.useMemo(() => {
+    const allCareers = new Set<string>();
+    
+    coursesData.forEach(course => {
+      course.careerProspects.forEach(career => {
+        allCareers.add(career);
+      });
+    });
+    
+    return Array.from(allCareers).map(career => ({
+      value: career,
+      label: career
+    })).sort((a, b) => a.label.localeCompare(b.label));
+  }, []);
+  
+  // Generate course options for searchable select
   const courseOptions = allCourses
     .filter(course => selectedField === 'all' || course.field === selectedField)
     .map(course => ({
@@ -105,7 +119,6 @@ const CareersPage = () => {
   
   const filteredCareers = coursesData
     .filter(course => 
-      (selectedCourse === 'all' || course.id === selectedCourse) &&
       (selectedField === 'all' || course.field === selectedField)
     )
     .flatMap(course => course.careerProspects.map(career => ({
@@ -115,18 +128,7 @@ const CareersPage = () => {
     })))
     .filter(item => {
       if (searchTerm === '') return true;
-      const search = searchTerm.toLowerCase();
-      
-      return (
-        item.career.toLowerCase().includes(search) ||
-        item.course.toLowerCase().includes(search) ||
-        item.field.toLowerCase().includes(search) ||
-        search.split(' ').some(word => 
-          item.career.toLowerCase().includes(word) ||
-          item.course.toLowerCase().includes(word) ||
-          item.field.toLowerCase().includes(word)
-        )
-      );
+      return item.career === searchTerm;
     });
   
   const filteredNews = newsData.filter(news => 
@@ -140,26 +142,26 @@ const CareersPage = () => {
 
   const subjectAreaOptions: { value: SubjectArea; label: string }[] = [
     { value: 'all', label: 'All Fields' },
-    { value: 'engineering', label: 'Engineering' },
-    { value: 'medicine', label: 'Medicine' },
-    { value: 'business', label: 'Business' },
-    { value: 'law', label: 'Law' },
-    { value: 'arts', label: 'Arts' },
+    { value: 'arts', label: 'Arts/Humanities' },
     { value: 'science', label: 'Science' },
     { value: 'commerce', label: 'Commerce' },
-    { value: 'design', label: 'Design' },
+    { value: 'engineering', label: 'Engineering/Technology' },
+    { value: 'medicine', label: 'Medicine/Allied Health Sciences' },
+    { value: 'law', label: 'Law' },
+    { value: 'design', label: 'Design/Architecture' },
+    { value: 'computer-applications', label: 'Computer Applications' },
+    { value: 'hotel-management', label: 'Hotel Management' },
+    { value: 'management', label: 'Management' },
+    { value: 'social-sciences', label: 'Social Sciences' },
+    { value: 'architecture', label: 'Architecture' },
+    { value: 'pharmacy', label: 'Pharmacy' },
     { value: 'education', label: 'Education' },
+    { value: 'information-technology', label: 'Information Technology' },
+    { value: 'paramedical', label: 'Paramedical' },
     { value: 'vocational', label: 'Vocational' },
     { value: 'agriculture', label: 'Agriculture' },
-    { value: 'information-technology', label: 'Information Technology' },
     { value: 'hospitality', label: 'Hospitality' },
     { value: 'media', label: 'Media' },
-    { value: 'paramedical', label: 'Paramedical' },
-    { value: 'social-sciences', label: 'Social Sciences' },
-    { value: 'management', label: 'Management' },
-    { value: 'architecture', label: 'Architecture' },
-    { value: 'computer-applications', label: 'Computer Applications' },
-    { value: 'pharmacy', label: 'Pharmacy' },
     { value: 'fashion', label: 'Fashion' },
     { value: 'others', label: 'Others' }
   ];
@@ -196,16 +198,17 @@ const CareersPage = () => {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <label className="text-sm font-medium">Search Careers</label>
-                      <div className="relative">
-                        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
-                        <Input
-                          type="text"
-                          placeholder="Search by career name, course, field..."
-                          value={searchTerm}
-                          onChange={(e) => setSearchTerm(e.target.value)}
-                          className="pl-10 glass-input shadow-sm focus:ring-2 focus:ring-primary/30 transition-all"
-                        />
-                      </div>
+                      <SearchableSelect
+                        options={careerOptions}
+                        value={searchTerm}
+                        onValueChange={setSearchTerm}
+                        placeholder="Search careers"
+                        className="glass-input"
+                        searchPlaceholder="Type to search careers..."
+                        noResultsText="No careers found"
+                        renderAsInput={true}
+                        popoverWidth="w-[300px] md:w-[400px]"
+                      />
                     </div>
                     
                     <div className="space-y-2">
@@ -215,24 +218,11 @@ const CareersPage = () => {
                         value={selectedField}
                         onValueChange={(value) => {
                           setSelectedField(value as SubjectArea);
-                          setSelectedCourse('all'); // Reset course when field changes
                           setNewsFilter(value); // Update news filter to match field
                         }}
                         placeholder="Select field"
                         className="glass-input"
                         noResultsText="No fields found"
-                      />
-                    </div>
-                    
-                    <div className="space-y-2 md:col-span-2">
-                      <label className="text-sm font-medium">Course</label>
-                      <SearchableSelect
-                        options={courseOptions}
-                        value={selectedCourse}
-                        onValueChange={setSelectedCourse}
-                        placeholder="Search courses"
-                        className="glass-input"
-                        noResultsText="No courses found. Try a different search term or field of study."
                       />
                     </div>
                   </div>
@@ -242,8 +232,6 @@ const CareersPage = () => {
                       variant="outline" 
                       onClick={() => {
                         setSearchTerm('');
-                        setCourseSearchTerm('');
-                        setSelectedCourse('all');
                         setSelectedField('all');
                         setNewsFilter('all');
                       }}

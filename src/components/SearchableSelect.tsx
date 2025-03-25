@@ -3,10 +3,11 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
-import { Check, ChevronsUpDown } from "lucide-react";
+import { Check, ChevronsUpDown, Search } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useIsMobile } from '@/hooks/use-mobile';
+import { Input } from "@/components/ui/input";
 
 interface SearchableSelectProps {
   options: { value: string; label: string }[];
@@ -15,6 +16,9 @@ interface SearchableSelectProps {
   placeholder: string;
   className?: string;
   noResultsText?: string;
+  searchPlaceholder?: string;
+  renderAsInput?: boolean;
+  popoverWidth?: string;
 }
 
 const SearchableSelect: React.FC<SearchableSelectProps> = ({
@@ -23,7 +27,10 @@ const SearchableSelect: React.FC<SearchableSelectProps> = ({
   onValueChange,
   placeholder,
   className,
-  noResultsText = "No results found."
+  noResultsText = "No results found.",
+  searchPlaceholder,
+  renderAsInput = false,
+  popoverWidth = "w-full"
 }) => {
   const [open, setOpen] = useState(false);
   const [searchValue, setSearchValue] = useState("");
@@ -60,28 +67,46 @@ const SearchableSelect: React.FC<SearchableSelectProps> = ({
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-        <Button
-          variant="outline"
-          role="combobox"
-          aria-expanded={open}
-          className={cn(
-            "w-full justify-between hover:shadow-md active:scale-[0.98] transition-all",
-            "border-input focus:ring-2 focus:ring-primary/30 focus:border-primary/50",
-            className
-          )}
-        >
-          <span className="truncate">{value ? selectedLabel : placeholder}</span>
-          <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-        </Button>
+        {renderAsInput ? (
+          <div className="relative w-full">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
+            <Input
+              type="text"
+              placeholder={placeholder}
+              value={value ? selectedLabel : ""}
+              className={cn(
+                "pl-10 pr-10 py-2 w-full glass-input shadow-sm",
+                className
+              )}
+              onClick={() => setOpen(true)}
+              readOnly
+            />
+            <ChevronsUpDown className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 opacity-50" />
+          </div>
+        ) : (
+          <Button
+            variant="outline"
+            role="combobox"
+            aria-expanded={open}
+            className={cn(
+              "w-full justify-between hover:shadow-md active:scale-[0.98] transition-all",
+              "border-input focus:ring-2 focus:ring-primary/30 focus:border-primary/50",
+              className
+            )}
+          >
+            <span className="truncate">{value ? selectedLabel : placeholder}</span>
+            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+          </Button>
+        )}
       </PopoverTrigger>
       <PopoverContent 
-        className="w-full p-0" 
+        className={cn("p-0", popoverWidth)} 
         align="start"
         sideOffset={4}
       >
         <Command>
           <CommandInput 
-            placeholder={`Search ${placeholder.toLowerCase()}...`} 
+            placeholder={searchPlaceholder || `Search ${placeholder.toLowerCase()}...`} 
             value={searchValue}
             onValueChange={setSearchValue}
             className="h-9"
