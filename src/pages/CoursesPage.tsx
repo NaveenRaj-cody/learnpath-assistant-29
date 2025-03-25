@@ -6,20 +6,36 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Search, Filter, BookOpen } from 'lucide-react';
+import { Search, BookOpen, X } from 'lucide-react';
 import { coursesData, Course } from '@/data/coursesData';
 import AnimatedTransition from '@/components/AnimatedTransition';
 import { CourseLevel, SubjectArea } from '@/types/filters';
 import { useIsMobile } from '@/hooks/use-mobile';
+import SearchableSelect from '@/components/SearchableSelect';
 
 const CoursesPage = () => {
   const navigate = useNavigate();
   const isMobile = useIsMobile();
   const [searchTerm, setSearchTerm] = useState('');
+  const [searchSuggestions, setSearchSuggestions] = useState<string[]>([]);
   const [levelFilter, setLevelFilter] = useState<CourseLevel>('all');
   const [fieldFilter, setFieldFilter] = useState<SubjectArea>('all');
-  const [durationFilter, setDurationFilter] = useState('all');
-  const [filtersVisible, setFiltersVisible] = useState(!isMobile);
+  
+  useEffect(() => {
+    if (searchTerm.length >= 2) {
+      const suggestions = coursesData
+        .filter(course => 
+          course.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          course.description.toLowerCase().includes(searchTerm.toLowerCase())
+        )
+        .map(course => course.name)
+        .slice(0, 5);
+      
+      setSearchSuggestions(suggestions);
+    } else {
+      setSearchSuggestions([]);
+    }
+  }, [searchTerm]);
   
   const levelSpecificFields = useMemo(() => {
     const diplomaFields = [
@@ -117,24 +133,6 @@ const CoursesPage = () => {
     }
   }, [levelFilter, levelSpecificFields, fieldFilter]);
   
-  const getFilteredDurations = () => {
-    const filteredCoursesByLevelAndField = coursesData.filter(course => {
-      const matchesLevel = levelFilter === 'all' || course.level === levelFilter;
-      const matchesField = fieldFilter === 'all' || course.field === fieldFilter;
-      return matchesLevel && matchesField;
-    });
-    
-    return [...new Set(filteredCoursesByLevelAndField.map(course => course.duration))];
-  };
-  
-  const uniqueDurations = getFilteredDurations();
-  
-  useEffect(() => {
-    if (durationFilter !== 'all' && !uniqueDurations.includes(durationFilter)) {
-      setDurationFilter('all');
-    }
-  }, [levelFilter, fieldFilter, uniqueDurations, durationFilter]);
-  
   const filteredCourses = coursesData.filter(course => {
     const matchesSearch = searchTerm === '' || 
       course.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -142,13 +140,17 @@ const CoursesPage = () => {
     
     const matchesLevel = levelFilter === 'all' || course.level === levelFilter;
     const matchesField = fieldFilter === 'all' || course.field === fieldFilter;
-    const matchesDuration = durationFilter === 'all' || course.duration === durationFilter;
     
-    return matchesSearch && matchesLevel && matchesField && matchesDuration;
+    return matchesSearch && matchesLevel && matchesField;
   });
 
   const handleViewCourseDetails = (courseId: string) => {
     navigate(`/courses/${courseId}`);
+  };
+
+  const handleSuggestionClick = (suggestion: string) => {
+    setSearchTerm(suggestion);
+    setSearchSuggestions([]);
   };
 
   const levelOptions = [
@@ -159,10 +161,6 @@ const CoursesPage = () => {
     { value: 'doctoral', label: 'Doctoral' }
   ];
 
-  const toggleFilters = () => {
-    setFiltersVisible(!filtersVisible);
-  };
-
   return (
     <div className="min-h-screen bg-background flex flex-col">
       <Header />
@@ -171,27 +169,15 @@ const CoursesPage = () => {
         <AnimatedTransition>
           <h1 className="text-xl sm:text-3xl font-bold mb-3 sm:mb-8 text-center bg-gradient-to-r from-primary to-blue-500 bg-clip-text text-transparent">Explore Courses in India</h1>
           
-          {isMobile && (
-            <Button 
-              onClick={toggleFilters} 
-              variant="outline" 
-              size="sm" 
-              className="w-full mb-3 flex items-center justify-center"
-            >
-              <Filter className="h-3 w-3 mr-1" />
-              {filtersVisible ? 'Hide Filters' : 'Show Filters'}
-            </Button>
-          )}
-          
-          <div className={`grid grid-cols-1 lg:grid-cols-3 gap-3 sm:gap-6 ${!filtersVisible && isMobile ? 'hidden' : ''}`}>
-            <div className={`${isMobile ? 'mb-3' : 'lg:col-span-1'}`}>
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-3 sm:gap-6">
+            <div className="lg:col-span-1">
               <Card className="overflow-hidden border-primary/20 shadow-md">
                 <CardHeader className="bg-gradient-to-r from-primary/10 to-blue-500/10 py-2 px-3 sm:p-6">
                   <CardTitle className="text-base sm:text-xl flex items-center gap-1">
-                    <Filter className="h-3 w-3 sm:h-5 sm:w-5 text-primary" />
-                    Filters
+                    <Search className="h-3 w-3 sm:h-5 sm:w-5 text-primary" />
+                    Find Courses
                   </CardTitle>
-                  <CardDescription className="text-xs">Refine your course search</CardDescription>
+                  <CardDescription className="text-xs">Filter and search for courses</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-2 sm:space-y-4 p-3 sm:p-4">
                   <div className="mobile-filters">
@@ -206,6 +192,31 @@ const CoursesPage = () => {
                           onChange={(e) => setSearchTerm(e.target.value)}
                           className="pl-7 border-primary/20 text-xs h-8"
                         />
+                        {searchTerm && (
+                          <button 
+                            className="absolute right-2 top-1/2 transform -translate-y-1/2 text-muted-foreground"
+                            onClick={() => setSearchTerm('')}
+                          >
+                            <X className="h-3 w-3" />
+                          </button>
+                        )}
+                        
+                        {searchSuggestions.length > 0 && (
+                          <div className="absolute z-10 w-full mt-1 bg-white dark:bg-gray-800 shadow-lg rounded-md border border-border/50 max-h-40 overflow-y-auto">
+                            <ul className="py-1">
+                              {searchSuggestions.map((suggestion, index) => (
+                                <li 
+                                  key={index} 
+                                  className="px-3 py-1.5 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer flex items-center text-xs"
+                                  onClick={() => handleSuggestionClick(suggestion)}
+                                >
+                                  <Search className="h-3 w-3 mr-2 text-muted-foreground" />
+                                  <span>{suggestion}</span>
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        )}
                       </div>
                     </div>
                     
@@ -242,25 +253,6 @@ const CoursesPage = () => {
                         </SelectContent>
                       </Select>
                     </div>
-                    
-                    <div className="space-y-1">
-                      <label className="text-xs font-medium">Duration</label>
-                      <Select
-                        value={durationFilter}
-                        onValueChange={setDurationFilter}
-                        disabled={uniqueDurations.length === 0}
-                      >
-                        <SelectTrigger className="border-primary/20 h-8 text-xs">
-                          <SelectValue placeholder="Select duration" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="all" className="text-xs">All Durations</SelectItem>
-                          {uniqueDurations.map((duration) => (
-                            <SelectItem key={duration} value={duration} className="text-xs">{duration}</SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
                   </div>
                   
                   <Button 
@@ -270,7 +262,6 @@ const CoursesPage = () => {
                       setSearchTerm('');
                       setLevelFilter('all');
                       setFieldFilter('all');
-                      setDurationFilter('all');
                     }}
                   >
                     Reset Filters
@@ -279,7 +270,7 @@ const CoursesPage = () => {
               </Card>
             </div>
             
-            <div className={`${isMobile ? '' : 'lg:col-span-2'}`}>
+            <div className="lg:col-span-2">
               <div className="mb-2 sm:mb-4 flex justify-between items-center">
                 <h2 className="text-sm sm:text-xl font-semibold flex items-center gap-1">
                   <BookOpen className="h-3 w-3 sm:h-5 sm:w-5 text-primary" />
@@ -287,7 +278,7 @@ const CoursesPage = () => {
                 </h2>
               </div>
               
-              <div className={isMobile ? "mobile-card-grid" : "grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4"}>
+              <div className="grid grid-cols-2 sm:grid-cols-2 gap-3 sm:gap-4">
                 {filteredCourses.length === 0 ? (
                   <div className="col-span-full bg-muted rounded-lg p-3 sm:p-8 text-center">
                     <BookOpen className="mx-auto h-6 w-6 sm:h-12 sm:w-12 text-muted-foreground/50 mb-2 sm:mb-4" />
@@ -300,7 +291,6 @@ const CoursesPage = () => {
                         setSearchTerm('');
                         setLevelFilter('all');
                         setFieldFilter('all');
-                        setDurationFilter('all');
                       }}
                     >
                       Reset Filters
@@ -310,40 +300,30 @@ const CoursesPage = () => {
                   filteredCourses.map((course) => (
                     <Card 
                       key={course.id} 
-                      className={`h-full hover:shadow-lg transition-all duration-300 border-primary/20 animate-fade-in ${isMobile ? 'mobile-compact-card' : ''}`}
+                      className="h-full hover:shadow-lg transition-all duration-300 border-primary/20 animate-fade-in mobile-compact-card"
                     >
-                      <CardHeader className={`pb-1 bg-gradient-to-r from-primary/5 to-blue-500/5 ${isMobile ? 'p-2' : 'p-3 sm:p-4'}`}>
+                      <CardHeader className="pb-1 p-2 sm:p-3 bg-gradient-to-r from-primary/5 to-blue-500/5">
                         <div className="flex justify-between items-start mb-1">
                           <Badge variant="outline" className="bg-primary/10 text-primary border-primary/20 text-[10px]">
                             {course.level}
                           </Badge>
-                          {!isMobile && (
-                            <Badge variant="outline" className="bg-secondary/10 text-secondary-foreground text-[10px] sm:text-xs">
-                              {course.field}
-                            </Badge>
-                          )}
                         </div>
-                        <CardTitle className={`${isMobile ? 'text-xs' : 'text-sm sm:text-lg'}`}>{course.name}</CardTitle>
-                        {!isMobile && (
-                          <CardDescription className="line-clamp-2 text-xs sm:text-sm">{course.description}</CardDescription>
-                        )}
+                        <CardTitle className="text-xs sm:text-sm">{course.name}</CardTitle>
                       </CardHeader>
                       
-                      {!isMobile && (
-                        <CardContent className="pb-1 px-3 sm:px-4 pt-2 sm:pt-0">
-                          <div className="text-xs sm:text-sm">
-                            <div className="flex justify-between mb-1">
-                              <span className="text-muted-foreground">Duration:</span>
-                              <span className="font-medium">{course.duration}</span>
-                            </div>
+                      <CardContent className="pb-1 px-2 sm:px-3 pt-1">
+                        <div className="text-xs">
+                          <div className="flex justify-between mb-1">
+                            <span className="text-muted-foreground">Duration:</span>
+                            <span className="font-medium">{course.duration}</span>
                           </div>
-                        </CardContent>
-                      )}
+                        </div>
+                      </CardContent>
                       
-                      <CardFooter className={isMobile ? "p-1" : "p-3 sm:p-4"}>
+                      <CardFooter className="p-2 sm:p-3">
                         <Button 
                           size="sm"
-                          className={`w-full bg-primary hover:bg-primary/90 transition-all duration-300 ${isMobile ? 'h-6 text-[10px]' : 'text-xs sm:text-sm'}`}
+                          className="w-full bg-primary hover:bg-primary/90 transition-all duration-300 h-6 text-[10px] sm:text-xs"
                           onClick={() => handleViewCourseDetails(course.id)}
                         >
                           {isMobile ? 'View' : 'View Details'}

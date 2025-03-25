@@ -1,4 +1,3 @@
-
 import React, { useState, useMemo, useEffect } from 'react';
 import { cn } from "@/lib/utils";
 import { Card } from "@/components/ui/card";
@@ -60,7 +59,6 @@ const CourseExplorer: React.FC<CourseExplorerProps> = ({ onAskAboutCourse }) => 
       { value: 'agriculture', label: 'Agriculture and Allied Sciences' },
       { value: 'hospitality', label: 'Hotel Management and Hospitality' },
       { value: 'media', label: 'Design and Media' },
-      { value: 'education', label: 'Education' },
     ];
 
     const doctoralFields = [
@@ -112,7 +110,6 @@ const CourseExplorer: React.FC<CourseExplorerProps> = ({ onAskAboutCourse }) => 
   // Reset field filter when level changes
   useEffect(() => {
     if (levelFilter !== 'all') {
-      // Check if current fieldFilter is valid for the new level
       const isValidField = levelSpecificFields.some(field => field.value === fieldFilter);
       if (!isValidField) {
         setFieldFilter('all');
@@ -160,7 +157,6 @@ const CourseExplorer: React.FC<CourseExplorerProps> = ({ onAskAboutCourse }) => 
     { value: 'undergraduate', label: 'Undergraduate (UG)' },
     { value: 'postgraduate', label: 'Postgraduate (PG)' },
     { value: 'doctoral', label: 'Doctoral' }
-    // Removed certificate option
   ];
 
   const handleSuggestionClick = (suggestion: string) => {
@@ -268,12 +264,12 @@ const CourseExplorer: React.FC<CourseExplorerProps> = ({ onAskAboutCourse }) => 
               <p className="text-muted-foreground">Try adjusting your filters or search terms</p>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {filteredCourses.map((course, index) => (
                 <AnimatedTransition key={course.id} showDelay={index * 100}>
                   <Card className="overflow-hidden card-hover border border-border/50 h-full">
-                    <div className="p-6">
-                      <div className="flex justify-between items-start mb-4">
+                    <div className="p-3 sm:p-6">
+                      <div className="flex justify-between items-start mb-2 sm:mb-4">
                         <Badge variant="outline" className="bg-primary/10 text-primary border-primary/20">
                           {course.level}
                         </Badge>
@@ -281,30 +277,30 @@ const CourseExplorer: React.FC<CourseExplorerProps> = ({ onAskAboutCourse }) => 
                           {course.field}
                         </Badge>
                       </div>
-                      <h3 className="text-lg font-semibold mb-2">{course.name}</h3>
-                      <p className="text-muted-foreground text-sm mb-4">{course.description}</p>
-                      <div className="mb-4">
-                        <div className="text-sm font-medium mb-1">Duration</div>
-                        <div className="text-sm">{course.duration}</div>
+                      <h3 className="text-sm sm:text-lg font-semibold mb-1 sm:mb-2">{course.name}</h3>
+                      <p className="text-muted-foreground text-xs sm:text-sm mb-2 sm:mb-4">{course.description}</p>
+                      <div className="mb-2 sm:mb-4">
+                        <div className="text-xs sm:text-sm font-medium mb-1">Duration</div>
+                        <div className="text-xs sm:text-sm">{course.duration}</div>
                       </div>
                       <div>
-                        <div className="text-sm font-medium mb-2">Career Prospects in India</div>
-                        <div className="flex flex-wrap gap-2">
+                        <div className="text-xs sm:text-sm font-medium mb-1 sm:mb-2">Career Prospects in India</div>
+                        <div className="flex flex-wrap gap-1 sm:gap-2">
                           {course.careerProspects.slice(0, 3).map((career, idx) => (
-                            <Badge key={idx} variant="secondary" className="bg-accent">
+                            <Badge key={idx} variant="secondary" className="bg-accent text-[10px] sm:text-xs">
                               {career}
                             </Badge>
                           ))}
                           {course.careerProspects.length > 3 && (
-                            <Badge variant="outline">+{course.careerProspects.length - 3} more</Badge>
+                            <Badge variant="outline" className="text-[10px] sm:text-xs">+{course.careerProspects.length - 3} more</Badge>
                           )}
                         </div>
                       </div>
                     </div>
-                    <div className="border-t px-6 py-4 bg-muted/30">
+                    <div className="border-t px-3 sm:px-6 py-2 sm:py-4 bg-muted/30">
                       <Button 
                         variant="default" 
-                        className="w-full"
+                        className="w-full text-xs sm:text-sm"
                         onClick={() => onAskAboutCourse && onAskAboutCourse(`${course.name} in India`)}
                       >
                         Ask about this course
