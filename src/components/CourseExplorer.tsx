@@ -108,14 +108,16 @@ const CourseExplorer: React.FC<CourseExplorerProps> = ({ onAskAboutCourse }) => 
       { value: 'others', label: 'Others' }
     ];
     
-    // Default Fields for when no level is selected
+    // Default Fields for when "All Levels" is selected
     const defaultFields = [
-      { value: 'engineering', label: 'Engineering & Technical' },
-      { value: 'medicine', label: 'Healthcare & Medical Sciences' },
-      { value: 'business', label: 'Business & Management' },
-      { value: 'law', label: 'Law' },
-      { value: 'arts', label: 'Arts, Design & Creative' },
+      { value: 'arts', label: 'Arts/Humanities' },
       { value: 'science', label: 'Science' },
+      { value: 'management', label: 'Commerce/Management' },
+      { value: 'engineering', label: 'Engineering/Technology' },
+      { value: 'medicine', label: 'Medicine/Allied Health Sciences' },
+      { value: 'law', label: 'Law' },
+      { value: 'computer-applications', label: 'Computer Applications' },
+      { value: 'design', label: 'Design/Architecture' },
       { value: 'others', label: 'Others' }
     ];
     
@@ -259,7 +261,7 @@ const CourseExplorer: React.FC<CourseExplorerProps> = ({ onAskAboutCourse }) => 
             <SelectTrigger className="w-full md:w-[180px]">
               <SelectValue placeholder="Field of Study" />
             </SelectTrigger>
-            <SelectContent>
+            <SelectContent className="max-h-[300px] overflow-y-auto">
               {levelSpecificFields.map(option => (
                 <SelectItem key={option.value} value={option.value}>{option.label}</SelectItem>
               ))}

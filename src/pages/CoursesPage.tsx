@@ -120,14 +120,16 @@ const CoursesPage = () => {
       { value: 'others', label: 'Others' }
     ];
     
-    // Default Fields for when no level is selected
+    // Default Fields for when "All Levels" is selected
     const defaultFields = [
-      { value: 'engineering', label: 'Engineering & Technical' },
-      { value: 'medicine', label: 'Healthcare & Medical Sciences' },
-      { value: 'business', label: 'Business & Management' },
-      { value: 'law', label: 'Law' },
-      { value: 'arts', label: 'Arts, Design & Creative' },
+      { value: 'arts', label: 'Arts/Humanities' },
       { value: 'science', label: 'Science' },
+      { value: 'management', label: 'Commerce/Management' },
+      { value: 'engineering', label: 'Engineering/Technology' },
+      { value: 'medicine', label: 'Medicine/Allied Health Sciences' },
+      { value: 'law', label: 'Law' },
+      { value: 'computer-applications', label: 'Computer Applications' },
+      { value: 'design', label: 'Design/Architecture' },
       { value: 'others', label: 'Others' }
     ];
     
@@ -274,7 +276,7 @@ const CoursesPage = () => {
                         <SelectTrigger className="border-primary/20 h-8 text-xs">
                           <SelectValue placeholder="Select field" />
                         </SelectTrigger>
-                        <SelectContent>
+                        <SelectContent className="max-h-[200px] overflow-y-auto">
                           {levelSpecificFields.map(option => (
                             <SelectItem key={option.value} value={option.value} className="text-xs">{option.label}</SelectItem>
                           ))}
