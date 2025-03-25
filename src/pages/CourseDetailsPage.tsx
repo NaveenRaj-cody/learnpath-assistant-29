@@ -246,7 +246,7 @@ const CourseDetailsPage = () => {
                       
                       <Card className="bg-muted/30 border-primary/10">
                         <CardContent className="p-2 sm:p-6">
-                          <div className="grid grid-cols-2 sm:grid-cols-2 gap-2 sm:gap-4">
+                          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-4">
                             {companyJobOpportunities[selectedCompany]?.map((job, index) => (
                               <Card 
                                 key={index} 
@@ -277,7 +277,7 @@ const CourseDetailsPage = () => {
                         Top Companies Hiring
                       </h3>
                       
-                      <div className="grid grid-cols-2 sm:grid-cols-2 gap-2 sm:gap-4">
+                      <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-4">
                         {Object.keys(companyJobOpportunities).map((company, index) => (
                           <Card 
                             key={index} 
