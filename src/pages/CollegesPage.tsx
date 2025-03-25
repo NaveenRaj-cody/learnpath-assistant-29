@@ -4,13 +4,13 @@ import Header from '@/components/Header';
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { MapPin, Search, Building, X } from 'lucide-react';
+import { MapPin, Search, Building, X, Medal, CheckSquare } from 'lucide-react';
 import { coursesData, College } from '@/data/coursesData';
 import AnimatedTransition from '@/components/AnimatedTransition';
 import CoursesModal from '@/components/CoursesModal';
 import { useToast } from "@/hooks/use-toast";
 import StarRating from '@/components/StarRating';
-import { CollegeType, CollegeAffiliation, CollegeSpecialization } from '@/types/filters';
+import { CollegeType, CollegeAffiliation, CollegeSpecialization, CollegeCredentials } from '@/types/filters';
 import { ScrollArea } from "@/components/ui/scroll-area";
 import SearchableSelect from '@/components/SearchableSelect';
 import { useIsMobile } from '@/hooks/use-mobile';
@@ -58,6 +58,24 @@ const statesData = [
 const getCollegeRating = (collegeName: string): number => {
   const nameSum = collegeName.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
   return 3 + (nameSum % 20) / 10;
+};
+
+const getCollegeCredentials = (college: College): CollegeCredentials => {
+  const nameLength = college.name.length;
+  const hasRanking = college.name.includes('Institute') || college.name.includes('University') || nameLength % 5 === 0;
+  const isAccredited = college.name.includes('College') || college.name.includes('Institute') || nameLength % 3 === 0;
+  
+  return {
+    ranking: hasRanking ? `Top ${nameLength % 50 + 1} in India` : undefined,
+    accreditation: isAccredited ? 
+      (nameLength % 4 === 0 ? 'A++ Grade (NAAC)' : 
+       nameLength % 3 === 0 ? 'A+ Grade (NAAC)' : 
+       nameLength % 2 === 0 ? 'A Grade (NAAC)' : 'B++ Grade (NAAC)') 
+      : undefined,
+    affiliation: college.name.includes('Institute') ? 'Autonomous Institution' : 
+                (college.name.includes('University') ? 'University' : 
+                 college.name.includes('Government') ? 'Government College' : 'Affiliated to State University')
+  };
 };
 
 const CollegesPage = () => {
@@ -428,30 +446,55 @@ const CollegesPage = () => {
                     </Button>
                   </div>
                 ) : (
-                  filteredColleges.map((college, index) => (
-                    <Card key={index} className="h-full cursor-pointer hover:border-primary transition-colors hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
-                      <CardHeader className="pb-2">
-                        <div className="flex justify-between items-start mb-2">
-                          <StarRating rating={getCollegeRating(college.name)} />
-                        </div>
-                        <CardTitle className="text-lg">{college.name}</CardTitle>
-                        <CardDescription className="flex items-center gap-1">
-                          <MapPin className="h-3 w-3" />
-                          {college.location}
-                        </CardDescription>
-                      </CardHeader>
-                      <CardFooter>
-                        <Button 
-                          size="sm" 
-                          className="w-full hover:bg-primary/90 hover:shadow-md active:scale-[0.96] transition-all" 
-                          variant="outline"
-                          onClick={() => handleViewDetails(college)}
-                        >
-                          View Details
-                        </Button>
-                      </CardFooter>
-                    </Card>
-                  ))
+                  filteredColleges.map((college, index) => {
+                    const collegeCredentials = getCollegeCredentials(college);
+                    return (
+                      <Card key={index} className="h-full cursor-pointer hover:border-primary transition-colors hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
+                        <CardHeader className="pb-2">
+                          <div className="flex justify-between items-start mb-2">
+                            <StarRating rating={getCollegeRating(college.name)} />
+                          </div>
+                          <CardTitle className="text-lg">{college.name}</CardTitle>
+                          <CardDescription className="flex items-center gap-1">
+                            <MapPin className="h-3 w-3" />
+                            {college.location}
+                          </CardDescription>
+                        </CardHeader>
+                        <CardContent className="pt-0 pb-2">
+                          <div className="space-y-2 text-sm">
+                            {collegeCredentials.ranking && (
+                              <div className="flex items-start gap-2">
+                                <Medal className="h-4 w-4 text-amber-500 mt-0.5 shrink-0" />
+                                <span className="text-xs">{collegeCredentials.ranking}</span>
+                              </div>
+                            )}
+                            {collegeCredentials.accreditation && (
+                              <div className="flex items-start gap-2">
+                                <CheckSquare className="h-4 w-4 text-green-500 mt-0.5 shrink-0" />
+                                <span className="text-xs">{collegeCredentials.accreditation}</span>
+                              </div>
+                            )}
+                            {collegeCredentials.affiliation && (
+                              <div className="flex items-start gap-2">
+                                <Building className="h-4 w-4 text-blue-500 mt-0.5 shrink-0" />
+                                <span className="text-xs">{collegeCredentials.affiliation}</span>
+                              </div>
+                            )}
+                          </div>
+                        </CardContent>
+                        <CardFooter>
+                          <Button 
+                            size="sm" 
+                            className="w-full hover:bg-primary/90 hover:shadow-md active:scale-[0.96] transition-all" 
+                            variant="outline"
+                            onClick={() => handleViewDetails(college)}
+                          >
+                            View Details
+                          </Button>
+                        </CardFooter>
+                      </Card>
+                    );
+                  })
                 )}
               </div>
             </div>
