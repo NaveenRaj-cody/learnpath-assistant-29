@@ -7,11 +7,12 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { coursesData } from '@/data/coursesData';
-import { BriefcaseIcon, Globe, MapPin, Building, Search, Banknote, LineChart, Newspaper, Users, Calendar, ArrowUpRight, X } from 'lucide-react';
+import { careersData } from '@/data/careersData';
+import { BriefcaseIcon, Globe, MapPin, Building, Search, Banknote, LineChart, Newspaper, Users, Calendar, ArrowUpRight } from 'lucide-react';
 import AnimatedTransition from '@/components/AnimatedTransition';
 import SearchableSelect from '@/components/SearchableSelect';
 import { SubjectArea } from '@/types/filters';
+import { findCareers } from '@/utils/dataUtils';
 
 const newsData = [
   {
@@ -56,26 +57,6 @@ const newsData = [
   }
 ];
 
-const careerSalaryData: Record<string, { india: string, global: string }> = {
-  "Software Developer": { india: "₹5-20 LPA", global: "$60K-150K/year" },
-  "Systems Analyst": { india: "₹4-15 LPA", global: "$55K-120K/year" },
-  "Data Scientist": { india: "₹8-25 LPA", global: "$80K-160K/year" },
-  "Web Developer": { india: "₹3-18 LPA", global: "$50K-130K/year" },
-  "AI Engineer": { india: "₹10-30 LPA", global: "$90K-180K/year" },
-  "General Physician": { india: "₹12-40 LPA", global: "$150K-300K/year" },
-  "Surgeon": { india: "₹20-80 LPA", global: "$200K-500K/year" },
-  "Medical Researcher": { india: "₹8-25 LPA", global: "$70K-150K/year" },
-  "Public Health Specialist": { india: "₹7-20 LPA", global: "$60K-140K/year" },
-  "Medical Officer": { india: "₹6-25 LPA", global: "$80K-200K/year" },
-  "Business Analyst": { india: "₹6-18 LPA", global: "$65K-130K/year" },
-  "Marketing Executive": { india: "₹4-15 LPA", global: "$50K-120K/year" },
-  "Human Resources Manager": { india: "₹5-20 LPA", global: "$60K-140K/year" },
-  "Operations Manager": { india: "₹8-25 LPA", global: "$70K-150K/year" },
-  "Entrepreneur": { india: "Variable", global: "Variable" },
-};
-
-const defaultSalary = { india: "₹5-15 LPA", global: "$60K-120K/year" };
-
 const CareersPage = () => {
   const navigate = useNavigate();
   const [selectedRegion, setSelectedRegion] = useState('global');
@@ -85,56 +66,23 @@ const CareersPage = () => {
   const [selectedCareer, setSelectedCareer] = useState<string | null>(null);
   const [isCareerDialogOpen, setIsCareerDialogOpen] = useState(false);
   
-  const allCourses = coursesData.map(course => ({
-    id: course.id,
-    name: course.name,
-    field: course.field
-  }));
-  
   const careerOptions = React.useMemo(() => {
-    const allCareers = new Set<string>();
-    
-    coursesData.forEach(course => {
-      course.careerProspects.forEach(career => {
-        allCareers.add(career);
-      });
-    });
-    
-    return Array.from(allCareers).map(career => ({
-      value: career,
-      label: career
+    return careersData.map(career => ({
+      value: career.title,
+      label: career.title
     })).sort((a, b) => a.label.localeCompare(b.label));
   }, []);
   
-  const courseOptions = allCourses
-    .filter(course => selectedField === 'all' || course.field === selectedField)
-    .map(course => ({
-      value: course.id,
-      label: course.name
-    }));
-  
-  const uniqueFields = [...new Set(coursesData.map(course => course.field))];
-  
-  const filteredCareers = coursesData
-    .filter(course => 
-      (selectedField === 'all' || course.field === selectedField)
-    )
-    .flatMap(course => course.careerProspects.map(career => ({
-      career,
-      course: course.name,
-      field: course.field
-    })))
-    .filter(item => {
-      if (searchTerm === '') return true;
-      return item.career === searchTerm;
-    });
+  const filteredCareers = React.useMemo(() => {
+    return findCareers(searchTerm, { field: selectedField });
+  }, [searchTerm, selectedField]);
   
   const filteredNews = newsData.filter(news => 
     newsFilter === 'all' || news.tag === newsFilter
   );
 
-  const handleViewCareerDetails = (career: string) => {
-    setSelectedCareer(career);
+  const handleViewCareerDetails = (careerTitle: string) => {
+    setSelectedCareer(careerTitle);
     setIsCareerDialogOpen(true);
   };
 
@@ -147,6 +95,8 @@ const CareersPage = () => {
     { value: 'medicine', label: 'Medicine/Allied Health Sciences' },
     { value: 'law', label: 'Law' },
     { value: 'design', label: 'Design/Architecture' },
+    { value: 'business', label: 'Business/Management' },
+    { value: 'arts', label: 'Arts & Design' },
     { value: 'computer-applications', label: 'Computer Applications' },
     { value: 'hotel-management', label: 'Hotel Management' },
     { value: 'management', label: 'Management' },
@@ -163,6 +113,8 @@ const CareersPage = () => {
     { value: 'fashion', label: 'Fashion' },
     { value: 'others', label: 'Others' }
   ];
+
+  const selectedCareerData = selectedCareer ? careersData.find(career => career.title === selectedCareer) : null;
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
@@ -256,56 +208,53 @@ const CareersPage = () => {
                     </Card>
                   ) : (
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                      {filteredCareers.map((item, index) => {
-                        const salaryInfo = careerSalaryData[item.career] || defaultSalary;
-                        return (
-                          <Card key={index} className="flex flex-col h-full hover:border-primary transition-colors glass-panel">
-                            <CardHeader className="pb-2">
-                              <div className="flex justify-between items-start">
-                                <CardTitle className="text-lg">{item.career}</CardTitle>
-                                <Badge variant="outline" className="bg-primary/10 text-primary border-primary/20">
-                                  {item.field}
-                                </Badge>
+                      {filteredCareers.map((career) => (
+                        <Card key={career.id} className="flex flex-col h-full hover:border-primary transition-colors glass-panel">
+                          <CardHeader className="pb-2">
+                            <div className="flex justify-between items-start">
+                              <CardTitle className="text-lg">{career.title}</CardTitle>
+                              <Badge variant="outline" className="bg-primary/10 text-primary border-primary/20">
+                                {career.field}
+                              </Badge>
+                            </div>
+                            <CardDescription>{career.description.substring(0, 80)}...</CardDescription>
+                          </CardHeader>
+                          <CardContent className="pb-2 flex-grow">
+                            <div className="grid grid-cols-2 gap-2 text-sm">
+                              <div className="flex items-center gap-1">
+                                <Banknote className="h-3.5 w-3.5 text-muted-foreground" />
+                                <span>{selectedRegion === 'india' ? career.salaryRange.india : career.salaryRange.global}</span>
                               </div>
-                              <CardDescription>Based on {item.course}</CardDescription>
-                            </CardHeader>
-                            <CardContent className="pb-2 flex-grow">
-                              <div className="grid grid-cols-2 gap-2 text-sm">
-                                <div className="flex items-center gap-1">
-                                  <Banknote className="h-3.5 w-3.5 text-muted-foreground" />
-                                  <span>{selectedRegion === 'india' ? salaryInfo.india : salaryInfo.global}</span>
-                                </div>
-                                <div className="flex items-center gap-1">
-                                  <LineChart className="h-3.5 w-3.5 text-muted-foreground" />
-                                  <span>Growth: High</span>
-                                </div>
-                                <div className="flex items-center gap-1">
-                                  <MapPin className="h-3.5 w-3.5 text-muted-foreground" />
-                                  <span>
-                                    {selectedRegion === 'india' 
-                                      ? 'Major Cities' 
-                                      : 'Global Markets'}
-                                  </span>
-                                </div>
-                                <div className="flex items-center gap-1">
-                                  <Building className="h-3.5 w-3.5 text-muted-foreground" />
-                                  <span>Multiple Industries</span>
-                                </div>
+                              <div className="flex items-center gap-1">
+                                <LineChart className="h-3.5 w-3.5 text-muted-foreground" />
+                                <span>Growth: {career.growthRate}</span>
                               </div>
-                            </CardContent>
-                            <CardFooter className="mt-auto">
-                              <Button 
-                                size="sm" 
-                                variant="outline" 
-                                className="w-full"
-                                onClick={() => handleViewCareerDetails(item.career)}
-                              >
-                                View Details
-                              </Button>
-                            </CardFooter>
-                          </Card>
-                        );
-                      })}
+                              <div className="flex items-center gap-1">
+                                <MapPin className="h-3.5 w-3.5 text-muted-foreground" />
+                                <span>
+                                  {selectedRegion === 'india' 
+                                    ? 'Major Indian Cities' 
+                                    : 'Global Markets'}
+                                </span>
+                              </div>
+                              <div className="flex items-center gap-1">
+                                <Building className="h-3.5 w-3.5 text-muted-foreground" />
+                                <span>Multiple Industries</span>
+                              </div>
+                            </div>
+                          </CardContent>
+                          <CardFooter className="mt-auto">
+                            <Button 
+                              size="sm" 
+                              variant="outline" 
+                              className="w-full"
+                              onClick={() => handleViewCareerDetails(career.title)}
+                            >
+                              View Details
+                            </Button>
+                          </CardFooter>
+                        </Card>
+                      ))}
                     </div>
                   )}
                 </div>
@@ -375,7 +324,7 @@ const CareersPage = () => {
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4 py-4 overflow-y-auto">
-            {selectedCareer && (
+            {selectedCareerData && (
               <>
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
@@ -384,10 +333,10 @@ const CareersPage = () => {
                     </h4>
                     <div className="glass-panel p-3 rounded-md">
                       <div className="text-sm mb-1">
-                        <span className="font-medium">India:</span> {careerSalaryData[selectedCareer]?.india || defaultSalary.india}
+                        <span className="font-medium">India:</span> {selectedCareerData.salaryRange.india}
                       </div>
                       <div className="text-sm">
-                        <span className="font-medium">Global:</span> {careerSalaryData[selectedCareer]?.global || defaultSalary.global}
+                        <span className="font-medium">Global:</span> {selectedCareerData.salaryRange.global}
                       </div>
                     </div>
                   </div>
@@ -398,7 +347,7 @@ const CareersPage = () => {
                     </h4>
                     <div className="glass-panel p-3 rounded-md">
                       <div className="text-sm">
-                        <span className="font-medium">Next 5 Years:</span> 15-25% Growth
+                        <span className="font-medium">Rate:</span> {selectedCareerData.growthRate}
                       </div>
                       <div className="text-sm">
                         <span className="font-medium">Trend:</span> Increasing Demand
@@ -413,7 +362,7 @@ const CareersPage = () => {
                   </h4>
                   <div className="glass-panel p-3 rounded-md">
                     <div className="flex flex-wrap gap-2">
-                      {["Technical Knowledge", "Communication", "Problem Solving", "Team Collaboration", "Critical Thinking"].map((skill, i) => (
+                      {selectedCareerData.requiredSkills.map((skill, i) => (
                         <Badge key={i} variant="secondary" className="bg-accent">
                           {skill}
                         </Badge>
@@ -427,9 +376,9 @@ const CareersPage = () => {
                     <Calendar className="h-4 w-4 text-primary" /> Work-Life Balance
                   </h4>
                   <div className="glass-panel p-3 rounded-md text-sm">
-                    <div className="mb-1"><span className="font-medium">Average Hours:</span> 40-45 hours/week</div>
-                    <div className="mb-1"><span className="font-medium">Remote Work:</span> Hybrid options available</div>
-                    <div><span className="font-medium">Flexibility:</span> Moderate to High</div>
+                    <div className="mb-1"><span className="font-medium">Average Hours:</span> {selectedCareerData.workLifeBalance.averageHours}</div>
+                    <div className="mb-1"><span className="font-medium">Remote Work:</span> {selectedCareerData.workLifeBalance.remoteWork}</div>
+                    <div><span className="font-medium">Flexibility:</span> {selectedCareerData.workLifeBalance.flexibility}</div>
                   </div>
                 </div>
                 
@@ -440,10 +389,10 @@ const CareersPage = () => {
                   <div className="glass-panel p-3 rounded-md">
                     <div className="grid grid-cols-2 gap-2">
                       <div className="text-sm">
-                        <span className="font-medium">India:</span> Infosys, TCS, Wipro
+                        <span className="font-medium">India:</span> {selectedCareerData.topCompanies.india.join(', ')}
                       </div>
                       <div className="text-sm">
-                        <span className="font-medium">Global:</span> Google, Microsoft, Amazon
+                        <span className="font-medium">Global:</span> {selectedCareerData.topCompanies.global.join(', ')}
                       </div>
                     </div>
                   </div>

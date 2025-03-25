@@ -1,10 +1,5 @@
 
-export interface College {
-  name: string;
-  location: string;
-  ranking: string;
-  features: string[];
-}
+import { College } from './collegesData';
 
 export interface Course {
   id: string;
@@ -13,8 +8,15 @@ export interface Course {
   field: string;
   duration: string;
   description: string;
-  careerProspects: string[];
-  topColleges: College[];
+  careerProspects: string[]; // Career titles that this course prepares for
+  eligibility: string;
+  entranceExams?: string[];
+  syllabus?: string[];
+  averageFees?: {
+    india: string;
+    abroad: string;
+  };
+  topCollegeIds: string[]; // IDs of top colleges offering this course
 }
 
 export const coursesData: Course[] = [
@@ -32,26 +34,21 @@ export const coursesData: Course[] = [
       "Web Developer",
       "AI Engineer"
     ],
-    topColleges: [
-      {
-        name: "Indian Institute of Technology (IIT), Delhi",
-        location: "New Delhi, India",
-        ranking: "Top 5 in Engineering",
-        features: ["World-class faculty", "Cutting-edge research facilities", "Strong industry connections"]
-      },
-      {
-        name: "Massachusetts Institute of Technology (MIT)",
-        location: "Cambridge, USA",
-        ranking: "#1 in Computer Science",
-        features: ["Innovation hub", "Top research output", "Strong alumni network"]
-      },
-      {
-        name: "Stanford University",
-        location: "Stanford, USA",
-        ranking: "Top 3 globally",
-        features: ["Silicon Valley connections", "Entrepreneurship focus", "Research excellence"]
-      }
-    ]
+    eligibility: "10+2 with Physics, Chemistry and Mathematics",
+    entranceExams: ["JEE Main", "JEE Advanced", "State-level engineering exams"],
+    syllabus: [
+      "Programming Fundamentals",
+      "Data Structures & Algorithms",
+      "Database Management",
+      "Operating Systems",
+      "Computer Networks",
+      "Software Engineering"
+    ],
+    averageFees: {
+      india: "₹8-15 lakhs (total)",
+      abroad: "$120K-200K (total)"
+    },
+    topCollegeIds: ["iit-delhi", "mit", "stanford", "iit-bombay"]
   },
   {
     id: "medicine-mbbs",
@@ -67,26 +64,22 @@ export const coursesData: Course[] = [
       "Public Health Specialist",
       "Medical Officer"
     ],
-    topColleges: [
-      {
-        name: "All India Institute of Medical Sciences (AIIMS)",
-        location: "New Delhi, India",
-        ranking: "#1 in Medicine in India",
-        features: ["Premier medical institution", "Advanced research facilities", "Specialized departments"]
-      },
-      {
-        name: "Harvard Medical School",
-        location: "Boston, USA",
-        ranking: "Top 5 globally",
-        features: ["Cutting-edge research", "Distinguished faculty", "Excellent clinical training"]
-      },
-      {
-        name: "Johns Hopkins University School of Medicine",
-        location: "Baltimore, USA",
-        ranking: "Top 3 globally",
-        features: ["Research excellence", "Clinical innovation", "Interdisciplinary approach"]
-      }
-    ]
+    eligibility: "10+2 with Physics, Chemistry and Biology",
+    entranceExams: ["NEET-UG", "AIIMS MBBS", "JIPMER MBBS"],
+    syllabus: [
+      "Anatomy",
+      "Physiology",
+      "Biochemistry",
+      "Pathology",
+      "Pharmacology",
+      "Medicine",
+      "Surgery"
+    ],
+    averageFees: {
+      india: "₹20 lakhs - 1 crore (total)",
+      abroad: "$200K-500K (total)"
+    },
+    topCollegeIds: ["aiims", "harvard-med", "johns-hopkins"]
   },
   {
     id: "business-bba",
@@ -102,26 +95,21 @@ export const coursesData: Course[] = [
       "Operations Manager",
       "Entrepreneur"
     ],
-    topColleges: [
-      {
-        name: "Indian Institute of Management (IIM), Ahmedabad",
-        location: "Ahmedabad, India",
-        ranking: "Top Business School in India",
-        features: ["Case study method", "Industry partnerships", "Strong placement record"]
-      },
-      {
-        name: "Harvard Business School",
-        location: "Boston, USA",
-        ranking: "#1 globally",
-        features: ["Leadership focus", "Global network", "Case method teaching"]
-      },
-      {
-        name: "London School of Economics",
-        location: "London, UK",
-        ranking: "Top 10 globally",
-        features: ["Economic focus", "International environment", "Research excellence"]
-      }
-    ]
+    eligibility: "10+2 in any stream",
+    entranceExams: ["DU JAT", "IPMAT", "SET", "NPAT"],
+    syllabus: [
+      "Principles of Management",
+      "Financial Accounting",
+      "Marketing Management",
+      "Human Resource Management",
+      "Business Economics",
+      "Operations Research"
+    ],
+    averageFees: {
+      india: "₹3-10 lakhs (total)",
+      abroad: "$80K-160K (total)"
+    },
+    topCollegeIds: ["iim-ahmedabad", "harvard-business", "lse"]
   },
   {
     id: "eng-mtech",
@@ -137,26 +125,21 @@ export const coursesData: Course[] = [
       "AI Product Manager",
       "Computational Linguist"
     ],
-    topColleges: [
-      {
-        name: "Indian Institute of Technology (IIT), Bombay",
-        location: "Mumbai, India",
-        ranking: "Top 3 in India for AI",
-        features: ["AI research center", "Industry collaborations", "Advanced computing facilities"]
-      },
-      {
-        name: "Carnegie Mellon University",
-        location: "Pittsburgh, USA",
-        ranking: "Top 5 globally for AI",
-        features: ["Pioneering AI research", "Robotics innovation", "Industry connections"]
-      },
-      {
-        name: "University of Oxford",
-        location: "Oxford, UK",
-        ranking: "Top 10 globally",
-        features: ["Interdisciplinary approach", "Research excellence", "Historic prestige"]
-      }
-    ]
+    eligibility: "B.Tech/B.E in Computer Science, IT, Electronics or related fields",
+    entranceExams: ["GATE", "TOEFL/IELTS (for international universities)"],
+    syllabus: [
+      "Machine Learning",
+      "Deep Learning",
+      "Natural Language Processing",
+      "Computer Vision",
+      "Robotics",
+      "Statistical Learning"
+    ],
+    averageFees: {
+      india: "₹2-5 lakhs (total)",
+      abroad: "$50K-100K (total)"
+    },
+    topCollegeIds: ["iit-bombay", "cmu", "mit", "stanford"]
   },
   {
     id: "med-md",
@@ -172,26 +155,21 @@ export const coursesData: Course[] = [
       "Child Healthcare Researcher",
       "Developmental Specialist"
     ],
-    topColleges: [
-      {
-        name: "AIIMS, New Delhi",
-        location: "New Delhi, India",
-        ranking: "#1 for Pediatrics in India",
-        features: ["Specialized pediatric department", "Advanced neonatal care", "Research focus"]
-      },
-      {
-        name: "Boston Children's Hospital (Harvard Medical School)",
-        location: "Boston, USA",
-        ranking: "#1 globally for Pediatrics",
-        features: ["Specialized care", "Cutting-edge research", "Comprehensive training"]
-      },
-      {
-        name: "Great Ormond Street Hospital (UCL)",
-        location: "London, UK",
-        ranking: "Top 5 globally",
-        features: ["Specialized children's hospital", "Research innovation", "Clinical excellence"]
-      }
-    ]
+    eligibility: "MBBS degree with completion of internship",
+    entranceExams: ["NEET-PG", "USMLE (for USA)"],
+    syllabus: [
+      "General Pediatrics",
+      "Neonatology",
+      "Pediatric Infectious Diseases",
+      "Developmental Pediatrics",
+      "Pediatric Emergency Medicine",
+      "Adolescent Medicine"
+    ],
+    averageFees: {
+      india: "₹10-25 lakhs (total)",
+      abroad: "$150K-300K (total)"
+    },
+    topCollegeIds: ["aiims", "harvard-med", "johns-hopkins"]
   },
   {
     id: "biz-mba",
@@ -207,26 +185,21 @@ export const coursesData: Course[] = [
       "Chief Operations Officer",
       "Entrepreneur"
     ],
-    topColleges: [
-      {
-        name: "Indian Institute of Management (IIM), Bangalore",
-        location: "Bangalore, India",
-        ranking: "Top 3 in India",
-        features: ["Innovation focus", "Entrepreneurship center", "Global exposure"]
-      },
-      {
-        name: "Stanford Graduate School of Business",
-        location: "Stanford, USA",
-        ranking: "Top 3 globally",
-        features: ["Innovation focus", "Silicon Valley network", "Entrepreneurial ecosystem"]
-      },
-      {
-        name: "INSEAD",
-        location: "Fontainebleau, France & Singapore",
-        ranking: "Top 5 globally",
-        features: ["International perspective", "Global campuses", "Accelerated program"]
-      }
-    ]
+    eligibility: "Bachelor's degree in any discipline",
+    entranceExams: ["CAT", "XAT", "GMAT", "GRE"],
+    syllabus: [
+      "Management Principles",
+      "Financial Management",
+      "Marketing Management",
+      "Strategic Management",
+      "Operations Management",
+      "Organizational Behavior"
+    ],
+    averageFees: {
+      india: "₹10-25 lakhs (total)",
+      abroad: "$100K-200K (total)"
+    },
+    topCollegeIds: ["iim-ahmedabad", "harvard-business", "lse", "stanford"]
   },
   {
     id: "design-bdes",
@@ -242,26 +215,21 @@ export const coursesData: Course[] = [
       "Brand Identity Developer",
       "Design Consultant"
     ],
-    topColleges: [
-      {
-        name: "National Institute of Design (NID)",
-        location: "Ahmedabad, India",
-        ranking: "Top Design School in India",
-        features: ["Industry projects", "Design thinking approach", "Practical learning"]
-      },
-      {
-        name: "Rhode Island School of Design (RISD)",
-        location: "Providence, USA",
-        ranking: "Top 5 globally",
-        features: ["Creative excellence", "Studio-based learning", "Cross-disciplinary approach"]
-      },
-      {
-        name: "Royal College of Art",
-        location: "London, UK",
-        ranking: "#1 Art & Design globally",
-        features: ["Innovation focus", "Industry connections", "Research-led teaching"]
-      }
-    ]
+    eligibility: "10+2 in any stream",
+    entranceExams: ["UCEED", "NID DAT", "CEED", "NIFT Entrance Exam"],
+    syllabus: [
+      "Design Fundamentals",
+      "Visual Communication",
+      "User Experience Design",
+      "Typography",
+      "Color Theory",
+      "Interactive Media"
+    ],
+    averageFees: {
+      india: "₹5-15 lakhs (total)",
+      abroad: "$100K-180K (total)"
+    },
+    topCollegeIds: ["nid", "risd"]
   },
   {
     id: "science-bsc",
@@ -277,25 +245,20 @@ export const coursesData: Course[] = [
       "Science Educator",
       "Technical Writer"
     ],
-    topColleges: [
-      {
-        name: "Indian Institute of Science (IISc)",
-        location: "Bangalore, India",
-        ranking: "Top Science Institution in India",
-        features: ["Research excellence", "Scientific innovation", "Interdisciplinary approach"]
-      },
-      {
-        name: "California Institute of Technology (Caltech)",
-        location: "Pasadena, USA",
-        ranking: "Top 5 globally for Physics",
-        features: ["Research intensity", "Nobel laureate faculty", "Advanced facilities"]
-      },
-      {
-        name: "University of Cambridge",
-        location: "Cambridge, UK",
-        ranking: "Top 5 globally",
-        features: ["Historic excellence", "Cavendish Laboratory", "Scientific breakthroughs"]
-      }
-    ]
+    eligibility: "10+2 with Physics, Chemistry and Mathematics",
+    entranceExams: ["CUET", "NEST", "University-specific entrance exams"],
+    syllabus: [
+      "Classical Mechanics",
+      "Electromagnetism",
+      "Quantum Mechanics",
+      "Thermodynamics",
+      "Optics",
+      "Nuclear Physics"
+    ],
+    averageFees: {
+      india: "₹1-5 lakhs (total)",
+      abroad: "$80K-150K (total)"
+    },
+    topCollegeIds: ["iisc", "caltech", "cambridge", "mit"]
   }
 ];
