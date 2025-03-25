@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+
+import React, { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from '@/components/Header';
 import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { MapPin, Search, Building } from 'lucide-react';
@@ -14,6 +14,7 @@ import StarRating from '@/components/StarRating';
 import { CollegeType, CollegeAffiliation, CollegeSpecialization } from '@/types/filters';
 import { ScrollArea } from "@/components/ui/scroll-area";
 import SearchableSelect from '@/components/SearchableSelect';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 const statesData = [
   { name: "Andhra Pradesh", districts: ["Alluri Sitarama Raju", "Anakapalli", "Anantapur", "Annamaya", "Bapatla", "Chittoor", "East Godavari", "Eluru", "Guntur", "Kadapa", "Kakinada", "Konaseema", "Krishna", "Kurnool", "Manyam", "N T Rama Rao", "Nandyal", "Nellore", "Palnadu", "Prakasam", "Sri Balaji", "Sri Satya Sai", "Srikakulam", "Visakhapatnam", "Vizianagaram", "West Godavari"] },
@@ -62,6 +63,7 @@ const getCollegeRating = (collegeName: string): number => {
 const CollegesPage = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const isMobile = useIsMobile();
   const [searchTerm, setSearchTerm] = useState('');
   const [collegeTypeFilter, setCollegeTypeFilter] = useState<CollegeType>('all');
   const [collegeAffiliationFilter, setCollegeAffiliationFilter] = useState<CollegeAffiliation>('all');
@@ -79,24 +81,30 @@ const CollegesPage = () => {
   
   const collegeTypeOptions = [
     { value: 'all', label: 'All Types' },
-    { value: 'engineering', label: 'Engineering' },
-    { value: 'medical', label: 'Medical' },
-    { value: 'arts', label: 'Arts and Science' },
-    { value: 'commerce', label: 'Commerce and Business' },
-    { value: 'law', label: 'Law' },
-    { value: 'design', label: 'Design and Creative' },
-    { value: 'agricultural', label: 'Agricultural' },
-    { value: 'veterinary', label: 'Veterinary' },
-    { value: 'hotel', label: 'Hotel Management' }
+    { value: 'engineering', label: 'Engineering Colleges' },
+    { value: 'medical', label: 'Medical Colleges' },
+    { value: 'dental', label: 'Dental Colleges' },
+    { value: 'pharmacy', label: 'Pharmacy Colleges' },
+    { value: 'law', label: 'Law Colleges' },
+    { value: 'architecture', label: 'Architecture Colleges' },
+    { value: 'management', label: 'Management Colleges' },
+    { value: 'arts', label: 'Arts and Science Colleges' },
+    { value: 'polytechnic', label: 'Polytechnic Colleges' },
+    { value: 'education', label: 'Teacher Training Colleges' },
+    { value: 'agricultural', label: 'Agricultural Colleges' },
+    { value: 'veterinary', label: 'Veterinary Colleges' },
+    { value: 'other', label: 'Other' }
   ];
   
   const collegeAffiliationOptions = [
     { value: 'all', label: 'All Affiliations' },
-    { value: 'central', label: 'Central Government' },
-    { value: 'state', label: 'State Government' },
-    { value: 'private', label: 'Private' },
+    { value: 'autonomous', label: 'Autonomous Colleges' },
+    { value: 'affiliated', label: 'Non-Autonomous/Affiliated Colleges' },
+    { value: 'government', label: 'Government Colleges' },
+    { value: 'private', label: 'Private Colleges' },
     { value: 'deemed', label: 'Deemed-to-be Universities' },
-    { value: 'autonomous', label: 'Autonomous Colleges' }
+    { value: 'central', label: 'Central University Colleges/Constituent Colleges' },
+    { value: 'state', label: 'State University Colleges/Constituent Colleges' }
   ];
   
   const specializationOptions = [
@@ -106,55 +114,69 @@ const CollegesPage = () => {
     { value: 'coed', label: 'Co-education' }
   ];
 
-  const stateOptions = [
+  const stateOptions = useMemo(() => [
     { value: 'all', label: 'All States & UTs' },
     ...statesData.map(state => ({ value: state.name, label: state.name }))
-  ];
+  ], []);
   
   const availableDistricts = stateFilter === 'all' 
     ? [] 
     : statesData.find(state => state.name === stateFilter)?.districts || [];
     
-  const districtOptions = [
+  const districtOptions = useMemo(() => [
     { value: 'all', label: 'All Districts' },
     ...availableDistricts.map(district => ({ value: district, label: district }))
-  ];
+  ], [availableDistricts]);
   
-  const filteredColleges = uniqueColleges.filter(college => {
-    const matchesSearch = searchTerm === '' || 
-      college.name.toLowerCase().includes(searchTerm.toLowerCase());
-    
-    const matchesType = collegeTypeFilter === 'all' || 
-      (collegeTypeFilter === 'engineering' && college.name.includes('Engineering')) ||
-      (collegeTypeFilter === 'medical' && college.name.includes('Medical')) ||
-      (collegeTypeFilter === 'arts' && college.name.includes('Arts')) ||
-      (collegeTypeFilter === 'commerce' && college.name.includes('Commerce')) ||
-      (collegeTypeFilter === 'law' && college.name.includes('Law')) ||
-      (collegeTypeFilter === 'design' && college.name.includes('Design')) ||
-      (collegeTypeFilter === 'agricultural' && college.name.includes('Agricultural')) ||
-      (collegeTypeFilter === 'veterinary' && college.name.includes('Veterinary')) ||
-      (collegeTypeFilter === 'hotel' && college.name.includes('Hotel'));
-    
-    const matchesAffiliation = collegeAffiliationFilter === 'all' || 
-      (collegeAffiliationFilter === 'central' && college.name.includes('Indian Institute')) ||
-      (collegeAffiliationFilter === 'state' && college.name.includes('State')) ||
-      (collegeAffiliationFilter === 'private' && !college.name.includes('Institute') && !college.name.includes('University')) ||
-      (collegeAffiliationFilter === 'deemed' && college.name.includes('University')) ||
-      (collegeAffiliationFilter === 'autonomous' && (college.name.includes('College') || college.name.includes('Institute')));
-    
-    const matchesSpecialization = specializationFilter === 'all' || 
-      (specializationFilter === 'women' && college.name.toLowerCase().includes('women')) ||
-      (specializationFilter === 'men' && college.name.toLowerCase().includes('men')) ||
-      (specializationFilter === 'coed' && !college.name.toLowerCase().includes('women') && !college.name.toLowerCase().includes('men'));
-    
-    const matchesState = stateFilter === 'all' || 
-      college.location.includes(stateFilter);
-    
-    const matchesDistrict = districtFilter === 'all' || 
-      college.location.includes(districtFilter);
-    
-    return matchesSearch && matchesType && matchesAffiliation && matchesSpecialization && matchesState && matchesDistrict;
-  });
+  // Smart search for colleges
+  const filteredColleges = useMemo(() => {
+    return uniqueColleges.filter(college => {
+      // Smart search implementation
+      const matchesSearch = !searchTerm || searchTerm.split(/\s+/).every(term => 
+        college.name.toLowerCase().includes(term.toLowerCase()) ||
+        college.location.toLowerCase().includes(term.toLowerCase())
+      );
+      
+      const matchesType = collegeTypeFilter === 'all' || 
+        (collegeTypeFilter === 'engineering' && college.name.toLowerCase().includes('engineering')) ||
+        (collegeTypeFilter === 'medical' && college.name.toLowerCase().includes('medical')) ||
+        (collegeTypeFilter === 'dental' && college.name.toLowerCase().includes('dental')) ||
+        (collegeTypeFilter === 'pharmacy' && college.name.toLowerCase().includes('pharmacy')) ||
+        (collegeTypeFilter === 'law' && college.name.toLowerCase().includes('law')) ||
+        (collegeTypeFilter === 'architecture' && college.name.toLowerCase().includes('architecture')) ||
+        (collegeTypeFilter === 'management' && (college.name.toLowerCase().includes('management') || college.name.toLowerCase().includes('business'))) ||
+        (collegeTypeFilter === 'arts' && (college.name.toLowerCase().includes('arts') || college.name.toLowerCase().includes('science'))) ||
+        (collegeTypeFilter === 'polytechnic' && college.name.toLowerCase().includes('polytechnic')) ||
+        (collegeTypeFilter === 'education' && (college.name.toLowerCase().includes('education') || college.name.toLowerCase().includes('teaching'))) ||
+        (collegeTypeFilter === 'agricultural' && college.name.toLowerCase().includes('agriculture')) ||
+        (collegeTypeFilter === 'veterinary' && college.name.toLowerCase().includes('veterinary')) ||
+        (collegeTypeFilter === 'other' && !['engineering', 'medical', 'dental', 'pharmacy', 'law', 'architecture', 'management', 'arts', 'polytechnic', 'education', 'agricultural', 'veterinary'].some(
+          type => college.name.toLowerCase().includes(type)
+        ));
+      
+      const matchesAffiliation = collegeAffiliationFilter === 'all' || 
+        (collegeAffiliationFilter === 'autonomous' && college.name.toLowerCase().includes('autonomous')) ||
+        (collegeAffiliationFilter === 'affiliated' && (college.name.toLowerCase().includes('affiliated') || college.name.toLowerCase().includes('college'))) ||
+        (collegeAffiliationFilter === 'government' && college.name.toLowerCase().includes('government')) ||
+        (collegeAffiliationFilter === 'private' && !college.name.toLowerCase().includes('government')) ||
+        (collegeAffiliationFilter === 'deemed' && college.name.toLowerCase().includes('deemed')) ||
+        (collegeAffiliationFilter === 'central' && college.name.toLowerCase().includes('central')) ||
+        (collegeAffiliationFilter === 'state' && college.name.toLowerCase().includes('state'));
+      
+      const matchesSpecialization = specializationFilter === 'all' || 
+        (specializationFilter === 'women' && college.name.toLowerCase().includes('women')) ||
+        (specializationFilter === 'men' && college.name.toLowerCase().includes('men')) ||
+        (specializationFilter === 'coed' && !college.name.toLowerCase().includes('women') && !college.name.toLowerCase().includes('men'));
+      
+      const matchesState = stateFilter === 'all' || 
+        college.location.includes(stateFilter);
+      
+      const matchesDistrict = districtFilter === 'all' || 
+        college.location.includes(districtFilter);
+      
+      return matchesSearch && matchesType && matchesAffiliation && matchesSpecialization && matchesState && matchesDistrict;
+    });
+  }, [uniqueColleges, searchTerm, collegeTypeFilter, collegeAffiliationFilter, specializationFilter, stateFilter, districtFilter]);
 
   const handleViewDetails = (college: College) => {
     toast({
@@ -217,53 +239,38 @@ const CollegesPage = () => {
                   
                   <div className="space-y-2">
                     <label className="text-sm font-medium">College Type</label>
-                    <Select
+                    <SearchableSelect
+                      options={collegeTypeOptions}
                       value={collegeTypeFilter}
                       onValueChange={(value) => handleFilterChange('type', value)}
-                    >
-                      <SelectTrigger className="glass-input active:scale-[0.98] hover:shadow-md transition-all">
-                        <SelectValue placeholder="Select college type" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {collegeTypeOptions.map((option) => (
-                          <SelectItem key={option.value} value={option.value}>{option.label}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                      placeholder="Select college type"
+                      className="glass-input"
+                      noResultsText="No college types found"
+                    />
                   </div>
                   
                   <div className="space-y-2">
                     <label className="text-sm font-medium">College Affiliation</label>
-                    <Select
+                    <SearchableSelect
+                      options={collegeAffiliationOptions}
                       value={collegeAffiliationFilter}
                       onValueChange={(value) => handleFilterChange('affiliation', value)}
-                    >
-                      <SelectTrigger className="glass-input active:scale-[0.98] hover:shadow-md transition-all">
-                        <SelectValue placeholder="Select college affiliation" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {collegeAffiliationOptions.map((option) => (
-                          <SelectItem key={option.value} value={option.value}>{option.label}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                      placeholder="Select college affiliation"
+                      className="glass-input"
+                      noResultsText="No affiliations found"
+                    />
                   </div>
                   
                   <div className="space-y-2">
                     <label className="text-sm font-medium">Specialization</label>
-                    <Select
+                    <SearchableSelect
+                      options={specializationOptions}
                       value={specializationFilter}
                       onValueChange={(value) => handleFilterChange('specialization', value)}
-                    >
-                      <SelectTrigger className="glass-input active:scale-[0.98] hover:shadow-md transition-all">
-                        <SelectValue placeholder="Select specialization" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {specializationOptions.map((option) => (
-                          <SelectItem key={option.value} value={option.value}>{option.label}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                      placeholder="Select specialization"
+                      className="glass-input"
+                      noResultsText="No specializations found"
+                    />
                   </div>
                   
                   <div className="space-y-2">

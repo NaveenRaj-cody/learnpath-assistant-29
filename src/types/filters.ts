@@ -1,5 +1,4 @@
 
-
 export type CourseLevel = 
   | 'all' 
   | 'undergraduate' 
@@ -46,25 +45,30 @@ export type CollegeType =
   | 'all' 
   | 'engineering' 
   | 'medical' 
-  | 'arts' 
-  | 'commerce' 
+  | 'dental'
+  | 'pharmacy'
   | 'law' 
-  | 'design' 
+  | 'architecture'
+  | 'management'
+  | 'arts' 
+  | 'polytechnic'
+  | 'education'
   | 'agricultural' 
   | 'veterinary' 
-  | 'hotel';
+  | 'other';
 
 export type CollegeAffiliation = 
   | 'all' 
-  | 'central' 
-  | 'state' 
+  | 'autonomous' 
+  | 'affiliated'
+  | 'government'
   | 'private' 
   | 'deemed' 
-  | 'autonomous';
+  | 'central'
+  | 'state';
 
 export type CollegeSpecialization = 
   | 'all' 
   | 'women' 
   | 'men' 
   | 'coed';
-
