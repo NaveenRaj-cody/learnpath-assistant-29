@@ -1,4 +1,3 @@
-
 import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from '@/components/Header';
@@ -12,8 +11,9 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
 import { coursesData } from '@/data/coursesData';
 import { BriefcaseIcon, Globe, MapPin, Building, Search, Banknote, LineChart, Newspaper, Users, Calendar, ArrowUpRight } from 'lucide-react';
 import AnimatedTransition from '@/components/AnimatedTransition';
+import SearchableSelect from '@/components/SearchableSelect';
+import { SubjectArea } from '@/types/filters';
 
-// Mock news data - in a real app, you would fetch this from an API
 const newsData = [
   {
     id: 1,
@@ -57,7 +57,6 @@ const newsData = [
   }
 ];
 
-// Career salary data by region
 const careerSalaryData: Record<string, { india: string, global: string }> = {
   "Software Developer": { india: "₹5-20 LPA", global: "$60K-150K/year" },
   "Systems Analyst": { india: "₹4-15 LPA", global: "$55K-120K/year" },
@@ -76,7 +75,6 @@ const careerSalaryData: Record<string, { india: string, global: string }> = {
   "Entrepreneur": { india: "Variable", global: "Variable" },
 };
 
-// Default salary ranges for careers not in the list
 const defaultSalary = { india: "₹5-15 LPA", global: "$60K-120K/year" };
 
 const CareersPage = () => {
@@ -85,30 +83,26 @@ const CareersPage = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [courseSearchTerm, setCourseSearchTerm] = useState('');
   const [selectedCourse, setSelectedCourse] = useState('all');
-  const [selectedField, setSelectedField] = useState('all');
+  const [selectedField, setSelectedField] = useState<SubjectArea>('all');
   const [newsFilter, setNewsFilter] = useState('all');
   const [selectedCareer, setSelectedCareer] = useState<string | null>(null);
   const [isCareerDialogOpen, setIsCareerDialogOpen] = useState(false);
   
-  // Get all courses for dropdown
   const allCourses = coursesData.map(course => ({
     id: course.id,
     name: course.name,
     field: course.field
   }));
   
-  // Filter courses based on search term
-  const filteredCourseOptions = allCourses
+  const courseOptions = allCourses
     .filter(course => selectedField === 'all' || course.field === selectedField)
-    .filter(course => 
-      courseSearchTerm === '' || 
-      course.name.toLowerCase().includes(courseSearchTerm.toLowerCase())
-    );
+    .map(course => ({
+      value: course.id,
+      label: course.name
+    }));
   
-  // Get unique fields
   const uniqueFields = [...new Set(coursesData.map(course => course.field))];
   
-  // Filter careers based on selected course and search term
   const filteredCareers = coursesData
     .filter(course => 
       (selectedCourse === 'all' || course.id === selectedCourse) &&
@@ -119,13 +113,22 @@ const CareersPage = () => {
       course: course.name,
       field: course.field
     })))
-    .filter(item => 
-      searchTerm === '' || 
-      item.career.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      item.course.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    .filter(item => {
+      if (searchTerm === '') return true;
+      const search = searchTerm.toLowerCase();
+      
+      return (
+        item.career.toLowerCase().includes(search) ||
+        item.course.toLowerCase().includes(search) ||
+        item.field.toLowerCase().includes(search) ||
+        search.split(' ').some(word => 
+          item.career.toLowerCase().includes(word) ||
+          item.course.toLowerCase().includes(word) ||
+          item.field.toLowerCase().includes(word)
+        )
+      );
+    });
   
-  // Filter news based on selected field
   const filteredNews = newsData.filter(news => 
     newsFilter === 'all' || news.tag === newsFilter
   );
@@ -134,6 +137,32 @@ const CareersPage = () => {
     setSelectedCareer(career);
     setIsCareerDialogOpen(true);
   };
+
+  const subjectAreaOptions: { value: SubjectArea; label: string }[] = [
+    { value: 'all', label: 'All Fields' },
+    { value: 'engineering', label: 'Engineering' },
+    { value: 'medicine', label: 'Medicine' },
+    { value: 'business', label: 'Business' },
+    { value: 'law', label: 'Law' },
+    { value: 'arts', label: 'Arts' },
+    { value: 'science', label: 'Science' },
+    { value: 'commerce', label: 'Commerce' },
+    { value: 'design', label: 'Design' },
+    { value: 'education', label: 'Education' },
+    { value: 'vocational', label: 'Vocational' },
+    { value: 'agriculture', label: 'Agriculture' },
+    { value: 'information-technology', label: 'Information Technology' },
+    { value: 'hospitality', label: 'Hospitality' },
+    { value: 'media', label: 'Media' },
+    { value: 'paramedical', label: 'Paramedical' },
+    { value: 'social-sciences', label: 'Social Sciences' },
+    { value: 'management', label: 'Management' },
+    { value: 'architecture', label: 'Architecture' },
+    { value: 'computer-applications', label: 'Computer Applications' },
+    { value: 'pharmacy', label: 'Pharmacy' },
+    { value: 'fashion', label: 'Fashion' },
+    { value: 'others', label: 'Others' }
+  ];
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
@@ -164,72 +193,47 @@ const CareersPage = () => {
                   <CardDescription>Find the perfect career path based on your interests</CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <label className="text-sm font-medium">Search</label>
+                      <label className="text-sm font-medium">Search Careers</label>
                       <div className="relative">
                         <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
                         <Input
                           type="text"
-                          placeholder="Search careers..."
+                          placeholder="Search by career name, course, field..."
                           value={searchTerm}
                           onChange={(e) => setSearchTerm(e.target.value)}
-                          className="pl-10 glass-input"
+                          className="pl-10 glass-input shadow-sm focus:ring-2 focus:ring-primary/30 transition-all"
                         />
                       </div>
                     </div>
                     
                     <div className="space-y-2">
                       <label className="text-sm font-medium">Field of Study</label>
-                      <Select
+                      <SearchableSelect
+                        options={subjectAreaOptions}
                         value={selectedField}
                         onValueChange={(value) => {
-                          setSelectedField(value);
+                          setSelectedField(value as SubjectArea);
                           setSelectedCourse('all'); // Reset course when field changes
                           setNewsFilter(value); // Update news filter to match field
                         }}
-                      >
-                        <SelectTrigger className="glass-input">
-                          <SelectValue placeholder="Select field" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="all">All Fields</SelectItem>
-                          {uniqueFields.map((field) => (
-                            <SelectItem key={field} value={field}>{field}</SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
+                        placeholder="Select field"
+                        className="glass-input"
+                        noResultsText="No fields found"
+                      />
                     </div>
                     
-                    <div className="space-y-2">
+                    <div className="space-y-2 md:col-span-2">
                       <label className="text-sm font-medium">Course</label>
-                      <div className="relative">
-                        <Input
-                          type="text"
-                          placeholder="Search courses..."
-                          value={courseSearchTerm}
-                          onChange={(e) => setCourseSearchTerm(e.target.value)}
-                          className="mb-2 glass-input"
-                        />
-                        <Select
-                          value={selectedCourse}
-                          onValueChange={(value) => {
-                            setSelectedCourse(value);
-                            // Clear course search when a course is selected
-                            setCourseSearchTerm('');
-                          }}
-                        >
-                          <SelectTrigger className="glass-input">
-                            <SelectValue placeholder="Select course" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="all">All Courses</SelectItem>
-                            {filteredCourseOptions.map((course) => (
-                              <SelectItem key={course.id} value={course.id}>{course.name}</SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      </div>
+                      <SearchableSelect
+                        options={courseOptions}
+                        value={selectedCourse}
+                        onValueChange={setSelectedCourse}
+                        placeholder="Search courses"
+                        className="glass-input"
+                        noResultsText="No courses found. Try a different search term or field of study."
+                      />
                     </div>
                   </div>
                   
@@ -269,7 +273,7 @@ const CareersPage = () => {
                       {filteredCareers.map((item, index) => {
                         const salaryInfo = careerSalaryData[item.career] || defaultSalary;
                         return (
-                          <Card key={index} className="hover:border-primary transition-colors glass-panel">
+                          <Card key={index} className="flex flex-col h-full hover:border-primary transition-colors glass-panel">
                             <CardHeader className="pb-2">
                               <div className="flex justify-between items-start">
                                 <CardTitle className="text-lg">{item.career}</CardTitle>
@@ -279,7 +283,7 @@ const CareersPage = () => {
                               </div>
                               <CardDescription>Based on {item.course}</CardDescription>
                             </CardHeader>
-                            <CardContent className="pb-2">
+                            <CardContent className="pb-2 flex-grow">
                               <div className="grid grid-cols-2 gap-2 text-sm">
                                 <div className="flex items-center gap-1">
                                   <Banknote className="h-3.5 w-3.5 text-muted-foreground" />
@@ -303,7 +307,7 @@ const CareersPage = () => {
                                 </div>
                               </div>
                             </CardContent>
-                            <CardFooter>
+                            <CardFooter className="mt-auto">
                               <Button 
                                 size="sm" 
                                 variant="outline" 
@@ -376,7 +380,6 @@ const CareersPage = () => {
         </AnimatedTransition>
       </main>
 
-      {/* Career Details Dialog */}
       <Dialog open={isCareerDialogOpen} onOpenChange={setIsCareerDialogOpen}>
         <DialogContent className="sm:max-w-[600px] glass-panel">
           <DialogHeader>
