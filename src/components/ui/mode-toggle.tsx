@@ -12,7 +12,35 @@ import {
 } from "@/components/ui/dropdown-menu"
 
 export function ModeToggle() {
-  const { setTheme } = useTheme()
+  const { setTheme, theme } = useTheme()
+
+  // Add class to body based on theme to help with global styles
+  React.useEffect(() => {
+    if (theme === 'light') {
+      document.body.classList.add('light-theme');
+      document.body.classList.remove('dark-theme');
+    } else {
+      document.body.classList.add('dark-theme');
+      document.body.classList.remove('light-theme');
+    }
+    
+    // Update any course text elements to ensure visibility
+    const updateCourseTextVisibility = () => {
+      const elements = document.querySelectorAll('.course-prospect-text');
+      elements.forEach(el => {
+        if (theme === 'light') {
+          el.classList.add('text-foreground');
+        } else {
+          el.classList.remove('text-foreground');
+        }
+      });
+    };
+    
+    // Run immediately and add a small delay to ensure DOM is updated
+    updateCourseTextVisibility();
+    setTimeout(updateCourseTextVisibility, 100);
+    
+  }, [theme]);
 
   return (
     <DropdownMenu>
