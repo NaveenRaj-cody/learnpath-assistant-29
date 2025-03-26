@@ -23,14 +23,28 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ className }) => {
   const chatContainerRef = useRef<HTMLDivElement>(null);
   const messageInputRef = useRef<HTMLTextAreaElement>(null);
   const navigate = useNavigate();
-
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  const [shouldAutoScroll, setShouldAutoScroll] = useState(true);
+  
+  // Modified scrollToBottom function to be more controlled
+  const scrollToBottom = (force = false) => {
+    if (shouldAutoScroll || force) {
+      messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }
   };
 
+  // Only scroll on new messages if we should auto-scroll
   useEffect(() => {
-    scrollToBottom();
-  }, [messages, isTyping]);
+    if (messages.length > 0) {
+      scrollToBottom();
+    }
+  }, [messages.length]);
+
+  // Detect if user is typing - don't auto-scroll
+  useEffect(() => {
+    if (isTyping) {
+      scrollToBottom();
+    }
+  }, [isTyping]);
 
   useEffect(() => {
     const checkScroll = () => {
@@ -39,6 +53,10 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ className }) => {
       const { scrollTop, scrollHeight, clientHeight } = chatContainerRef.current;
       const isScrolledUp = scrollHeight - scrollTop - clientHeight > 100;
       setShowScrollButton(isScrolledUp);
+      
+      // If user has scrolled up manually, disable auto-scroll
+      // If they're near the bottom, re-enable auto-scroll
+      setShouldAutoScroll(!isScrolledUp);
     };
 
     const container = chatContainerRef.current;
@@ -55,6 +73,9 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ className }) => {
     
     sendMessage(messageInput);
     setMessageInput('');
+    
+    // Force scroll to bottom when sending a message
+    setTimeout(() => scrollToBottom(true), 100);
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -109,7 +130,7 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ className }) => {
 
       <div 
         ref={chatContainerRef}
-        className="flex-1 overflow-y-auto p-4 scroll-smooth"
+        className="flex-1 overflow-y-auto p-4 scroll-smooth h-[350px] max-h-[350px]"
       >
         <div className="space-y-4">
           {messages.map((message) => (
@@ -135,7 +156,7 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ className }) => {
         <Button
           className="absolute bottom-20 right-4 rounded-full w-10 h-10 p-0 shadow-md bg-background/80 backdrop-blur-sm hover:shadow-lg active:scale-95 transition-all"
           size="icon"
-          onClick={scrollToBottom}
+          onClick={() => scrollToBottom(true)}
         >
           <ArrowDown className="h-5 w-5" />
         </Button>

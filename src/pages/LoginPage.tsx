@@ -1,18 +1,17 @@
-
 import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from '@/components/Header';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { GraduationCap, User, MapPin, Home } from 'lucide-react';
 import AnimatedTransition from '@/components/AnimatedTransition';
 import { useAuth } from '@/contexts/AuthContext';
+import SearchableSelect from '@/components/SearchableSelect';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
-// Import the state and district data
 const statesData = [
   { name: "Andhra Pradesh", districts: ["Alluri Sitarama Raju", "Anakapalli", "Anantapur", "Annamaya", "Bapatla", "Chittoor", "East Godavari", "Eluru", "Guntur", "Kadapa", "Kakinada", "Konaseema", "Krishna", "Kurnool", "Manyam", "N T Rama Rao", "Nandyal", "Nellore", "Palnadu", "Prakasam", "Sri Balaji", "Sri Satya Sai", "Srikakulam", "Visakhapatnam", "Vizianagaram", "West Godavari"] },
   { name: "Arunachal Pradesh", districts: ["Anjaw", "Bichom", "Changlang", "Dibang Valley", "East Kameng", "East Siang", "Kamle", "Keyi Panyor", "Kra Daadi", "Kurung Kumey", "Lepa Rada", "Lohit", "Longding", "Lower Dibang Valley", "Lower Siang", "Lower Subansiri", "Namsai", "Pakke Kessang", "Papum Pare", "Shi Yomi", "Siang", "Tawang", "Tirap", "Upper Siang", "Upper Subansiri", "West Kameng", "West Siang"] },
@@ -81,7 +80,6 @@ const LoginPage = () => {
     state: '',
   });
 
-  // Get available districts based on selected state
   const availableDistricts = useMemo(() => 
     formData.state ? 
       statesData.find(state => state.name === formData.state)?.districts || [] 
@@ -89,21 +87,23 @@ const LoginPage = () => {
     [formData.state]
   );
 
-  // Create state options for the dropdown
   const stateOptions = useMemo(() => 
-    statesData.map(state => state.name),
+    statesData.map(state => ({ value: state.name, label: state.name })),
     []
   );
 
+  const districtOptions = useMemo(() => 
+    availableDistricts.map(district => ({ value: district, label: district })),
+    [availableDistricts]
+  );
+
   useEffect(() => {
-    // Redirect if already logged in
     if (isLoggedIn) {
       navigate('/');
     }
   }, [isLoggedIn, navigate]);
 
   useEffect(() => {
-    // Reset district when state changes
     if (formData.district && !availableDistricts.includes(formData.district)) {
       setFormData(prev => ({
         ...prev,
@@ -124,7 +124,6 @@ const LoginPage = () => {
       [name]: value
     }));
     
-    // Clear error when field is edited
     if (errors[name as keyof typeof errors]) {
       setErrors(prev => ({
         ...prev,
@@ -139,7 +138,6 @@ const LoginPage = () => {
       [name]: value
     }));
     
-    // Clear error when field is selected
     if (errors[name as keyof typeof errors]) {
       setErrors(prev => ({
         ...prev,
@@ -198,24 +196,20 @@ const LoginPage = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Validate all required fields
     if (!formData.name || !formData.email || !formData.educationLevel || !formData.state) {
       toast.error("Please fill in all required fields");
       return;
     }
     
-    // Validate email format
     if (!validateEmail(formData.email)) {
       toast.error("Please enter a valid email address");
       return;
     }
     
-    // Call the login function from AuthContext and check its return value
     const loginSuccess = login(formData);
     
     if (loginSuccess) {
       toast.success("Login successful! Welcome to Career Compass");
-      // Redirect to home page
       navigate('/');
     } else {
       toast.error("Login failed. Please check your information.");
@@ -320,56 +314,29 @@ const LoginPage = () => {
                 <Label htmlFor="state" className="flex items-center">
                   State <span className="text-red-500 ml-1">*</span>
                 </Label>
-                <Select
+                <SearchableSelect
+                  options={stateOptions}
                   value={formData.state}
                   onValueChange={(value) => handleSelectChange('state', value)}
-                >
-                  <SelectTrigger 
-                    id="state" 
-                    className={`w-full hover:shadow-md active:scale-[1.01] transition-all ${errors.state ? 'border-red-500 focus:ring-red-500' : ''}`}
-                  >
-                    <SelectValue placeholder="Select your state" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {stateOptions.map((state) => (
-                      <SelectItem 
-                        key={state} 
-                        value={state}
-                        className="hover:bg-primary/10 cursor-pointer transition-colors"
-                      >
-                        {state}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                  placeholder="Select your state"
+                  className={errors.state ? 'border-red-500 focus:ring-red-500' : ''}
+                  noResultsText="No states found"
+                  searchPlaceholder="Search states..."
+                />
                 {errors.state && <p className="text-red-500 text-sm mt-1">{errors.state}</p>}
               </div>
               
               {formData.state && (
                 <div className="space-y-2">
                   <Label htmlFor="district">District/City</Label>
-                  <Select
+                  <SearchableSelect
+                    options={districtOptions}
                     value={formData.district}
                     onValueChange={(value) => handleSelectChange('district', value)}
-                  >
-                    <SelectTrigger 
-                      id="district" 
-                      className="w-full hover:shadow-md active:scale-[1.01] transition-all"
-                    >
-                      <SelectValue placeholder="Select your district" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {availableDistricts.map((district) => (
-                        <SelectItem 
-                          key={district} 
-                          value={district}
-                          className="hover:bg-primary/10 cursor-pointer transition-colors"
-                        >
-                          {district}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                    placeholder="Select your district"
+                    noResultsText="No districts found"
+                    searchPlaceholder="Search districts..."
+                  />
                 </div>
               )}
             </div>

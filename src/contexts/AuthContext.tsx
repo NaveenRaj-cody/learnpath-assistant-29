@@ -7,7 +7,7 @@ interface UserData {
   educationLevel: string;
   currentInstitution: string;
   state: string;
-  district: string; // Changed from city to district to match the LoginPage form
+  district: string; // This field was already changed from city to district
 }
 
 interface AuthContextType {
